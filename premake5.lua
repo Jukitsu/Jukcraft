@@ -62,8 +62,8 @@ project "GLFW"
         }
 
         defines {
-            "_GLFW_X11"
-        
+            "_GLFW_X11",
+			"GLFW_INCLUDE_NONE"
         }
 
     filter "system:windows"
@@ -192,12 +192,18 @@ project "MinecraftClone"
 		"MinecraftClone/src/",
 		"vendor/glad/include/",
 		"vendor/glfw/include/",
-		"vendor/glm/"
+		"vendor/glm/",
+		"vendor/stb",
 	}
 
 	links {
 		"GLFW",
-		"Glad"
+		"Glad",
+		"opengl32"
+	}
+
+	defines {
+		"GLFW_INCLUDE_NONE"
 	}
 
 	pchheader "pch.h"
@@ -208,12 +214,10 @@ project "MinecraftClone"
 
 	filter "configurations:Debug"
 		runtime "debug"
-		defines "CRYSTAL_DEBUG"
 		symbols "on"
 
 	filter "configurations:Beta"
 		runtime "debug"
-		defines "CRYSTAL_BETA"
  		optimize "on"
 		inlining "auto"
 		intrinsics "on"
@@ -226,7 +230,6 @@ project "MinecraftClone"
 
 	filter "configurations:Release"
 		runtime "release"
-		defines "CRYSTAL_RELEASE"
 		optimize "speed"
 		inlining "auto"
 		intrinsics "on"

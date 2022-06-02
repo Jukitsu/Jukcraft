@@ -1,5 +1,8 @@
 #pragma once
 #include <GLFW/glfw3.h>
+#include "renderer/Renderer.h"
+#include "core/Window.h"
+#include "core/Camera.h"
 
 class App {
 public:
@@ -7,11 +10,26 @@ public:
 	~App();
 
 	void run();
+
+	static App& Get() { return *Instance; }
+	static Window& GetWindow() { return *Get().window; }
+
+	void onKeyPress(int key);
+	void onMousePress(int button);
+	void onResize(uint16_t width, uint16_t height);
+
+	constexpr bool isMouseCaptured() const { return mouseCaptured; }
 private:
 	static App* Instance;
-	bool running = false;
-	GLFWwindow* window;
-	GLuint vao, vbo, program;
+	std::optional<Camera> camera;
+	std::optional<Window> window;
+	std::optional<VertexArray> vao;
+	std::optional<Buffer> vbo;
+	std::optional<Buffer> ibo;
+	std::optional<Shader> shader;
+	std::optional<TextureManager> textureManager;
+
+	bool mouseCaptured = false;
 
 	FORBID_COPY(App);
 	FORBID_MOVE(App);
