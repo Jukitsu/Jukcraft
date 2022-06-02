@@ -22,21 +22,22 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\renderer\Buffers.h">
+    <ClInclude Include="src\renderer\gfx\Buffers.h">
       <Filter>renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\Shader.h">
+    <ClInclude Include="src\renderer\gfx\Shader.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\TextureManager.h">
+    <ClInclude Include="src\renderer\texture\TextureManager.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\VertexArray.h">
+    <ClInclude Include="src\renderer\gfx\VertexArray.h">
       <Filter>renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\mesh\MeshBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -51,5 +52,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
+    <ClCompile Include="src\renderer\mesh\MeshBuilder.cpp" />
   </ItemGroup>
 </Project>

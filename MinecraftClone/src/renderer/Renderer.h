@@ -1,8 +1,8 @@
 #pragma once
-#include "renderer/VertexArray.h"
-#include "renderer/Buffers.h"
-#include "renderer/Shader.h"
-#include "renderer/TextureManager.h"
+#include "renderer/gfx/VertexArray.h"
+#include "renderer/gfx/Buffers.h"
+#include "renderer/gfx/Shader.h"
+#include "renderer/texture/TextureManager.h"
 
 inline static constexpr glm::vec4 empty_color = glm::vec4(0.0f);
 inline static constexpr float empty_depth = 1.0f;
