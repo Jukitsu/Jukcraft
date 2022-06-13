@@ -3,6 +3,7 @@
 #include "renderer/Renderer.h"
 #include "core/Window.h"
 #include "core/Camera.h"
+#include "world/chunk/ChunkManager.h"
 
 class App {
 public:
@@ -23,9 +24,7 @@ private:
 	static App* Instance;
 	std::optional<Camera> camera;
 	std::optional<Window> window;
-	std::optional<VertexArray> vao;
-	std::optional<Buffer> vbo;
-	std::optional<Buffer> ibo;
+	std::optional<ChunkManager> chunkManager;
 	std::optional<Shader> shader;
 	std::optional<TextureManager> textureManager;
 

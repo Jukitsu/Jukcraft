@@ -6,6 +6,7 @@ class Camera {
 public:
 	Camera(Shader& shader, const glm::vec3& position, float yaw, float pitch);
 	void update(float delta_time);
+	void onMouseMove(float x, float y);
 private:
 	Buffer ubo;
 	Shader& shader;

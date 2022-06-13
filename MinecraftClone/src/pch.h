@@ -83,3 +83,4 @@
 #include <glm/ext.hpp>
 
 #include "core/util.h"
+#include "world/chunk/util.h"

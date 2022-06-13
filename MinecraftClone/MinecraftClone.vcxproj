@@ -99,7 +99,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -124,7 +124,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INTRINSICS;GLM_FORCE_INLINE;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -147,19 +147,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\world\chunk\ChunkManager.h" />
     <ClInclude Include="src\core\App.h" />
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\renderer\gfx\Buffers.h" />
-    <ClInclude Include="src\renderer\mesh\MeshBuilder.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
+    <ClInclude Include="src\renderer\gfx\Buffers.h" />
     <ClInclude Include="src\renderer\gfx\Shader.h" />
-    <ClInclude Include="src\renderer\texture\TextureManager.h" />
     <ClInclude Include="src\renderer\gfx\VertexArray.h" />
+    <ClInclude Include="src\renderer\models\BlockType.h" />
+    <ClInclude Include="src\renderer\models\Model.h" />
+    <ClInclude Include="src\renderer\texture\TextureManager.h" />
+    <ClInclude Include="src\world\chunk\Chunk.h" />
+    <ClInclude Include="src\world\chunk\util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\world\chunk\ChunkManager.cpp" />
     <ClCompile Include="src\core\App.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
@@ -167,8 +172,8 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\renderer\mesh\MeshBuilder.cpp" />
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
+    <ClCompile Include="src\world\chunk\Chunk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vendor\glfw\GLFW.vcxproj">

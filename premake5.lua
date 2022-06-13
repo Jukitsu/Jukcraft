@@ -225,7 +225,6 @@ project "MinecraftClone"
 
 		defines {
 			"GLM_FORCE_INLINE",
-			"GLM_FORCE_INTRINSICS"
 		}
 
 	filter "configurations:Release"
@@ -239,7 +238,6 @@ project "MinecraftClone"
 		rtti "off"
 
 		defines {
-			"GLM_FORCE_INTRINSICS",
 			"GLM_FORCE_INLINE"
 		}
 

@@ -5,7 +5,7 @@ class TextureManager {
 public:
 	TextureManager(uint16_t dim) :dim(dim) {
 		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &handle);
-		glTextureStorage3D(handle, std::log2f(dim), GL_RGBA8, dim, dim, 256);
+		glTextureStorage3D(handle, static_cast<int>(std::floor(std::log2f(dim))) + 1, GL_RGBA8, dim, dim, 256);
 	}
 	~TextureManager() {
 		glDeleteTextures(1, &handle);
@@ -28,6 +28,8 @@ public:
 		glTextureParameteri(handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTextureParameteri(handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTextureParameteri(handle, GL_TEXTURE_MAX_ANISOTROPY, 8);
+
+		glGenerateTextureMipmap(handle);
 		glBindTextureUnit(unit, handle);
 	}
 private:

@@ -4,7 +4,7 @@
 
 struct VertexArrayLayout {
 	struct VertexAttrib {
-		size_t size;
+		uint32_t size;
 		bool is_float;
 	};
 	std::vector<VertexAttrib> attribs;
@@ -24,8 +24,8 @@ public:
 	void bindLayout(VertexArrayLayout&& layout) {
 		vaLayout = std::move(layout);
 	}
-	void bindVertexBuffer(Buffer& vbo, size_t offset, VertexBufferLayout layout) {
-		uint32_t binding = buffers.size();
+	void bindVertexBuffer(const Buffer& vbo, size_t offset, VertexBufferLayout layout) {
+		uint32_t binding = (uint32_t)buffers.size();
 		glVertexArrayVertexBuffer(handle, binding, vbo.getHandle(), layout.offset, layout.stride);
 		buffers.push_back(&vbo);
 		for (const auto& element : layout.elements) {
@@ -38,14 +38,14 @@ public:
 				glVertexArrayAttribIFormat(handle, element.attribIndex, attrib.size, GL_UNSIGNED_INT, element.relativeOffset);
 		}
 	}
-	void bindIndexBuffer(Buffer& ibo) {
+	void bindIndexBuffer(const Buffer& ibo) {
 		glVertexArrayElementBuffer(handle, ibo.getHandle());
 	}
 	[[nodiscard]] constexpr GLuint getHandle() const { return handle; }
 private:
 	GLuint handle;
 	VertexArrayLayout vaLayout;
-	std::vector<Buffer*> buffers;
+	std::vector<const Buffer*> buffers;
 
 	FORBID_COPY(VertexArray);
 	FORBID_MOVE(VertexArray);

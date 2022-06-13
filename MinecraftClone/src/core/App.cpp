@@ -4,63 +4,6 @@
 
 App* App::Instance = nullptr;
 
-struct Vertex {
-	glm::uvec3 pos;
-	uint32_t texUV;
-	uint32_t texIndex;
-	uint32_t shading;
-};
-
-static constexpr std::array<Vertex, 24> cube = {
-	Vertex { { 1, 1, 1 },		0,	0,	1 },
-	Vertex { { 1, 0, 1 },		1,	0,	1 },
-	Vertex { { 1, 0, 0 },		2,	0,	1 },
-	Vertex { { 1, 1, 0 },		3,	0,	1 },
-						 		 					  
-	Vertex { { 0, 1, 0 },		0,	0,	1 },
-	Vertex { { 0, 0, 0 },		1,	0,	1 },
-	Vertex { { 0, 0, 1 },		2,	0,	1 },
-	Vertex { { 0, 1, 1 },		3,	0,	1 },
-								 					  
-	Vertex { { 1, 1, 1 },		0,	0,	3 },
-	Vertex { { 1, 1, 0 },		1,	0,	3 },
-	Vertex { { 0, 1, 0 },		2,	0,	3 },
-	Vertex { { 0, 1, 1 },		3,	0,	3 },
-							 						  
-	Vertex { { 0, 0, 1 },		0,	0,	0 },
-	Vertex { { 0, 0, 0 },		1,	0,	0 },
-	Vertex { { 1, 0, 0 },		2,	0,	0 },
-	Vertex { { 1, 0, 1 },		3,	0,	0 },
-							 						  
-	Vertex { { 0, 1, 1 },		0,	0,	2 },
-	Vertex { { 0, 0, 1 },		1,	0,	2 },
-	Vertex { { 1, 0, 1 },		2,	0,	2 },
-	Vertex { { 1, 1, 1 },		3,	0,	2 },
- 													  
-	Vertex { { 1, 1, 0 },		0,	0,	2 },
-	Vertex { { 1, 0, 0 },		1,	0,	2 },
-	Vertex { { 0, 0, 0 },		2,	0,	2 },
-	Vertex { { 0, 1, 0 },		3,	0,	2 }
-};
-
-std::vector<uint32_t> getCompactCube() {
-	std::vector<uint32_t> result;
-	result.reserve(cube.size());
-	for (const Vertex& vertex : cube) {
-		uint32_t v = (vertex.pos.x << 20) | (vertex.pos.y << 16) | (vertex.pos.z << 12) | (vertex.texUV << 10) | (vertex.texIndex << 2) | (vertex.shading);
-		result.push_back(v);
-	}
-	return result;
-}
-
-static constexpr std::array<uint32_t, 36> indices = {
-	 0,  1,  2,  0,  2,  3,
-	 4,  5,  6,  4,  6,  7,
-	 8,  9, 10,  8, 10, 11,
-	12, 13, 14, 12, 14, 15,
-	16, 17, 18, 16, 18, 19,
-	20, 21, 22, 20, 22, 23,
-};
 
 
 static constexpr const char* vert = R"(
@@ -68,7 +11,7 @@ static constexpr const char* vert = R"(
 
 layout(location = 0) in uint a_VertexData;
 
-out VS_OUT {
+layout(location = 0) out VS_OUT {
 	vec3 v_TexCoords;
 	float v_Shading;
 } vs_Out;
@@ -84,12 +27,15 @@ layout(std140, binding = 0) uniform u_Camera {
 	mat4 u_CameraTransforms;
 	vec4 u_CameraPos;
 };
+
+layout(location = 0) uniform vec3 u_ChunkPos;
+
 void main(void) {
-	vec3 pos = vec3((a_VertexData >> 20) & 0xF, (a_VertexData >> 16) & 0xF, (a_VertexData >> 12) & 0xF);
+	vec3 pos = u_ChunkPos + vec3(a_VertexData >> 17 & 0x1F, a_VertexData >> 22, a_VertexData >> 12 & 0x1F);
 
 	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
 
-	vs_Out.v_TexCoords = vec3(c_TexCoords[(a_VertexData >> 10) & 0x3], (a_VertexData >> 2) & 0xFF);
+	vs_Out.v_TexCoords = vec3(c_TexCoords[a_VertexData >> 10 & 0x3], a_VertexData >> 2 & 0xFF);
 	vs_Out.v_Shading = float((a_VertexData & 0x3) + 2) / 5.0f;
 }
 )";
@@ -97,7 +43,7 @@ void main(void) {
 static constexpr const char* frag = R"(
 #version 460 core
 
-in VS_OUT {
+layout(location = 0) in VS_OUT {
 	vec3 v_TexCoords;
 	float v_Shading;
 } fs_In;
@@ -128,26 +74,7 @@ App::App() {
 
 	Renderer::Init();
 
-	vao.emplace();
-	vbo.emplace();
-	ibo.emplace();
-
-	std::vector<uint32_t> vertices = getCompactCube();
-
-	vbo->allocate(vertices.size() * sizeof(uint32_t), vertices.data(), false);
-	ibo->allocate(sizeof(indices), indices.data(), false);
-
-	vao->bindLayout(VertexArrayLayout{
-		{ 
-		   { 1, false },
-		}
-	});
-	vao->bindVertexBuffer(*vbo, 0, VertexBufferLayout{
-		{{ 0 }},
-		0,
-		sizeof(uint32_t)
-		});
-	vao->bindIndexBuffer(*ibo);
+	chunkManager.emplace();
 
 	textureManager.emplace(16);
 	textureManager->loadSubTexture(0, "assets/textures/cobblestone.png");
@@ -155,7 +82,7 @@ App::App() {
 
 	shader.emplace(vert, frag);
 
-	camera.emplace(*shader, glm::vec3(0.0f, 0.0f, 0.0f), -glm::pi<float>() / 2, 0.0f);
+	camera.emplace(*shader, glm::vec3(0.0f, 0.0f, -3.0f), -glm::pi<float>() / 2, 0.0f);
 }
 
 App::~App() {
@@ -169,11 +96,12 @@ void App::run() {
 		const float delta_time = time - last_time;
 		last_time = time;
 
+		chunkManager->tick();
 		camera->update(delta_time);
+
 		Renderer::Begin();
-		//glClearNamedFramebufferfv(0, GL_COLOR, 0, glm::value_ptr(empty_color));
 		shader->bind();
-		Renderer::DrawElements(*vao, 36);
+		chunkManager->drawChunksCubeLayers(*shader);
 		Renderer::End();
 
 		window->endFrame();
@@ -186,6 +114,7 @@ void App::onKeyPress(int key) {
 			mouseCaptured = false;
 			window->releaseMouse();
 		}
+		break;
 	}
 }
 
@@ -198,6 +127,7 @@ void App::onMousePress(int button) {
 		}
 	}
 }
+
 
 void App::onResize(uint16_t width, uint16_t height) {
 	Renderer::Viewport(width, height);

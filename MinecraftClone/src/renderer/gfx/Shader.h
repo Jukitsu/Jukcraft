@@ -37,6 +37,10 @@ public:
 	void bind() {
 		glUseProgram(handle);
 	}
+	
+	void setUniform3f(uint8_t location, const glm::vec3& value) {
+		glProgramUniform3f(handle, location, value.x, value.y, value.z);
+	}
 private:
 	static GLuint compileShaderStage(GLenum stage, const char* src) {
 		GLuint sh = glCreateShader(stage);

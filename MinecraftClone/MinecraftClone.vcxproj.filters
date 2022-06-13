@@ -7,6 +7,27 @@
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\gfx">
+      <UniqueIdentifier>{30E2E770-1C45-7715-C5CA-AFCBB10C4398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\models">
+      <UniqueIdentifier>{EF8827A6-5B14-956A-6425-185FD02FF16A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\texture">
+      <UniqueIdentifier>{1C040F70-08FD-2DC2-312F-13471D870DCE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb">
+      <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world">
+      <UniqueIdentifier>{6D35A710-D949-CFC1-A2CB-72210E9FCBF2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\chunk">
+      <UniqueIdentifier>{55CAE3BB-C17F-5CB1-4A74-5688B62853B5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\App.h">
@@ -22,22 +43,34 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\renderer\gfx\Buffers.h">
-      <Filter>renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\gfx\Shader.h">
-      <Filter>renderer</Filter>
+    <ClInclude Include="src\renderer\gfx\Buffers.h">
+      <Filter>renderer\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\texture\TextureManager.h">
-      <Filter>renderer</Filter>
+    <ClInclude Include="src\renderer\gfx\Shader.h">
+      <Filter>renderer\gfx</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\VertexArray.h">
-      <Filter>renderer</Filter>
+      <Filter>renderer\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\mesh\MeshBuilder.h" />
+    <ClInclude Include="src\renderer\models\BlockType.h">
+      <Filter>renderer\models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\models\Model.h">
+      <Filter>renderer\models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\texture\TextureManager.h">
+      <Filter>renderer\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\Chunk.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\util.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\ChunkManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -51,7 +84,12 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\vendor\stb\stb_build.cpp" />
-    <ClCompile Include="src\renderer\mesh\MeshBuilder.cpp" />
+    <ClCompile Include="src\vendor\stb\stb_build.cpp">
+      <Filter>vendor\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\chunk\Chunk.cpp">
+      <Filter>world\chunk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\chunk\ChunkManager.cpp" />
   </ItemGroup>
 </Project>

@@ -47,10 +47,12 @@ public:
 
 	void captureMouse() {
 		glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	}
 
 	void releaseMouse() {
 		glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
 	}
 	constexpr EventCallbacks& getEventCallbacks() {
 		return callbacks;
@@ -58,7 +60,6 @@ public:
 private:
 	GLFWwindow* handle;
 	uint16_t width, height;
-	glm::vec2 cursor_pos;
 	FORBID_COPY(Window);
 	FORBID_MOVE(Window);
 	EventCallbacks callbacks;
