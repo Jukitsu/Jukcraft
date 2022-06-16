@@ -42,6 +42,7 @@ public:
 		glVertexArrayElementBuffer(handle, ibo.getHandle());
 	}
 	[[nodiscard]] constexpr GLuint getHandle() const { return handle; }
+	constexpr const std::vector<const Buffer*>& getVertexBuffers() const { return buffers; }
 private:
 	GLuint handle;
 	VertexArrayLayout vaLayout;

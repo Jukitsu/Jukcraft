@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/glad.h>
+#include "renderer/Renderer.h"
 
 enum class BufferBindingTarget {
 	ShaderStorage, Uniform, DrawIndirect
@@ -31,7 +32,7 @@ public:
 			handle,
 			size,
 			data,
-			mapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT : 0
+			mapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_CLIENT_STORAGE_BIT : 0
 		);
 	}
 	[[nodiscard]] void* map(size_t offset, size_t length) {
@@ -39,15 +40,18 @@ public:
 			handle,
 			offset,
 			length,
-			GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT
+			GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_RANGE_BIT
 		);
 	}
+	
 	void flush(size_t offset, size_t length) {
+		/*
 		glFlushMappedNamedBufferRange(
 			handle,
 			offset,
 			length
 		);
+		*/
 	}
 	void bindRange(BufferBindingTarget target, uint32_t index, size_t offset, size_t size) {
 		glBindBufferRange(getGLBufferBindingTarget(target), index, handle, offset, size);
@@ -56,11 +60,31 @@ public:
 		glBindBuffer(getGLBufferBindingTarget(target), handle);
 	}
 	void copy(const Buffer& buffer, size_t readOffset, size_t writeOffset, size_t size) {
+		sync();
+		buffer.sync();
 		glCopyNamedBufferSubData(buffer.handle, handle, readOffset, writeOffset, size);
+		addFence();
+		buffer.addFence();
+	}
+	void orphan(size_t offset, size_t length) {
+		glInvalidateBufferSubData(handle, offset, length);
+		addFence();
 	}
 	[[nodiscard]] constexpr GLuint getHandle() const { return handle; }
+
+	void addFence() const {
+		fences.push(glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
+	}
+	void sync() const {
+		while (!fences.empty()) {
+			glClientWaitSync(fences.front(), GL_SYNC_FLUSH_COMMANDS_BIT, 2147483647);
+			glDeleteSync(fences.front());
+			fences.pop();
+		}
+	}
 private:
 	GLuint handle;
+	mutable std::queue<GLsync> fences;
 	FORBID_COPY(Buffer);
 	FORBID_MOVE(Buffer);
 };
@@ -78,28 +102,30 @@ struct VertexBufferLayout {
 template<typename T>
 class DynamicBuffer {
 public:
-	DynamicBuffer() :stagingBuffer(), targetBuffer() {}
+	DynamicBuffer() :targetBuffer() {}
 
 	void allocate(uint32_t length, const T* data) noexcept {
-		stagingBuffer.allocate(length * sizeof(T), data, true);
-		mappedPtr = reinterpret_cast<T*>(stagingBuffer.map(0, length * sizeof(T)));
+		mappedPtr = reinterpret_cast<T*>(Renderer::GetMappedStagingBuffer());
 		targetBuffer.allocate(length * sizeof(T), data, false);
 	}
 	void beginEditRegion(uint32_t offset, uint32_t length) noexcept {
+		Renderer::GetStagingBuffer().sync();
+		if (length > 16777216)
+			std::cout << "Overflow" << std::endl;
 		currentOffset = 0;
 		regionData = { offset, length };
 	}
 	void editRegion(uint32_t offset, uint32_t length, const T* data) noexcept {
-		memcpy(mappedPtr + offset, data, length * sizeof(T));
-		stagingBuffer.flush(offset, length * sizeof(T));
+		memcpy(mappedPtr + regionData.offset + offset, data, length * sizeof(T));
 	}
 	void push(const T& data) {
-		memcpy(mappedPtr + currentOffset, &data, sizeof(T));
+		memcpy(mappedPtr + regionData.offset + currentOffset, &data, sizeof(T));
 		currentOffset++;
 	}
 	void endEditRegion() noexcept {
-		stagingBuffer.flush(0, sizeof(T));
-		targetBuffer.copy(stagingBuffer, regionData.offset * sizeof(T), regionData.offset * sizeof(T), regionData.length * sizeof(T));
+		Renderer::GetStagingBuffer().flush(regionData.offset * sizeof(T), regionData.length * sizeof(T));
+		targetBuffer.copy(Renderer::GetStagingBuffer(), regionData.offset * sizeof(T), regionData.offset * sizeof(T), regionData.length * sizeof(T));
+		Renderer::GetStagingBuffer().orphan(regionData.offset * sizeof(T), regionData.length * sizeof(T));
 		currentOffset = 0;
 	}
 
@@ -108,7 +134,7 @@ private:
 	struct {
 		size_t offset, length;
 	} regionData;
-	Buffer stagingBuffer;
+
 	Buffer targetBuffer;
 	T* mappedPtr;
 	size_t currentOffset;

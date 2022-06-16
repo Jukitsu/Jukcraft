@@ -10,7 +10,7 @@ ChunkManager::ChunkManager() {
 			for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++) 
 				for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
 					for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
-						chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2);
+						chunk->setBlock(glm::uvec3(lx, ly, lz), !(std::rand() % 5));
 					}
 			chunkBuildingQueue.push(chunk);
 			if (z > 0) {
