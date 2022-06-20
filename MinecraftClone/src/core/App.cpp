@@ -58,13 +58,17 @@ void main(void) {
 )";
 
 App::App() {
-	if (!Instance)
+	if (!Instance) {
 		Instance = this;
-	else
-		ERROR("Cannot create app twice!");
+		Log::Init();
+	}
+	else {
+		THROW_ERROR("Cannot create app twice!");
+	}
+
 
 	if (!glfwInit())
-		ERROR("Failed to initialize glfw");
+		THROW_ERROR("Failed to initialize glfw");
 
 	EventCallbacks callbacks;
 	callbacks.keyPressCallback = std::bind(&App::onKeyPress, this, std::placeholders::_1);
@@ -82,7 +86,7 @@ App::App() {
 
 	shader.emplace(vert, frag);
 
-	camera.emplace(*shader, glm::vec3(0.0f, 0.0f, -3.0f), -glm::pi<float>() / 2, 0.0f);
+	camera.emplace(*shader, glm::vec3(0.0f, 130.0f, -3.0f), -glm::pi<float>() / 2, 0.0f);
 }
 
 App::~App() {

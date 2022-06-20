@@ -10,7 +10,8 @@
 #define DEBUGBREAK()
 #endif
 
-#define ERROR(x) { std::cerr << x << std::endl; DEBUGBREAK(); }
+#define THROW_ERROR(...) { LOG_ERROR(__VA_ARGS__); DEBUGBREAK(); }
+#define CHECK(x, ...) if (!(x)) THROW_ERROR(__VA_ARGS__);
 
 struct Vertex {
 	glm::uvec3 pos;

@@ -194,6 +194,7 @@ project "MinecraftClone"
 		"vendor/glfw/include/",
 		"vendor/glm/",
 		"vendor/stb",
+		"vendor/spdlog/include"
 	}
 
 	links {

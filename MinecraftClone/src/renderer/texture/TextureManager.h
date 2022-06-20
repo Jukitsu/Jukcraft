@@ -20,7 +20,7 @@ public:
 		else if (channels == 4)
 			format = GL_RGBA;
 		else
-			ERROR("Wrong file format");
+			THROW_ERROR("Wrong file format");
 		glTextureSubImage3D(handle, 0, 0, 0, index, x, y, 1, format, GL_UNSIGNED_BYTE, pixels);
 		stbi_image_free(pixels);
 	}

@@ -19,7 +19,7 @@ public:
 			glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &logLength);
 			char* log = new char[logLength];
 			glGetProgramInfoLog(handle, logLength, &logLength, log);
-			ERROR("Error in linking stage: " << log);
+			THROW_ERROR("Error in linking stage: {}", log);
 			delete[] log;
 		}
 
@@ -54,7 +54,7 @@ private:
 			glGetShaderiv(sh, GL_INFO_LOG_LENGTH, &logLength);
 			char* log = new char[logLength];
 			glGetShaderInfoLog(sh, logLength, &logLength, log);
-			ERROR("Error in " << (stage == GL_VERTEX_SHADER ? "vertex" : "fragment") << " stage: " << log);
+			THROW_ERROR("Error in {} stage: {}", (stage == GL_VERTEX_SHADER ? "vertex" : "fragment"), log);
 			delete[] log;
 			return 0;
 		}

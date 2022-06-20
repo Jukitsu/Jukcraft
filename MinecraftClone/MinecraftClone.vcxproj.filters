@@ -67,10 +67,13 @@
     <ClInclude Include="src\world\chunk\Chunk.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
+    <ClInclude Include="src\world\chunk\ChunkManager.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
     <ClInclude Include="src\world\chunk\util.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\chunk\ChunkManager.h" />
+    <ClInclude Include="src\core\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -90,6 +93,9 @@
     <ClCompile Include="src\world\chunk\Chunk.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
-    <ClCompile Include="src\world\chunk\ChunkManager.cpp" />
+    <ClCompile Include="src\world\chunk\ChunkManager.cpp">
+      <Filter>world\chunk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Log.cpp" />
   </ItemGroup>
 </Project>

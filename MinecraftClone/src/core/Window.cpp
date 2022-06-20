@@ -8,35 +8,21 @@ static void APIENTRY GLDebugMsgCallback(GLenum source, GLenum type, GLuint id,
 	const GLchar* msg, const void* data) {
 	const char* _severity;
 
-	std::stringstream ss;
 	switch (severity) {
 	case GL_DEBUG_SEVERITY_HIGH:
-		ss << "[GL DEBUG MESSAGE]: "
-			<< "ID " << id << ", "
-			<< "message of "
-			<< "HIGH" << " severity: \n" << msg << '\n';
-		ERROR(ss.str());
+		THROW_ERROR("[GL ERROR] ID {} msg of HIGH severity: {}", id, msg);
 		break;
 
 	case GL_DEBUG_SEVERITY_MEDIUM:
-		ss << "[GL DEBUG MESSAGE]: "
-			<< "ID " << id << ", "
-			<< "message of "
-			<< "Medium" << " severity: \n" << msg << '\n';
-		std::cout << (ss.str());
+		LOG_WARN("[GL WARNING] ID {} msg of MEDIUM severity: {}", id, msg);
 		break;
 
 	case GL_DEBUG_SEVERITY_LOW:
-		ss << "[GL DEBUG MESSAGE]: "
-			<< "ID " << id << ", "
-			<< "message of "
-			<< "Low" << " severity: \n" << msg << '\n';
-		std::cout << (ss.str());
+		LOG_INFO("[GL INFO] ID {} msg of LOW severity : {}", id, msg);
 		break;
 
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
-		ss << "[GL DEBUG MESSAGE]: Notifcation: \n" << msg << '\n';
-		std::cout << (ss.str());
+		LOG_TRACE("[GL DEBUG MESSAGE]: Notifcation: {}", msg);
 		break;
 
 	default:
@@ -46,7 +32,7 @@ static void APIENTRY GLDebugMsgCallback(GLenum source, GLenum type, GLuint id,
 
 }
 static void GLFWErrorCallback(int error, const char* info) {
-	ERROR("GLFW Error " << error << " " << info);
+	THROW_ERROR("GLFW Error {} {}", error, info);
 }
 
 Window::Window(uint16_t width, uint16_t height, EventCallbacks callbacks)
@@ -61,7 +47,7 @@ Window::Window(uint16_t width, uint16_t height, EventCallbacks callbacks)
 	glfwMakeContextCurrent(handle);
 	glfwSetWindowUserPointer(handle, this);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		ERROR("Failed to load GL");
+		THROW_ERROR("Failed to load GL");
 #ifdef _DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
