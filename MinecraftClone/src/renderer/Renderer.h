@@ -58,7 +58,6 @@ public:
 			vbo->sync();
 		icbo.bind(BufferBindingTarget::DrawIndirect);
 		icbo.sync();
-		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT | GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT);
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, 1, 0);
 	}
 	static void End() {

@@ -60,7 +60,6 @@ public:
 		glBindBuffer(getGLBufferBindingTarget(target), handle);
 	}
 	void copy(const Buffer& buffer, size_t readOffset, size_t writeOffset, size_t size) {
-		sync();
 		buffer.sync();
 		glCopyNamedBufferSubData(buffer.handle, handle, readOffset, writeOffset, size);
 		addFence();
@@ -123,9 +122,7 @@ public:
 		currentOffset++;
 	}
 	void endEditRegion() noexcept {
-		Renderer::GetStagingBuffer().flush(regionData.offset * sizeof(T), regionData.length * sizeof(T));
 		targetBuffer.copy(Renderer::GetStagingBuffer(), regionData.offset * sizeof(T), regionData.offset * sizeof(T), regionData.length * sizeof(T));
-		Renderer::GetStagingBuffer().orphan(regionData.offset * sizeof(T), regionData.length * sizeof(T));
 		currentOffset = 0;
 	}
 
