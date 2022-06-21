@@ -3,14 +3,14 @@
 
 class TextureManager {
 public:
-	TextureManager(uint16_t dim) :dim(dim) {
+	TextureManager(uint16_t dim) :dim(dim), index(0) {
 		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &handle);
 		glTextureStorage3D(handle, static_cast<int>(std::floor(std::log2f(dim))) + 1, GL_RGBA8, dim, dim, 256);
 	}
 	~TextureManager() {
 		glDeleteTextures(1, &handle);
 	}
-	void loadSubTexture(uint16_t index, const std::string_view& path) {
+	void pushSubTexture(const std::string_view& path) {
 		stbi_set_flip_vertically_on_load(true);
 		int x, y, channels;
 		stbi_uc* pixels = stbi_load(path.data(), &x, &y, &channels, 0);
@@ -22,6 +22,7 @@ public:
 		else
 			THROW_ERROR("Wrong file format");
 		glTextureSubImage3D(handle, 0, 0, 0, index, x, y, 1, format, GL_UNSIGNED_BYTE, pixels);
+		index++;
 		stbi_image_free(pixels);
 	}
 	void setSamplerUnit(uint8_t unit) {
@@ -35,4 +36,5 @@ public:
 private:
 	GLuint handle;
 	uint16_t dim;
+	uint8_t index;
 };

@@ -4,6 +4,7 @@
 #include "core/Window.h"
 #include "core/Camera.h"
 #include "world/chunk/ChunkManager.h"
+#include "blocks/Block.h"
 
 class App {
 public:
@@ -27,6 +28,7 @@ private:
 	std::optional<ChunkManager> chunkManager;
 	std::optional<Shader> shader;
 	std::optional<TextureManager> textureManager;
+	std::vector<Block> blocks;
 
 	bool mouseCaptured = false;
 

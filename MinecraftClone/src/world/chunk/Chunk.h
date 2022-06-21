@@ -1,11 +1,12 @@
 #pragma once
 #include "renderer/Renderer.h"
+#include "blocks/Block.h"
 
 class ChunkManager;
 
 class Chunk {
 public:
-	Chunk(const glm::ivec2& chunkPos);
+	Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes);
 	~Chunk();
 	void buildCubeLayer();
 	void drawCubeLayer();
@@ -51,7 +52,7 @@ public:
 			return true;
 	}
 private:
-	void pushQuad(const Quad& quad, const glm::uvec3& localPos);
+	void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID);
 	struct {
 		std::weak_ptr<Chunk> east;
 		std::weak_ptr<Chunk> west;
@@ -59,6 +60,7 @@ private:
 		std::weak_ptr<Chunk> north;
 	} neighbourChunks;
 	BlockID*** blocks;
+	const std::vector<Block>& blockTypes;
 	std::optional<VertexArray> vao;
 	std::optional<DynamicBuffer<uint32_t>> vbo;
 	std::optional<DynamicBuffer<DrawIndirectCommand>> icbo;

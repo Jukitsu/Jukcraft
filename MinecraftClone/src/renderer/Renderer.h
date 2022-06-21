@@ -32,6 +32,8 @@ public:
 		stagingBuffer.emplace();
 		stagingBuffer->allocate(16777216, nullptr, true);
 		mappedStagingBuffer = stagingBuffer->map(0, 16777216);
+
+
 	}
 	static void Begin() {
 		while (fences.size() > 3) {
@@ -54,10 +56,7 @@ public:
 	}
 	static void MultiDrawElementsIndirect(VertexArray& vao, Buffer& icbo) {
 		vao.bind();
-		for (const Buffer* vbo : vao.getVertexBuffers())
-			vbo->sync();
 		icbo.bind(BufferBindingTarget::DrawIndirect);
-		icbo.sync();
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, 1, 0);
 	}
 	static void End() {

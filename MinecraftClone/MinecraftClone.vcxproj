@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\blocks\Block.h" />
     <ClInclude Include="src\core\App.h" />
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\Log.h" />
@@ -157,7 +158,6 @@
     <ClInclude Include="src\renderer\gfx\Buffers.h" />
     <ClInclude Include="src\renderer\gfx\Shader.h" />
     <ClInclude Include="src\renderer\gfx\VertexArray.h" />
-    <ClInclude Include="src\renderer\models\BlockType.h" />
     <ClInclude Include="src\renderer\models\Model.h" />
     <ClInclude Include="src\renderer\texture\TextureManager.h" />
     <ClInclude Include="src\world\chunk\Chunk.h" />

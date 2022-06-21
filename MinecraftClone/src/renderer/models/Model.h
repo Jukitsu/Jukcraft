@@ -1,5 +1,6 @@
 #pragma once
-static const std::array<Quad, 6> cube = {
+
+static const std::vector<Quad> cube = {
 	Quad {
 		Vertex { { 1, 1, 1 },		0,	0,	1 },
 		Vertex { { 1, 0, 1 },		1,	0,	1 },
@@ -42,4 +43,28 @@ static const std::array<Quad, 6> cube = {
 		Vertex { { 0, 1, 0 },		3,	0,	2 }
 	}
 };
+
+class Model {
+public:
+	virtual const std::vector<Quad>& getQuads() const = 0;
+};
+
+class Cube : public Model {
+public:
+	const std::vector<Quad>& getQuads() const override {
+		return cube;
+	}
+};
+
+class Air : public Model {
+public:
+	const std::vector<Quad>& getQuads() const override {
+		return {};
+	}
+};
+
+inline struct Models {
+	Air air;
+	Cube cube;
+} models;
 

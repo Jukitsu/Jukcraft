@@ -43,6 +43,8 @@ void main(void) {
 static constexpr const char* frag = R"(
 #version 460 core
 
+layout(early_fragment_tests) in;
+
 layout(location = 0) in VS_OUT {
 	vec3 v_TexCoords;
 	float v_Shading;
@@ -78,15 +80,26 @@ App::App() {
 
 	Renderer::Init();
 
-	chunkManager.emplace();
-
 	textureManager.emplace(16);
-	textureManager->loadSubTexture(0, "assets/textures/cobblestone.png");
+	textureManager->pushSubTexture("assets/textures/stone.png");
+	textureManager->pushSubTexture("assets/textures/grass.png");
+	textureManager->pushSubTexture("assets/textures/grass_side.png");
+	textureManager->pushSubTexture("assets/textures/dirt.png");
+	textureManager->pushSubTexture("assets/textures/cobblestone.png");
+	textureManager->pushSubTexture("assets/textures/planks.png");
 	textureManager->setSamplerUnit(0);
+
+
+	blocks.emplace_back("Air",		0,		models.air,		std::vector<uint8_t>{});
+	blocks.emplace_back("Stone",	1,		models.cube,	std::vector<uint8_t>{0, 0, 0, 0, 0, 0});
+	blocks.emplace_back("Grass",	2,		models.cube,	std::vector<uint8_t>{2, 2, 1, 3, 2, 2});
+	blocks.emplace_back("Dirt",		3,		models.cube,	std::vector<uint8_t>{3, 3, 3, 3, 3, 3});
 
 	shader.emplace(vert, frag);
 
 	camera.emplace(*shader, glm::vec3(0.0f, 130.0f, -3.0f), -glm::pi<float>() / 2, 0.0f);
+
+	chunkManager.emplace(blocks);
 }
 
 App::~App() {

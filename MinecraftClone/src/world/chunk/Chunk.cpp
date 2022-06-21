@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "renderer/Renderer.h"
 #include "world/chunk/Chunk.h"
-#include "renderer/models/Model.h"
 
-Chunk::Chunk(const glm::ivec2& chunkPos) {
+Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes)
+	:blockTypes(blockTypes)
+{
 	blocks = new BlockID** [CHUNK_HEIGHT];
 	for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
 		blocks[j] = new BlockID* [CHUNK_DIM];
@@ -45,9 +46,9 @@ Chunk::~Chunk() {
 }
 
 
-void Chunk::pushQuad(const Quad& quad, const glm::uvec3& localPos) {
+void Chunk::pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID) {
 	for (const Vertex& vertex : quad.vertices) {
-		uint32_t v = ((vertex.pos.y + localPos.y) << 22) | ((vertex.pos.x + localPos.x) << 17) | ((vertex.pos.z + localPos.z) << 12) | (vertex.texUV << 10) | (vertex.texIndex << 2) | (vertex.shading);
+		uint32_t v = ((vertex.pos.y + localPos.y) << 22) | ((vertex.pos.x + localPos.x) << 17) | ((vertex.pos.z + localPos.z) << 12) | (vertex.texUV << 10) | (textureID << 2) | (vertex.shading);
 		vbo->push(v);
 	}
 }
@@ -59,32 +60,38 @@ void Chunk::buildCubeLayer() {
 		for (uint8_t x = 0; x < CHUNK_DIM; x++)
 			for (uint8_t z = 0; z < CHUNK_DIM; z++) {
 				glm::ivec3 localPos = glm::ivec3(x, y, z);
-				uint16_t block = getBlock(localPos);
+
+				BlockID block = getBlock(localPos);
+
 				if (!block)
 					continue;
-				if (canRenderFacing(localPos + glm::ivec3(EAST))) {
-					pushQuad(cube[0], localPos);
-					quad_count++;
-				}
-				if (canRenderFacing(localPos + glm::ivec3(WEST))) {
-					pushQuad(cube[1], localPos);
-					quad_count++;
-				}
-				if (canRenderFacing(localPos + glm::ivec3(UP))) {
-					pushQuad(cube[2], localPos);
-					quad_count++;
-				}
-				if (canRenderFacing(localPos + glm::ivec3(DOWN))) {
-					pushQuad(cube[3], localPos);
-					quad_count++;
-				}
-				if (canRenderFacing(localPos + glm::ivec3(SOUTH))) {
-					pushQuad(cube[4], localPos);
-					quad_count++;
-				}
-				if (canRenderFacing(localPos + glm::ivec3(NORTH))) {
-					pushQuad(cube[5], localPos);
-					quad_count++;
+
+				Block type = blockTypes[block];
+				if (type.isCube()) {
+					if (canRenderFacing(localPos + glm::ivec3(EAST))) {
+						pushQuad(type.getModel().getQuads()[0], localPos, type.getTextureLayout()[0]);
+						quad_count++;
+					}
+					if (canRenderFacing(localPos + glm::ivec3(WEST))) {
+						pushQuad(type.getModel().getQuads()[1], localPos, type.getTextureLayout()[1]);
+						quad_count++;
+					}
+					if (canRenderFacing(localPos + glm::ivec3(UP))) {
+						pushQuad(type.getModel().getQuads()[2], localPos, type.getTextureLayout()[2]);
+						quad_count++;
+					}
+					if (canRenderFacing(localPos + glm::ivec3(DOWN))) {
+						pushQuad(type.getModel().getQuads()[3], localPos, type.getTextureLayout()[3]);
+						quad_count++;
+					}
+					if (canRenderFacing(localPos + glm::ivec3(SOUTH))) {
+						pushQuad(type.getModel().getQuads()[4], localPos, type.getTextureLayout()[4]);
+						quad_count++;
+					}
+					if (canRenderFacing(localPos + glm::ivec3(NORTH))) {
+						pushQuad(type.getModel().getQuads()[5], localPos, type.getTextureLayout()[5]);
+						quad_count++;
+					}
 				}
 				
 			}

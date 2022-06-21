@@ -103,25 +103,25 @@ class DynamicBuffer {
 public:
 	DynamicBuffer() :targetBuffer() {}
 
-	void allocate(uint32_t length, const T* data) noexcept {
+	void allocate(uint32_t length, const T* data) {
 		mappedPtr = reinterpret_cast<T*>(Renderer::GetMappedStagingBuffer());
 		targetBuffer.allocate(length * sizeof(T), data, false);
 	}
-	void beginEditRegion(uint32_t offset, uint32_t length) noexcept {
+	void beginEditRegion(uint32_t offset, uint32_t length) {
 		Renderer::GetStagingBuffer().sync();
 		if (length > 16777216)
 			std::cout << "Overflow" << std::endl;
 		currentOffset = 0;
 		regionData = { offset, length };
 	}
-	void editRegion(uint32_t offset, uint32_t length, const T* data) noexcept {
+	void editRegion(uint32_t offset, uint32_t length, const T* data) {
 		memcpy(mappedPtr + regionData.offset + offset, data, length * sizeof(T));
 	}
 	void push(const T& data) {
 		memcpy(mappedPtr + regionData.offset + currentOffset, &data, sizeof(T));
 		currentOffset++;
 	}
-	void endEditRegion() noexcept {
+	void endEditRegion() {
 		targetBuffer.copy(Renderer::GetStagingBuffer(), regionData.offset * sizeof(T), regionData.offset * sizeof(T), regionData.length * sizeof(T));
 		currentOffset = 0;
 	}
