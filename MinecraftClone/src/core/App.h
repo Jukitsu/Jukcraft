@@ -2,9 +2,8 @@
 #include <GLFW/glfw3.h>
 #include "renderer/Renderer.h"
 #include "core/Window.h"
-#include "core/Camera.h"
-#include "world/chunk/ChunkManager.h"
-#include "blocks/Block.h"
+#include "core/Game.h"
+
 
 class App {
 public:
@@ -23,12 +22,8 @@ public:
 	constexpr bool isMouseCaptured() const { return mouseCaptured; }
 private:
 	static App* Instance;
-	std::optional<Camera> camera;
 	std::optional<Window> window;
-	std::optional<ChunkManager> chunkManager;
-	std::optional<Shader> shader;
-	std::optional<TextureManager> textureManager;
-	std::vector<Block> blocks;
+	std::shared_ptr<Game> game;
 
 	bool mouseCaptured = false;
 

@@ -5,8 +5,12 @@
 class Camera {
 public:
 	Camera(Shader& shader, const glm::vec3& position, float yaw, float pitch);
-	void update(float delta_time);
+	void update(const float delta_time);
 	void onMouseMove(float x, float y);
+
+	constexpr const glm::vec3& getPos() const { return position; }
+	constexpr float getYaw() const { return yaw; }
+	constexpr float getPitch() const { return pitch; }
 private:
 	Buffer ubo;
 	Shader& shader;

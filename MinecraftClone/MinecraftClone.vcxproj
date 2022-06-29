@@ -150,6 +150,8 @@
     <ClInclude Include="src\blocks\Block.h" />
     <ClInclude Include="src\core\App.h" />
     <ClInclude Include="src\core\Camera.h" />
+    <ClInclude Include="src\core\Game.h" />
+    <ClInclude Include="src\core\HitRay.h" />
     <ClInclude Include="src\core\Log.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
@@ -163,10 +165,13 @@
     <ClInclude Include="src\world\chunk\Chunk.h" />
     <ClInclude Include="src\world\chunk\ChunkManager.h" />
     <ClInclude Include="src\world\chunk\util.h" />
+    <ClInclude Include="src\world\World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\core\Game.cpp" />
+    <ClCompile Include="src\core\HitRay.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -176,6 +181,7 @@
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
     <ClCompile Include="src\world\chunk\Chunk.cpp" />
     <ClCompile Include="src\world\chunk\ChunkManager.cpp" />
+    <ClCompile Include="src\world\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\vendor\glfw\GLFW.vcxproj">

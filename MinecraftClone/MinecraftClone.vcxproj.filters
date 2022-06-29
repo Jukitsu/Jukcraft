@@ -72,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="src\core\Log.h" />
     <ClInclude Include="src\blocks\Block.h" />
+    <ClInclude Include="src\core\Game.h" />
+    <ClInclude Include="src\world\World.h" />
+    <ClInclude Include="src\core\HitRay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -95,5 +98,8 @@
       <Filter>world\chunk</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Log.cpp" />
+    <ClCompile Include="src\core\Game.cpp" />
+    <ClCompile Include="src\world\World.cpp" />
+    <ClCompile Include="src\core\HitRay.cpp" />
   </ItemGroup>
 </Project>

@@ -44,6 +44,8 @@ static const std::vector<Quad> cube = {
 	}
 };
 
+static const std::vector<Quad> air = {};
+
 class Model {
 public:
 	virtual const std::vector<Quad>& getQuads() const = 0;
@@ -59,7 +61,7 @@ public:
 class Air : public Model {
 public:
 	const std::vector<Quad>& getQuads() const override {
-		return {};
+		return air;
 	}
 };
 

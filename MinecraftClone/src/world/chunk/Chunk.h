@@ -1,6 +1,7 @@
 #pragma once
 #include "renderer/Renderer.h"
 #include "blocks/Block.h"
+#include <glm/gtc/integer.hpp>
 
 class ChunkManager;
 
@@ -13,11 +14,25 @@ public:
 
 	template<typename VectorType> 
 	[[nodiscard]] constexpr BlockID getBlock(const glm::vec<3, VectorType>& localPos) const {
+		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
+			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
+			return 0;
 		return blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z]; 
 	}
 	template<typename VectorType> 
 	void setBlock(const glm::vec<3, VectorType>& localPos, const BlockID block) {
+		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
+			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
+			return;
 		blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = block; 
+	}
+	template<typename VectorType>
+	[[nodiscard]] static constexpr glm::vec<2, VectorType> ToChunkPos(const glm::vec<3, VectorType>& worldPos) {
+		return { worldPos.x / CHUNK_DIM, worldPos.z / CHUNK_DIM };
+	}
+	template<typename VectorType>
+	[[nodiscard]] static constexpr glm::vec<3, VectorType> ToLocalPos(const glm::vec<3, VectorType>& worldPos) {
+		return { glm::mod<float>(worldPos.x, CHUNK_DIM), worldPos.y, glm::mod<float>(worldPos.z, CHUNK_DIM) };
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr bool IsOutside(const glm::vec<3, VectorType>& localPos) {
@@ -51,6 +66,8 @@ public:
 		else 
 			return true;
 	}
+	void updateAtPosition(const glm::vec3& localPos);
+	void updateLayers();
 private:
 	void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID);
 	struct {
@@ -61,9 +78,9 @@ private:
 	} neighbourChunks;
 	BlockID*** blocks;
 	const std::vector<Block>& blockTypes;
-	std::optional<VertexArray> vao;
-	std::optional<DynamicBuffer<uint32_t>> vbo;
-	std::optional<DynamicBuffer<DrawIndirectCommand>> icbo;
+	VertexArray vao;
+	DynamicBuffer<uint32_t> vbo;
+	DynamicBuffer<DrawIndirectCommand> icbo;
 	std::vector<uint32_t> vertices;
 	std::vector<uint32_t> indices;
 	bool drawable = false;

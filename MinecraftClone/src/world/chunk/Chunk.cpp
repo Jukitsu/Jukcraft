@@ -14,26 +14,21 @@ Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes)
 		}
 	}
 
-	vao.emplace();
-	vbo.emplace();
+	vbo.allocate(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24, nullptr);
 
-	vbo->allocate(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24, nullptr);
-
-	vao->bindLayout(VertexArrayLayout{
+	vao.bindLayout(VertexArrayLayout{
 		{
 		   { 1, false },
 		}
 		});
-	vao->bindVertexBuffer(vbo->getTargetBuffer(), 0, VertexBufferLayout{
+	vao.bindVertexBuffer(vbo.getTargetBuffer(), 0, VertexBufferLayout{
 		{{ 0 }},
 		0,
 		sizeof(uint32_t)
 		});
-	vao->bindIndexBuffer(Renderer::GetChunkIbo());
+	vao.bindIndexBuffer(Renderer::GetChunkIbo());
 
-
-	icbo.emplace();
-	icbo->allocate(sizeof(DrawIndirectCommand), nullptr);
+	icbo.allocate(sizeof(DrawIndirectCommand), nullptr);
 }
 
 Chunk::~Chunk() {
@@ -49,12 +44,12 @@ Chunk::~Chunk() {
 void Chunk::pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID) {
 	for (const Vertex& vertex : quad.vertices) {
 		uint32_t v = ((vertex.pos.y + localPos.y) << 22) | ((vertex.pos.x + localPos.x) << 17) | ((vertex.pos.z + localPos.z) << 12) | (vertex.texUV << 10) | (textureID << 2) | (vertex.shading);
-		vbo->push(v);
+		vbo.push(v);
 	}
 }
 
 void Chunk::buildCubeLayer() {
-	vbo->beginEditRegion(0, CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24);
+	vbo.beginEditRegion(0, CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24);
 	uint32_t quad_count = 0;
 	for (uint8_t y = 0; y < CHUNK_HEIGHT; y++)
 		for (uint8_t x = 0; x < CHUNK_DIM; x++)
@@ -95,20 +90,38 @@ void Chunk::buildCubeLayer() {
 				}
 				
 			}
-	vbo->endEditRegion();
+	vbo.endEditRegion();
 	DrawIndirectCommand cmd;
 	cmd.count = quad_count * 6;
 	cmd.instanceCount = 1;
 	cmd.firstIndex = 0;
 	cmd.baseVertex = 0;
 	cmd.baseInstance = 0;
-	icbo->beginEditRegion(0, 1);
-	icbo->editRegion(0, 1, &cmd);
-	icbo->endEditRegion();
+	icbo.beginEditRegion(0, 1);
+	icbo.editRegion(0, 1, &cmd);
+	icbo.endEditRegion();
 	drawable = true;
+}
+
+void Chunk::updateAtPosition(const glm::vec3& localPos) {
+	updateLayers();
+
+	if (IsOutside(localPos + EAST) && !neighbourChunks.east.expired())
+		neighbourChunks.east.lock()->updateLayers();
+	if (IsOutside(localPos + NORTH) && !neighbourChunks.north.expired())
+		neighbourChunks.north.lock()->updateLayers();
+	if (IsOutside(localPos + WEST) && !neighbourChunks.west.expired())
+		neighbourChunks.west.lock()->updateLayers();
+	if (IsOutside(localPos + SOUTH) && !neighbourChunks.south.expired())
+		neighbourChunks.south.lock()->updateLayers();
+
+}
+
+void Chunk::updateLayers() {
+	buildCubeLayer();
 }
 void Chunk::drawCubeLayer() {
 	if (!drawable) 
 		return;
-	Renderer::MultiDrawElementsIndirect(*vao, icbo->getTargetBuffer());
+	Renderer::MultiDrawElementsIndirect(vao, icbo.getTargetBuffer());
 }

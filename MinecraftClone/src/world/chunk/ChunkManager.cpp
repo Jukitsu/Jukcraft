@@ -44,10 +44,23 @@ void ChunkManager::tick() {
 	}
 }
 
+std::optional<std::shared_ptr<Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) {
+	if (chunkPos.x < 0 || chunkPos.x >= WORLD_SIZE || chunkPos.y < 0 || chunkPos.y >= WORLD_SIZE)
+		return {};
+	return { chunks[chunkPos.x][chunkPos.y] };
+}
+
+std::optional<std::shared_ptr<const Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) const {
+	if (chunkPos.x < 0 || chunkPos.x >= WORLD_SIZE || chunkPos.y < 0 || chunkPos.y >= WORLD_SIZE)
+		return {};
+	return { chunks[chunkPos.x][chunkPos.y] };
+}
+
 void ChunkManager::drawChunksCubeLayers(Shader& shader) {
 	for (uint16_t x = 0; x < WORLD_SIZE; x++)
 		for (uint16_t z = 0; z < WORLD_SIZE; z++) {
 			Chunk& chunk = *chunks[x][z];
+			shader.bind();
 			shader.setUniform3f(0, glm::vec3(x * CHUNK_DIM, 0, z * CHUNK_DIM));
 			chunk.drawCubeLayer();
 		}
