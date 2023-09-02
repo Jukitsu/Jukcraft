@@ -3,7 +3,8 @@
 class Shader {
 public:
 	Shader(const std::string_view& vertFilepath, const std::string_view& fragFilepath) {
-		std::string vert = parseFile(vertFilepath), frag = parseFile(fragFilepath);
+		std::string vert = parseFile(vertFilepath);
+		std::string frag = parseFile(fragFilepath);
 		handle = glCreateProgram();
 
 		GLuint vsh = compileShaderStage(GL_VERTEX_SHADER, vert.data());

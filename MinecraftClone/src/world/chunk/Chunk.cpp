@@ -83,10 +83,10 @@ void Chunk::buildCubeLayer() {
 				if (true) {
 					for (uint8_t i = 0; i < 6; i++) {
 						if (canRenderFacing(localPos + IDIRECTIONS[i])) {
-							uint8_t light = 15;
+							uint8_t light = 15 << 4;
 							Chunk* neighbourChunk = getNeighbourChunk(localPos + IDIRECTIONS[i]);
 							if (neighbourChunk)
-								light = neighbourChunk->getBlockLight(ToLocalPos(localPos + IDIRECTIONS[i]));
+								light = neighbourChunk->getRawLight(ToLocalPos(localPos + IDIRECTIONS[i]));
 							pushQuad(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], light);
 							quad_count++;
 						}

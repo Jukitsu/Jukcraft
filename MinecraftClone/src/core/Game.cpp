@@ -15,12 +15,12 @@ Game::Game()
 	textureManager.setSamplerUnit(0);
 
 
-	blocks.emplace_back("Air", 0, models.air, std::vector<uint8_t>{}, true);
-	blocks.emplace_back("Stone", 1, models.cube, std::vector<uint8_t>{0, 0, 0, 0, 0, 0}, false);
-	blocks.emplace_back("Grass", 2, models.cube, std::vector<uint8_t>{2, 2, 1, 3, 2, 2}, false);
-	blocks.emplace_back("Dirt", 3, models.cube, std::vector<uint8_t>{3, 3, 3, 3, 3, 3}, false);
-	blocks.emplace_back("Cobblestone", 4, models.cube, std::vector<uint8_t>{4, 4, 4, 4, 4, 4}, false);
-	blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, true);
+	blocks.emplace_back("Air", 0, models.air, std::vector<uint8_t>{}, true, 0);
+	blocks.emplace_back("Stone", 1, models.cube, std::vector<uint8_t>{0, 0, 0, 0, 0, 0}, false, 0);
+	blocks.emplace_back("Grass", 2, models.cube, std::vector<uint8_t>{2, 2, 1, 3, 2, 2}, false, 0);
+	blocks.emplace_back("Dirt", 3, models.cube, std::vector<uint8_t>{3, 3, 3, 3, 3, 3}, false, 0);
+	blocks.emplace_back("Cobblestone", 4, models.cube, std::vector<uint8_t>{4, 4, 4, 4, 4, 4}, false, 0);
+	blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, true, 14);
 
 	world = std::make_unique<World>(blocks, shader);
 }

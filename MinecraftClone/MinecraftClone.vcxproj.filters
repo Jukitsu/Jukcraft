@@ -75,6 +75,7 @@
     <ClInclude Include="src\core\Game.h" />
     <ClInclude Include="src\world\World.h" />
     <ClInclude Include="src\core\HitRay.h" />
+    <ClInclude Include="src\world\LightEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -101,6 +102,7 @@
     <ClCompile Include="src\core\Game.cpp" />
     <ClCompile Include="src\world\World.cpp" />
     <ClCompile Include="src\core\HitRay.cpp" />
+    <ClCompile Include="src\world\LightEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\terrain\vert.glsl" />

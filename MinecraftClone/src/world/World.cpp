@@ -2,26 +2,42 @@
 #include "world/World.h"
 
 World::World(const std::vector<Block>& blocks, Shader& shader)
-	:chunkManager(blocks), shader(shader), blocks(blocks) {
+	:chunkManager(blocks), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks) {
 
+	for (std::shared_ptr<Chunk> chunk : chunkManager.getSkyLightPendingChunks()) {
+		lightEngine.initSkyLight(chunk);
+	}
 }
 
 void World::tick() {
 	chunkManager.tick();
-	propagateLightIncrease();
+	lightEngine.propagateLightIncrease();
 }
 
-void World::setBlock(const glm::ivec3& worldPos, BlockID block) {
+void World::setBlock(const glm::ivec3& worldPos, BlockID blockID) {
 	glm::ivec2 chunkPos = Chunk::ToChunkPos(worldPos);
 	std::optional<std::shared_ptr<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
 	if (!pendingChunk.has_value())
 		return;
 	std::shared_ptr<Chunk>& chunk = *pendingChunk;
 	glm::ivec3 localPos = Chunk::ToLocalPos(worldPos);
-	if (block == 5) {
-		increaseLight(worldPos, chunk);
+	const Block& block = blocks[blockID];
+	chunk->setBlock(localPos, blockID);
+
+	if (!blockID) {
+		lightEngine.decreaseLight(worldPos, chunk);
+		lightEngine.decreaseSkyLight(worldPos, chunk);
 	}
-	chunk->setBlock(localPos, block);
+	else {
+		if (block.getLight()) {
+			lightEngine.increaseLight(worldPos, chunk, block.getLight());
+		}
+		else if (!block.isTransparent()) {
+			lightEngine.decreaseLight(worldPos, chunk);
+			lightEngine.decreaseSkyLight(worldPos, chunk);
+		}
+	}
+	
 	chunkManager.updateChunkAtPosition(chunk, localPos);
 }
 
@@ -39,46 +55,4 @@ void World::render() {
 	chunkManager.drawChunksCubeLayers(shader);
 }
 
-void World::increaseLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk, uint8_t light) {
-	chunk->setBlockLight(Chunk::ToLocalPos(pos), light);
 
-	lightIncreaseQueue.push(
-		BlockLightIncreaseNode{
-			pos,
-			light
-		}
-	);
-	propagateLightIncrease();
-}
-
-void World::propagateLightIncrease() {
-	while (!lightIncreaseQueue.empty()) {
-		const BlockLightIncreaseNode& node = lightIncreaseQueue.front();
-		glm::ivec3 pos = node.pos;
-		uint8_t light = node.light;
-		lightIncreaseQueue.pop();
-		
-
-		for (const glm::ivec3& direction : IDIRECTIONS) {
-			glm::ivec3 newPos = pos + direction;
-			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
-			if (!chunk.has_value())
-				continue;
-			glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
-			if (chunk.value()->getBlockLight(localPos) + 2 <= light && blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
-				chunk.value()->setBlockLight(localPos, light - 1);
-				lightIncreaseQueue.push(
-					BlockLightIncreaseNode{
-						newPos,
-						(uint8_t)(light - 1)
-					}
-				);
-				chunkManager.updateChunkAtPosition(chunk.value(), localPos);
-			}
-		}
-	}
-}
-
-void World::propagateLightDecrease() {
-
-}

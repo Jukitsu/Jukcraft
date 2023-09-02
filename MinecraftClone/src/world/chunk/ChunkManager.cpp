@@ -1,13 +1,17 @@
 #include "pch.h"
 #include "world/chunk/ChunkManager.h"
 
-ChunkManager::ChunkManager(const std::vector<Block>& blocks) {
+ChunkManager::ChunkManager(const std::vector<Block>& blocks) :blocks(blocks) {
+	std::vector<std::shared_ptr<Chunk>> chunksToInitSkyLight;
+	chunksToInitSkyLight.reserve(WORLD_SIZE * WORLD_SIZE);
 	for (uint8_t x = 0; x < WORLD_SIZE; x++)
 		for (uint8_t z = 0; z < WORLD_SIZE; z++) {
 			std::shared_ptr<Chunk>& chunk
 				= chunks[x][z]
 				= std::make_shared<Chunk>(glm::ivec2(x, z), blocks);
-			for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++) 
+			chunksToUpdates.insert(chunk);
+			chunksToLight.insert(chunk);
+			for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++)
 				for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
 					for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
 						if (ly == CHUNK_HEIGHT / 2 - 1)
@@ -17,7 +21,6 @@ ChunkManager::ChunkManager(const std::vector<Block>& blocks) {
 						else
 							chunk->setBlock(glm::uvec3(lx, ly, lz), 1);
 					}
-			chunksToUpdates.insert(chunk);
 			if (z > 0) {
 				std::shared_ptr<Chunk>& northernChunk = chunks[x][z - 1];
 				northernChunk->neighbourChunks.south = chunk;
@@ -28,12 +31,22 @@ ChunkManager::ChunkManager(const std::vector<Block>& blocks) {
 				westernChunk->neighbourChunks.east = chunk;
 				chunk->neighbourChunks.west = westernChunk;
 			}
-
 		}
-
+	
 	chunkUbo.allocate(sizeof(PerChunkData), nullptr, true);
 	mappedChunkUbo = reinterpret_cast<PerChunkData*>(chunkUbo.map(0, sizeof(PerChunkData)));
 	chunkUbo.bindRange(BufferBindingTarget::Uniform, 1, 0, sizeof(PerChunkData));
+}
+
+std::shared_ptr<Chunk> ChunkManager::createChunk(const glm::ivec2& chunkPos) {
+	int x = chunkPos.x;
+	int z = chunkPos.x;
+	std::shared_ptr<Chunk>& chunk
+		= chunks[x][z]
+		= std::make_shared<Chunk>(glm::ivec2(x, z), blocks);
+	chunksToUpdates.insert(chunk);
+	chunksToLight.insert(chunk);
+	return chunk;
 }
 
 void ChunkManager::tick() {

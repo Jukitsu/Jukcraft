@@ -75,8 +75,12 @@ public:
 			return true;
 	}
 	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const {
+	[[nodiscard]] constexpr uint8_t getRawLight(const glm::vec<3, VectorType>& localPos) const {
 		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
+	}
+	template<typename VectorType>
+	[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const {
+		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF;
 	}
 	template<typename VectorType>
 	[[nodiscard]] constexpr uint8_t getSkyLight(const glm::vec<3, VectorType>& localPos) const {
@@ -84,11 +88,11 @@ public:
 	}
 	template<typename VectorType>
 	void setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
-		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = value;
+		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF0) | value;
 	}
 	template<typename VectorType>
 	void setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
-		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | value << 4;
+		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
 	}
 private:
 	void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, uint8_t light);
