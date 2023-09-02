@@ -55,7 +55,7 @@ void Camera::update(const float deltaTime) {
 		0.1f,
 		500.0f
 	);
-	glm::mat4 view = glm::rotate(glm::mat4(1.0f), -pitch, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 view = glm::rotate(glm::mat4(1.0f), pitch, -glm::vec3(1.0f, 0.0f, 0.0f));
 	view = glm::rotate(view, yaw + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 	view = glm::translate(view, -position);
 

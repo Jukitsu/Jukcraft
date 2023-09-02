@@ -11,6 +11,10 @@ public:
 	~Chunk();
 	void buildCubeLayer();
 	void drawCubeLayer();
+	void updateLayers();
+	Chunk* getNeighbourChunk(const glm::ivec3& localPos);
+
+	[[nodiscard]] constexpr const glm::ivec2& getChunkPos() { return chunkPos; }
 
 	template<typename VectorType> 
 	[[nodiscard]] constexpr BlockID getBlock(const glm::vec<3, VectorType>& localPos) const {
@@ -33,6 +37,10 @@ public:
 	template<typename VectorType>
 	[[nodiscard]] static constexpr glm::vec<3, VectorType> ToLocalPos(const glm::vec<3, VectorType>& worldPos) {
 		return { glm::mod<float>(worldPos.x, CHUNK_DIM), worldPos.y, glm::mod<float>(worldPos.z, CHUNK_DIM) };
+	}
+	template<typename VectorType>
+	[[nodiscard]] static constexpr glm::vec<3, VectorType> ToWorldPos(const glm::vec<2, VectorType>& chunkPos, const glm::vec<3, VectorType>& localPos) {
+		return { localPos.x + chunkPos.x * CHUNK_DIM, localPos.y, localPos.z + chunkPos.y * CHUNK_DIM};
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr bool IsOutside(const glm::vec<3, VectorType>& localPos) {
@@ -66,24 +74,47 @@ public:
 		else 
 			return true;
 	}
-	void updateAtPosition(const glm::vec3& localPos);
-	void updateLayers();
+	template<typename VectorType>
+	[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const {
+		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
+	}
+	template<typename VectorType>
+	[[nodiscard]] constexpr uint8_t getSkyLight(const glm::vec<3, VectorType>& localPos) const {
+		return (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] >> 4) & 0xF;
+	}
+	template<typename VectorType>
+	void setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
+		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = value;
+	}
+	template<typename VectorType>
+	void setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
+		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | value << 4;
+	}
 private:
-	void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID);
+	void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, uint8_t light);
 	struct {
 		std::weak_ptr<Chunk> east;
 		std::weak_ptr<Chunk> west;
 		std::weak_ptr<Chunk> south;
 		std::weak_ptr<Chunk> north;
 	} neighbourChunks;
+
 	BlockID*** blocks;
+
+	uint8_t*** lightMap;
+
 	const std::vector<Block>& blockTypes;
 	VertexArray vao;
-	DynamicBuffer<uint32_t> vbo;
+	struct VertexData {
+		uint32_t vertexData;
+		uint32_t lightData;
+	};
+	DynamicBuffer<VertexData> vbo;
 	DynamicBuffer<DrawIndirectCommand> icbo;
 	std::vector<uint32_t> vertices;
 	std::vector<uint32_t> indices;
 	bool drawable = false;
+	glm::ivec2 chunkPos;
 
 	FORBID_COPY(Chunk);
 	FORBID_MOVE(Chunk);

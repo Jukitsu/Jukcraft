@@ -102,4 +102,8 @@
     <ClCompile Include="src\world\World.cpp" />
     <ClCompile Include="src\core\HitRay.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\terrain\vert.glsl" />
+    <None Include="assets\shaders\terrain\frag.glsl" />
+  </ItemGroup>
 </Project>

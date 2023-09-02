@@ -17,7 +17,7 @@ ChunkManager::ChunkManager(const std::vector<Block>& blocks) {
 						else
 							chunk->setBlock(glm::uvec3(lx, ly, lz), 1);
 					}
-			chunkBuildingQueue.push(chunk);
+			chunksToUpdates.insert(chunk);
 			if (z > 0) {
 				std::shared_ptr<Chunk>& northernChunk = chunks[x][z - 1];
 				northernChunk->neighbourChunks.south = chunk;
@@ -37,11 +37,24 @@ ChunkManager::ChunkManager(const std::vector<Block>& blocks) {
 }
 
 void ChunkManager::tick() {
-	if (!chunkBuildingQueue.empty()) {
-		std::shared_ptr<Chunk>& chunk = chunkBuildingQueue.front();
-		chunk->buildCubeLayer();
-		chunkBuildingQueue.pop();
+	for (std::shared_ptr<Chunk> chunk: chunksToUpdates) {
+		chunk->updateLayers();
 	}
+	chunksToUpdates.clear();
+}
+
+void ChunkManager::updateChunkAtPosition(std::shared_ptr<Chunk>& chunk, const glm::ivec3& localPos) {
+	chunksToUpdates.insert(chunk);
+
+	if (Chunk::IsOutside(localPos + IEAST) && !chunk->neighbourChunks.east.expired())
+		chunksToUpdates.insert(chunk->neighbourChunks.east.lock());
+	if (Chunk::IsOutside(localPos + INORTH) && !chunk->neighbourChunks.north.expired())
+		chunksToUpdates.insert(chunk->neighbourChunks.north.lock());
+	if (Chunk::IsOutside(localPos + IWEST) && !chunk->neighbourChunks.west.expired())
+		chunksToUpdates.insert(chunk->neighbourChunks.west.lock());
+	if (Chunk::IsOutside(localPos + ISOUTH) && !chunk->neighbourChunks.south.expired())
+		chunksToUpdates.insert(chunk->neighbourChunks.south.lock());
+
 }
 
 std::optional<std::shared_ptr<Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) {
