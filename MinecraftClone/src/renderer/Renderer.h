@@ -14,6 +14,7 @@ public:
 	static void Init() {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_FRAMEBUFFER_SRGB);
 
 		std::vector<uint32_t> indices;
 		indices.resize(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 36);

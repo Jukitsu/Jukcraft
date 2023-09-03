@@ -90,6 +90,10 @@ void LightEngine::propagateLightIncrease() {
 
 		for (const glm::ivec3& direction : IDIRECTIONS) {
 			glm::ivec3 newPos = pos + direction;
+
+			if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				continue;
+
 			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
 			if (!chunk.has_value())
 				continue;
@@ -118,7 +122,7 @@ void LightEngine::propagateSkyLightIncrease() {
 
 		for (const glm::ivec3& direction : IDIRECTIONS) {
 			glm::ivec3 newPos = pos + direction;
-			if (newPos.y > CHUNK_HEIGHT)
+			if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 				continue;
 
 			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
@@ -162,6 +166,10 @@ void LightEngine::propagateLightDecrease() {
 
 		for (const glm::ivec3& direction : IDIRECTIONS) {
 			glm::ivec3 newPos = pos + direction;
+
+			if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				continue;
+
 			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
 			if (!chunk.has_value())
 				continue;
@@ -217,7 +225,7 @@ void LightEngine::propagateSkyLightDecrease() {
 
 		for (const glm::ivec3& direction : IDIRECTIONS) {
 			glm::ivec3 newPos = pos + direction;
-			if (newPos.y > CHUNK_HEIGHT)
+			if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 				continue;
 
 			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));

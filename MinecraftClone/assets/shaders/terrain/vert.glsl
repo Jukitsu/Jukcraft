@@ -29,7 +29,7 @@ void main(void) {
 	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
 
 	vs_Out.v_TexCoords = vec3(c_TexCoords[a_VertexData >> 10 & 0x3], a_VertexData >> 2 & 0xFF);
-	vs_Out.v_Shading = float((a_VertexData & 0x3) + 2) / 5.0f;
+	vs_Out.v_Shading = pow(float((a_VertexData & 0x3) + 2) / 5.0f, 2.2f);
 	uint blockLight = a_VertexLight & 0xF;
 	uint skyLight = (a_VertexLight >> 4) & 0xF;
 	vs_Out.v_Light = pow(0.8f, 15 - max(blockLight, skyLight));

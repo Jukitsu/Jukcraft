@@ -5,7 +5,7 @@ class TextureManager {
 public:
 	TextureManager(uint16_t dim) :dim(dim), index(0) {
 		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &handle);
-		glTextureStorage3D(handle, static_cast<int>(std::floor(std::log2f(dim))) + 1, GL_RGBA8, dim, dim, 256);
+		glTextureStorage3D(handle, static_cast<int>(std::floor(std::log2f(dim))) + 1, GL_SRGB8_ALPHA8, dim, dim, 256);
 	}
 	~TextureManager() {
 		glDeleteTextures(1, &handle);

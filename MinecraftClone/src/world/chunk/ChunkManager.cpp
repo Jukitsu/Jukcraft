@@ -15,11 +15,11 @@ ChunkManager::ChunkManager(const std::vector<Block>& blocks) :blocks(blocks) {
 				for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
 					for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
 						if (ly == CHUNK_HEIGHT / 2 - 1)
-							chunk->setBlock(glm::uvec3(lx, ly, lz), 2);
+							chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2 ? 2 : 0);
 						else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
-							chunk->setBlock(glm::uvec3(lx, ly, lz), 3);
+							chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2 ? 3 : 0);
 						else
-							chunk->setBlock(glm::uvec3(lx, ly, lz), 1);
+							chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2);
 					}
 			if (z > 0) {
 				std::shared_ptr<Chunk>& northernChunk = chunks[x][z - 1];
