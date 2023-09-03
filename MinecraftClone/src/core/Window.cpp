@@ -42,6 +42,7 @@ Window::Window(uint16_t width, uint16_t height, EventCallbacks callbacks)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	handle = glfwCreateWindow(width, height, "Minecraft clone", nullptr, nullptr);
 
 	glfwMakeContextCurrent(handle);

@@ -20,7 +20,6 @@ bool HitRay::check(int button, HitCallback callback,
 	else {
 		position = position + vector * distance;
 		block = nextBlock;
-		LOG_TRACE("{} {} {}", nextBlock.x, nextBlock.y, nextBlock.z);
 		this->distance += distance;
 		return false;
 	}

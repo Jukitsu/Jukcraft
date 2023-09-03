@@ -21,8 +21,7 @@ void LightEngine::initSkyLight(std::shared_ptr<Chunk>& chunk) {
 	for (uint32_t ly = CHUNK_HEIGHT - 1; ly >= height; ly--)
 		for (uint32_t lx = 0; lx < CHUNK_DIM; lx++)
 			for (uint32_t lz = 0; lz < CHUNK_DIM; lz++) {
-				glm::ivec3 localPos = glm::ivec3(lx, ly, lz);
-				chunk->setSkyLight(localPos, 15);
+				chunk->setSkyLight(glm::ivec3(lx, ly, lz), 15);
 			}
 
 
