@@ -48,6 +48,14 @@ Chunk::~Chunk() {
 		delete[] blocks[j];
 	}
 	delete[] blocks;
+
+	for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
+		for (size_t i = 0; i < CHUNK_DIM; i++)
+			delete[] lightMap[j][i];
+		delete[] lightMap[j];
+	}
+	delete[] lightMap;
+
 	if (!neighbourChunks.east.expired())
 		neighbourChunks.east.lock()->neighbourChunks.west.reset();
 	if (!neighbourChunks.west.expired())

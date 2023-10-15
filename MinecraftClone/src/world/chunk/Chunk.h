@@ -36,7 +36,7 @@ public:
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr glm::vec<3, VectorType> ToLocalPos(const glm::vec<3, VectorType>& worldPos) {
-		return { glm::mod<float>(worldPos.x, CHUNK_DIM), worldPos.y, glm::mod<float>(worldPos.z, CHUNK_DIM) };
+		return { glm::mod<float>((float)worldPos.x, (float)CHUNK_DIM), worldPos.y, glm::mod<float>((float)worldPos.z, (float)CHUNK_DIM) };
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr glm::vec<3, VectorType> ToWorldPos(const glm::vec<2, VectorType>& chunkPos, const glm::vec<3, VectorType>& localPos) {

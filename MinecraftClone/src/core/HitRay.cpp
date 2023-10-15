@@ -75,4 +75,6 @@ bool HitRay::step(int button, HitCallback callback) {
 			return check(button, callback, distance, block, glm::vec3(block.x, block.y, block.z + sign.z));
 		}
 	}
+
+	return 0;
 }

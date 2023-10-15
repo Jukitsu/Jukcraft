@@ -40,5 +40,5 @@ private:
 
 	ChunkManager& chunkManager;
 	const std::vector<Block>& blocks;
-	bool doLightUpdates;
+	bool doLightUpdates = false;
 };

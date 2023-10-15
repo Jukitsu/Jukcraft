@@ -57,7 +57,7 @@ using BlockID = uint8_t;
 
 
 [[nodiscard]] inline std::string parseFile(const std::string_view& filepath) {
-	std::ifstream stream(filepath, std::ios::in, std::ios::binary);
+	std::ifstream stream(filepath.data(), std::ios::in, std::ios::binary);
 	std::string source;
 	CHECK(stream, "Could not open the file!");
 
