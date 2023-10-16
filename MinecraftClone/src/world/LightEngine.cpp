@@ -96,6 +96,7 @@ void LightEngine::propagateLightIncrease() {
 			std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
 			if (!chunk.has_value())
 				continue;
+
 			glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
 			if (chunk.value()->getBlockLight(localPos) + 2 <= light && blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
 				chunk.value()->setBlockLight(localPos, light - 1);

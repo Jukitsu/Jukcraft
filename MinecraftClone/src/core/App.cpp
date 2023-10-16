@@ -3,10 +3,12 @@
 #include "core/App.h"
 
 /* Force the program to use dedicated GPU instead of iGPUs */
+#ifdef _MSC_VER
 extern "C" {
 	__declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
 	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
+#endif
 
 App* App::Instance = nullptr;
 

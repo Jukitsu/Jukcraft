@@ -5,7 +5,7 @@
 #define FORBID_MOVE(CLS) CLS(CLS&&) noexcept = delete; CLS& operator=(CLS&&) noexcept = delete
 
 #ifdef _DEBUG
-#define DEBUGBREAK() __debugbreak()
+#define DEBUGBREAK() throw std::runtime_error("Error thrown");
 #else
 #define DEBUGBREAK()
 #endif
