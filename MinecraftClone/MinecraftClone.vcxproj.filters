@@ -61,13 +61,13 @@
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\gfx\Buffers.h">
+    <ClInclude Include="src\renderer\gfx\objects\Buffer.h">
       <Filter>renderer\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\gfx\Shader.h">
+    <ClInclude Include="src\renderer\gfx\objects\Shader.h">
       <Filter>renderer\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\gfx\VertexArray.h">
+    <ClInclude Include="src\renderer\gfx\objects\VertexArray.h">
       <Filter>renderer\gfx</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\models\Model.h">
@@ -91,6 +91,7 @@
     <ClInclude Include="src\world\chunk\util.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -128,5 +129,8 @@
     <ClCompile Include="src\world\chunk\ChunkManager.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\renderer\gfx\buffers\DynamicBuffer.inl" />
   </ItemGroup>
 </Project>

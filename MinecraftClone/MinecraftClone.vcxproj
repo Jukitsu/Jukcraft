@@ -126,7 +126,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;SPDLOG_NO_EXCEPTIONS;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -159,10 +159,11 @@
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\renderer\gfx\Buffers.h" />
-    <ClInclude Include="src\renderer\gfx\Shader.h" />
-    <ClInclude Include="src\renderer\gfx\VertexArray.h" />
+    <ClInclude Include="src\renderer\gfx\objects\Buffer.h" />
+    <ClInclude Include="src\renderer\gfx\objects\Shader.h" />
+    <ClInclude Include="src\renderer\gfx\objects\VertexArray.h" />
     <ClInclude Include="src\renderer\models\Model.h" />
     <ClInclude Include="src\renderer\texture\TextureManager.h" />
     <ClInclude Include="src\world\LightEngine.h" />
@@ -195,6 +196,9 @@
     <ProjectReference Include="..\vendor\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\renderer\gfx\buffers\DynamicBuffer.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

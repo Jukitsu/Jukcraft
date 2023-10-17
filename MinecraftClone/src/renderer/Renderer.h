@@ -1,13 +1,11 @@
 #pragma once
-#include "renderer/gfx/VertexArray.h"
-#include "renderer/gfx/Buffers.h"
-#include "renderer/gfx/Shader.h"
+#include "renderer/gfx/objects/VertexArray.h"
+#include "renderer/gfx/objects/Buffer.h"
+#include "renderer/gfx/objects/Shader.h"
 #include "renderer/texture/TextureManager.h"
 
 inline static const glm::vec4 empty_color = glm::vec4(0.0f);
 inline static constexpr float empty_depth = 1.0f;
-
-class Buffer;
 
 class Renderer {
 public:
@@ -80,7 +78,7 @@ public:
 	static constexpr Buffer& GetStagingBuffer() {
 		return *stagingBuffer;
 	}
-	static constexpr void* GetMappedStagingBuffer() {
+	static void* GetMappedStagingBuffer() {
 		return mappedStagingBuffer;
 	}
 private:

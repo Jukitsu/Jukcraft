@@ -5,13 +5,15 @@
 #define FORBID_MOVE(CLS) CLS(CLS&&) noexcept = delete; CLS& operator=(CLS&&) noexcept = delete
 
 #ifdef _DEBUG
-#define DEBUGBREAK() throw std::runtime_error("Error thrown");
+#define DEBUGBREAK() std::abort()
 #else
 #define DEBUGBREAK()
 #endif
 
 #define THROW_ERROR(...) { LOG_ERROR(__VA_ARGS__); DEBUGBREAK(); }
 #define CHECK(x, ...) if (!(x)) THROW_ERROR(__VA_ARGS__);
+
+
 
 struct Vertex {
 	glm::uvec3 pos;
@@ -57,7 +59,7 @@ using BlockID = uint8_t;
 
 
 [[nodiscard]] inline std::string parseFile(const std::string_view& filepath) {
-	std::ifstream stream(filepath.data(), std::ios::in, std::ios::binary);
+	std::ifstream stream(filepath.data(), std::ios::in);
 	std::string source;
 	CHECK(stream, "Could not open the file!");
 

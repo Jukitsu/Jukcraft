@@ -200,7 +200,8 @@ project "MinecraftClone"
 	links {
 		"GLFW",
 		"Glad",
-		"opengl32"
+		"opengl32",
+		"gdi32"
 	}
 
 	defines {
@@ -239,7 +240,8 @@ project "MinecraftClone"
 		rtti "off"
 
 		defines {
-			"GLM_FORCE_INLINE"
+			"GLM_FORCE_INLINE",
+			"SPDLOG_NO_EXCEPTIONS"
 		}
 
 		flags {

@@ -14,7 +14,7 @@ public:
 	void propagateSkyLightIncrease();
 	void propagateSkyLightDecrease();
 
-	void toggleLightUpdates(bool value) { doLightUpdates = value; }
+	void toggleLightUpdates(bool value) noexcept { doLightUpdates = value; }
 private:
 	void markPositionForUpdate(std::shared_ptr<Chunk>&, const glm::ivec3& localPos);
 	struct BlockLightIncreaseNode {

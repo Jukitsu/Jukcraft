@@ -1,5 +1,6 @@
 #pragma once
 #include "renderer/Renderer.h"
+#include "renderer/gfx/buffers/DynamicBuffer.h"
 #include "blocks/Block.h"
 #include <glm/gtc/integer.hpp>
 
@@ -75,23 +76,23 @@ public:
 			return true;
 	}
 	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t getRawLight(const glm::vec<3, VectorType>& localPos) const {
+	[[nodiscard]] constexpr uint8_t getRawLight(const glm::vec<3, VectorType>& localPos) const noexcept {
 		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
 	}
 	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const {
+	[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const noexcept {
 		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF;
 	}
 	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t getSkyLight(const glm::vec<3, VectorType>& localPos) const {
+	[[nodiscard]] constexpr uint8_t getSkyLight(const glm::vec<3, VectorType>& localPos) const noexcept {
 		return (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] >> 4) & 0xF;
 	}
 	template<typename VectorType>
-	void setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
+	void setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept {
 		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF0) | value;
 	}
 	template<typename VectorType>
-	void setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) {
+	void setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept {
 		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
 	}
 private:

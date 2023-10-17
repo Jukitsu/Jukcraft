@@ -1,6 +1,6 @@
 #pragma once
 #include <glad/glad.h>
-#include "renderer/gfx/Buffers.h"
+#include "renderer/gfx/objects/Buffer.h"
 
 struct VertexArrayLayout {
 	struct VertexAttrib {
