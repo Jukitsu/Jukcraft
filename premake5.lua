@@ -1,4 +1,4 @@
-workspace "FaithfulMinecraftClone"
+workspace "Jukcraft"
 	architecture "x86_64"
 
 	configurations {
@@ -173,8 +173,8 @@ project "glm"
 	}
 
 
-project "MinecraftClone"
-	location "MinecraftClone"
+project "Jukcraft"
+	location "Jukcraft"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -184,12 +184,12 @@ project "MinecraftClone"
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
 
 	files {
-		"MinecraftClone/src/**.h",
-		"MinecraftClone/src/**.cpp",
+		"Jukcraft/src/**.h",
+		"Jukcraft/src/**.cpp",
 	}
 
 	includedirs {
-		"MinecraftClone/src/",
+		"Jukcraft/src/",
 		"vendor/glad/include/",
 		"vendor/glfw/include/",
 		"vendor/glm/",
@@ -209,7 +209,7 @@ project "MinecraftClone"
 	}
 
 	pchheader "pch.h"
-	pchsource "MinecraftClone/src/pch.cpp"
+	pchsource "Jukcraft/src/pch.cpp"
 
 	filter "system:windows"
 		systemversion "latest"

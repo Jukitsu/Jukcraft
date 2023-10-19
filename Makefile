@@ -13,20 +13,20 @@ endif
 ifeq ($(config),debug)
   GLFW_config = debug
   Glad_config = debug
-  MinecraftClone_config = debug
+  Jukcraft_config = debug
 endif
 ifeq ($(config),beta)
   GLFW_config = beta
   Glad_config = beta
-  MinecraftClone_config = beta
+  Jukcraft_config = beta
 endif
 ifeq ($(config),release)
   GLFW_config = release
   Glad_config = release
-  MinecraftClone_config = release
+  Jukcraft_config = release
 endif
 
-PROJECTS := GLFW Glad MinecraftClone
+PROJECTS := GLFW Glad Jukcraft
 
 .PHONY: all clean help $(PROJECTS) 
 
@@ -44,16 +44,16 @@ ifneq (,$(Glad_config))
 	@${MAKE} --no-print-directory -C vendor/glad -f Makefile config=$(Glad_config)
 endif
 
-MinecraftClone: GLFW Glad
-ifneq (,$(MinecraftClone_config))
-	@echo "==== Building MinecraftClone ($(MinecraftClone_config)) ===="
-	@${MAKE} --no-print-directory -C MinecraftClone -f Makefile config=$(MinecraftClone_config)
+Jukcraft: GLFW Glad
+ifneq (,$(Jukcraft_config))
+	@echo "==== Building Jukcraft ($(Jukcraft_config)) ===="
+	@${MAKE} --no-print-directory -C Jukcraft -f Makefile config=$(Jukcraft_config)
 endif
 
 clean:
 	@${MAKE} --no-print-directory -C vendor/glfw -f Makefile clean
 	@${MAKE} --no-print-directory -C vendor/glad -f Makefile clean
-	@${MAKE} --no-print-directory -C MinecraftClone -f Makefile clean
+	@${MAKE} --no-print-directory -C Jukcraft -f Makefile clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -68,6 +68,6 @@ help:
 	@echo "   clean"
 	@echo "   GLFW"
 	@echo "   Glad"
-	@echo "   MinecraftClone"
+	@echo "   Jukcraft"
 	@echo ""
 	@echo "For more information, see https://github.com/premake/premake-core/wiki"

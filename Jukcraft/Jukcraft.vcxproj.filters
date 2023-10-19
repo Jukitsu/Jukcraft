@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="blocks">
+      <UniqueIdentifier>{437A59F4-2F1C-84CA-18D7-971E04180B1B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{4E40957C-3A77-960D-E363-7C10CF79120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\gfx">
+      <UniqueIdentifier>{30E2E770-1C45-7715-C5CA-AFCBB10C4398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\gfx\buffers">
+      <UniqueIdentifier>{CC693B0B-B8F8-C4D4-6117-D9CF4D85D57A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\gfx\objects">
+      <UniqueIdentifier>{0949E6C7-F5D7-6F91-9EF6-838C8A648037}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\models">
+      <UniqueIdentifier>{EF8827A6-5B14-956A-6425-185FD02FF16A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\texture">
+      <UniqueIdentifier>{1C040F70-08FD-2DC2-312F-13471D870DCE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb">
+      <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world">
+      <UniqueIdentifier>{6D35A710-D949-CFC1-A2CB-72210E9FCBF2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\chunk">
+      <UniqueIdentifier>{55CAE3BB-C17F-5CB1-4A74-5688B62853B5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\blocks\Block.h">
+      <Filter>blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\App.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Camera.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Game.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\HitRay.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Log.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Window.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\util.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\renderer\Renderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h">
+      <Filter>renderer\gfx\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\gfx\objects\Buffer.h">
+      <Filter>renderer\gfx\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\gfx\objects\Shader.h">
+      <Filter>renderer\gfx\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\gfx\objects\VertexArray.h">
+      <Filter>renderer\gfx\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\models\Model.h">
+      <Filter>renderer\models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\texture\TextureManager.h">
+      <Filter>renderer\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\LightEngine.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\World.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\Chunk.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\ChunkManager.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\chunk\util.h">
+      <Filter>world\chunk</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\App.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Camera.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Game.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\HitRay.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Log.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Window.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\vendor\stb\stb_build.cpp">
+      <Filter>vendor\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\LightEngine.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\World.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\chunk\Chunk.cpp">
+      <Filter>world\chunk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\chunk\ChunkManager.cpp">
+      <Filter>world\chunk</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
