@@ -51,8 +51,13 @@ namespace Jukcraft {
 	}
 
 	void ChunkManager::tick() {
+		std::vector<std::future<void>> results;
 		for (std::shared_ptr<Chunk> chunk : chunksToUpdates) {
 			chunk->updateLayers();
+			// results.push_back(std::async(std::launch::async, std::bind(&Chunk::updateLayers, chunk.get())));
+		}
+		for (std::shared_ptr<Chunk> chunk : chunksToUpdates) {
+			chunk->uploadMesh();
 		}
 		chunksToUpdates.clear();
 	}

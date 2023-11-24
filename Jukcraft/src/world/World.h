@@ -13,14 +13,14 @@ namespace Jukcraft {
 		BlockID getBlock(const glm::ivec3& worldPos) const;
 
 		void speedTime() {
-			if (daylight <= 180)
+			if (daylight <= 480)
 				daylightIncrementer = 1;
 			else if (daylight >= 1800)
 				daylightIncrementer = -1;
 		}
 
 		void updateDaylight() {
-			if (daylightIncrementer == -1 && daylight < 180) // Moonlight of 180/1800 = 0.1
+			if (daylightIncrementer == -1 && daylight < 480) // Moonlight of 480/1800 * 15 = 4
 				daylightIncrementer = 0;
 
 

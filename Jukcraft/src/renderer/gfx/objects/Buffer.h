@@ -33,7 +33,7 @@ namespace Jukcraft {
 					handle,
 					size,
 					data,
-					mapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_CLIENT_STORAGE_BIT : 0
+					mapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT  | GL_CLIENT_STORAGE_BIT : 0
 				);
 			}
 			[[nodiscard]] void* map(size_t offset, size_t length) {
@@ -41,18 +41,17 @@ namespace Jukcraft {
 					handle,
 					offset,
 					length,
-					GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_INVALIDATE_RANGE_BIT
+					GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT | GL_MAP_INVALIDATE_RANGE_BIT
 				);
 			}
 
 			void flush(size_t offset, size_t length) {
-				/*
 				glFlushMappedNamedBufferRange(
 					handle,
 					offset,
 					length
 				);
-				*/
+				
 			}
 			void bindRange(BufferBindingTarget target, uint32_t index, size_t offset, size_t size) {
 				glBindBufferRange(getGLBufferBindingTarget(target), index, handle, offset, size);

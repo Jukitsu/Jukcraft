@@ -27,21 +27,20 @@ layout(location = 1) uniform float u_Daylight;
 void main(void) {
 	vec3 pos = u_ChunkPos + vec3(a_VertexData >> 17 & 0x1F, a_VertexData >> 22, a_VertexData >> 12 & 0x1F);
 
-	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
-
-	vs_Out.v_TexCoords = vec3(c_TexCoords[a_VertexData >> 10 & 0x3], a_VertexData >> 2 & 0xFF);
-
 	uint blockLight = a_VertexLight & 0xF;
 	uint skyLight = (a_VertexLight >> 4) & 0xF;
 
 	float blocklightMultiplier = pow(0.8, 15.0 - blockLight);
+	float intermediateSkylightMultiplier = pow(0.8, 15.0 - skyLight * u_Daylight);
 	float skylightMultiplier = pow(0.8, 15.0 - skyLight);
 
-	vs_Out.v_Light = vec3(
-		clamp(blocklightMultiplier * 1.5, skylightMultiplier * u_Daylight, 1.0), 
-		clamp(blocklightMultiplier * 1.25, skylightMultiplier * u_Daylight, 1.0), 
-		clamp(skylightMultiplier * (2.0 - pow(u_Daylight, 2)), blocklightMultiplier, 1.0)
-	);
+	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
 
+	vs_Out.v_TexCoords = vec3(c_TexCoords[a_VertexData >> 10 & 0x3], a_VertexData >> 2 & 0xFF);
+	vs_Out.v_Light = vec3(
+		clamp(blocklightMultiplier * 1.5, intermediateSkylightMultiplier, 1.0), 
+		clamp(blocklightMultiplier * 1.25, intermediateSkylightMultiplier, 1.0), 
+		clamp(skylightMultiplier, blocklightMultiplier, 1.0)
+	);
 	vs_Out.v_Shading = pow(float((a_VertexData & 0x3) + 2) / 5.0f, 2.2f);
 }

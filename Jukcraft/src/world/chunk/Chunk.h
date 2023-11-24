@@ -15,6 +15,7 @@ namespace Jukcraft {
 		void buildCubeLayer();
 		void drawCubeLayer();
 		void updateLayers();
+		void uploadMesh();
 		Chunk* getNeighbourChunk(const glm::ivec3& localPos);
 
 		[[nodiscard]] constexpr const glm::ivec2& getChunkPos() { return chunkPos; }
@@ -112,10 +113,7 @@ namespace Jukcraft {
 
 		const std::vector<Block>& blockTypes;
 		gfx::VertexArray vao;
-		struct VertexData {
-			uint32_t vertexData;
-			uint32_t lightData;
-		};
+
 		gfx::DynamicBuffer<VertexData> vbo;
 		gfx::DynamicBuffer<DrawIndirectCommand> icbo;
 		std::vector<uint32_t> vertices;

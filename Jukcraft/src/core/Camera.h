@@ -20,10 +20,7 @@ namespace Jukcraft {
 
 		glm::vec2 lastCursorPos;
 
-		struct ShaderCameraData {
-			glm::mat4 transform;
-			glm::vec4 pos;
-		}*mappedUbo;
+		ShaderCameraData *mappedUbo;
 
 		FORBID_COPY(Camera);
 		FORBID_MOVE(Camera);

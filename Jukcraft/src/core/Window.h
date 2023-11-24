@@ -63,6 +63,28 @@ namespace Jukcraft {
 		FORBID_COPY(Window);
 		FORBID_MOVE(Window);
 		EventCallbacks callbacks;
+		friend struct SharedContext;
+	};
+
+	struct SharedContext {
+		GLFWwindow* context;
+		Window& window;
+
+		SharedContext(Window& window) :window(window) {
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+			context = glfwCreateWindow(window.getWidth(), window.getHeight(), "", nullptr, window.handle);
+		}
+		~SharedContext() {
+			glfwMakeContextCurrent(window.handle);
+			glfwDestroyWindow(context);
+		}
+
+		void makeCurrent() {
+			glfwMakeContextCurrent(context);
+		}
 	};
 
 }

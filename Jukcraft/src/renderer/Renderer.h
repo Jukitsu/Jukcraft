@@ -1,6 +1,7 @@
 #pragma once
 #include "renderer/gfx/objects/VertexArray.h"
 #include "renderer/gfx/objects/Buffer.h"
+#include "renderer/gfx/buffers/StagingBuffer.h"
 #include "renderer/gfx/objects/Shader.h"
 #include "renderer/texture/TextureManager.h"
 
@@ -35,8 +36,7 @@ namespace Jukcraft {
 			chunkIbo->allocate(sizeof(uint32_t) * indices.size(), indices.data(), false);
 
 			stagingBuffer.emplace();
-			stagingBuffer->allocate(16777216, nullptr, true);
-			mappedStagingBuffer = stagingBuffer->map(0, 16777216);
+			mappedStagingBuffer = stagingBuffer->getMappedStagingBuffer();
 
 
 		}
@@ -77,20 +77,28 @@ namespace Jukcraft {
 		static void Viewport(uint16_t width, uint16_t height) {
 			glViewport(0, 0, width, height);
 		}
-		static constexpr const gfx::Buffer& GetChunkIbo() {
+		static constexpr const gfx::Buffer& GetChunkIbo() noexcept {
 			return *chunkIbo;
 		}
-		static constexpr gfx::Buffer& GetStagingBuffer() {
-			return *stagingBuffer;
+		template<typename T>
+		static const gfx::Arena<T> AllocateArena(size_t size) noexcept {
+			return stagingBuffer->allocateArena<T>(size);
 		}
-		static void* GetMappedStagingBuffer() {
+		template<typename T>
+		static void FreeArena(const gfx::Arena<T>& arena) noexcept {
+			stagingBuffer->freeArena<T>(arena);
+		}
+		static constexpr gfx::Buffer& GetStagingBuffer() noexcept {
+			return stagingBuffer->getBuffer();
+		}
+		static void* GetMappedStagingBuffer() noexcept {
 			return mappedStagingBuffer;
 		}
 	private:
 		inline static std::queue<GLsync> fences;
 		inline static std::queue<std::pair<const gfx::Buffer*, GLsync>> bufferWriteFences;
 		inline static std::optional<gfx::Buffer> chunkIbo;
-		inline static std::optional<gfx::Buffer> stagingBuffer;
+		inline static std::optional<gfx::StagingBuffer> stagingBuffer;
 		inline static void* mappedStagingBuffer;
 	};
 }

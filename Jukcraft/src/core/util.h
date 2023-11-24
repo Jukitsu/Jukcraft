@@ -26,6 +26,16 @@ namespace Jukcraft {
 		std::array<Vertex, 4> vertices;
 	};
 
+	struct VertexData {
+		uint32_t vertexData;
+		uint32_t lightData;
+	};
+
+	struct ShaderCameraData {
+		glm::mat4 transform;
+		glm::vec4 pos;
+	};
+
 	struct DrawIndirectCommand {
 		uint32_t  count;
 		uint32_t  instanceCount;

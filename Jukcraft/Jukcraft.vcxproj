@@ -159,6 +159,7 @@
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
     <ClInclude Include="src\renderer\gfx\objects\Buffer.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
     <ClCompile Include="src\world\LightEngine.cpp" />
     <ClCompile Include="src\world\World.cpp" />

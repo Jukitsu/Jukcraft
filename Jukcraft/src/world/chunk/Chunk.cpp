@@ -136,6 +136,10 @@ namespace Jukcraft {
 	void Chunk::updateLayers() {
 		buildCubeLayer();
 	}
+
+	void Chunk::uploadMesh() {
+		
+	}
 	void Chunk::drawCubeLayer() {
 		if (!drawable)
 			return;
