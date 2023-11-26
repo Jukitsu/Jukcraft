@@ -2,9 +2,12 @@
 #include "renderer/Renderer.h"
 #include "world/chunk/Chunk.h"
 
+
 namespace Jukcraft {
+
+
 	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes)
-		:blockTypes(blockTypes), chunkPos(chunkPos)
+		:blockTypes(blockTypes), chunkPos(chunkPos), mesh(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6 * 4)
 	{
 		blocks = new BlockID * *[CHUNK_HEIGHT];
 		for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
@@ -15,6 +18,17 @@ namespace Jukcraft {
 			}
 		}
 
+		for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++)
+			for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
+				for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
+					if (ly == CHUNK_HEIGHT / 2 - 1)
+						setBlock(glm::uvec3(lx, ly, lz), 2);
+					else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
+						setBlock(glm::uvec3(lx, ly, lz), 3);
+					else
+						setBlock(glm::uvec3(lx, ly, lz), 1);
+				}
+
 		lightMap = new uint8_t * *[CHUNK_HEIGHT];
 		for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
 			lightMap[j] = new uint8_t * [CHUNK_DIM];
@@ -24,22 +38,6 @@ namespace Jukcraft {
 			}
 		}
 
-		vbo.allocate(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24, nullptr);
-
-		vao.bindLayout(gfx::VertexArrayLayout{
-			{
-			   { 1, false },
-			   { 1, false }
-			}
-			});
-		vao.bindVertexBuffer(vbo.getTargetBuffer(), 0, gfx::VertexBufferLayout{
-			{{ 0, 0 }, { 1, offsetof(VertexData, lightData)}},
-			0,
-			sizeof(VertexData)
-			});
-		vao.bindIndexBuffer(Renderer::GetChunkIbo());
-
-		icbo.allocate(sizeof(DrawIndirectCommand), nullptr);
 	}
 
 	Chunk::~Chunk() {
@@ -68,16 +66,10 @@ namespace Jukcraft {
 	}
 
 
-	void Chunk::pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, uint8_t light) {
-		for (const Vertex& vertex : quad.vertices) {
-			uint32_t v = ((vertex.pos.y + localPos.y) << 22) | ((vertex.pos.x + localPos.x) << 17) | ((vertex.pos.z + localPos.z) << 12) | (vertex.texUV << 10) | (textureID << 2) | (vertex.shading);
-			vbo.push({ v, light });
-		}
-	}
 
 	void Chunk::buildCubeLayer() {
-		vbo.beginEditRegion(0, CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24);
-		uint32_t quad_count = 0;
+		mesh.begin();
+		uint32_t quadCount = 0;
 		for (uint8_t y = 0; y < CHUNK_HEIGHT; y++)
 			for (uint8_t x = 0; x < CHUNK_DIM; x++)
 				for (uint8_t z = 0; z < CHUNK_DIM; z++) {
@@ -96,24 +88,16 @@ namespace Jukcraft {
 								Chunk* neighbourChunk = getNeighbourChunk(localPos + IDIRECTIONS[i]);
 								if (neighbourChunk)
 									light = neighbourChunk->getRawLight(ToLocalPos(localPos + IDIRECTIONS[i]));
-								pushQuad(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], light);
-								quad_count++;
+								mesh.pushQuad(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], light);
+								quadCount++;
 							}
 						}
 					}
 
 				}
-		vbo.endEditRegion();
+		mesh.end();
 
-		DrawIndirectCommand cmd;
-		cmd.count = quad_count * 6;
-		cmd.instanceCount = 1;
-		cmd.firstIndex = 0;
-		cmd.baseVertex = 0;
-		cmd.baseInstance = 0;
-		icbo.beginEditRegion(0, 1);
-		icbo.editRegion(0, 1, &cmd);
-		icbo.endEditRegion();
+		
 		drawable = true;
 	}
 
@@ -143,6 +127,6 @@ namespace Jukcraft {
 	void Chunk::drawCubeLayer() {
 		if (!drawable)
 			return;
-		Renderer::MultiDrawElementsIndirect(vao, icbo.getTargetBuffer());
+		mesh.draw();
 	}
 }

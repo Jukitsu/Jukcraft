@@ -130,6 +130,7 @@
     <ClInclude Include="src\world\chunk\util.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\chunk\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -179,5 +180,6 @@
     <ClCompile Include="src\world\chunk\ChunkManager.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\chunk\Mesh.cpp" />
   </ItemGroup>
 </Project>

@@ -12,16 +12,6 @@ namespace Jukcraft {
 					= std::make_shared<Chunk>(glm::ivec2(x, z), blocks);
 				chunksToUpdates.insert(chunk);
 				chunksToLight.insert(chunk);
-				for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++)
-					for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
-						for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
-							if (ly == CHUNK_HEIGHT / 2 - 1)
-								chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2 ? 2 : 0);
-							else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
-								chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2 ? 3 : 0);
-							else
-								chunk->setBlock(glm::uvec3(lx, ly, lz), std::rand() % 2 ? 1 : 0);
-						}
 				if (z > 0) {
 					std::shared_ptr<Chunk>& northernChunk = chunks[x][z - 1];
 					northernChunk->neighbourChunks.south = chunk;

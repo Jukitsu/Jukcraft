@@ -1,7 +1,6 @@
 #pragma once
 #include "renderer/Renderer.h"
-#include "renderer/gfx/buffers/DynamicBuffer.h"
-#include "blocks/Block.h"
+#include "renderer/chunk/Mesh.h"
 #include <glm/gtc/integer.hpp>
 
 namespace Jukcraft {
@@ -99,7 +98,6 @@ namespace Jukcraft {
 			lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
 		}
 	private:
-		void pushQuad(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, uint8_t light);
 		struct {
 			std::weak_ptr<Chunk> east;
 			std::weak_ptr<Chunk> west;
@@ -111,13 +109,10 @@ namespace Jukcraft {
 
 		uint8_t*** lightMap;
 
-		const std::vector<Block>& blockTypes;
-		gfx::VertexArray vao;
+		Mesh mesh;
 
-		gfx::DynamicBuffer<VertexData> vbo;
-		gfx::DynamicBuffer<DrawIndirectCommand> icbo;
-		std::vector<uint32_t> vertices;
-		std::vector<uint32_t> indices;
+		const std::vector<Block>& blockTypes;
+
 		bool drawable = false;
 		glm::ivec2 chunkPos;
 
