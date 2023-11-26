@@ -44,12 +44,24 @@ namespace Jukcraft {
 
 	void App::run() {
 		float lastTime = static_cast<float>(glfwGetTime());
+		float lastTime2 = lastTime;
 		while (!window->shouldClose()) {
 			const float time = static_cast<float>(glfwGetTime());
 			const float deltaTime = time - lastTime;
 			lastTime = time;
 
 			game->tick(deltaTime);
+
+			lastTime2 = lastTime;
+			while (glfwGetTime() - lastTime < 1.0f / TICK_RATE) {
+				const float time2 = static_cast<float>(glfwGetTime());
+				const float deltaTime2 = time2 - lastTime2;
+				lastTime2 = time2;
+				game->renderNewFrame(deltaTime2);
+
+				window->endFrame();
+			}
+				
 
 			window->endFrame();
 		}

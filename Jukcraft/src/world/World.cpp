@@ -5,9 +5,14 @@ namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
 
-		for (std::shared_ptr<Chunk> chunk : chunkManager.getSkyLightPendingChunks()) {
-			lightEngine.initSkyLight(chunk);
-		}
+		std::future<void> result = std::async(
+			std::launch::async,
+			[&]() {
+				for (std::shared_ptr<Chunk> chunk : chunkManager.getSkyLightPendingChunks()) {
+					lightEngine.initSkyLight(chunk);
+				}
+			}
+		);
 	}
 
 	void World::tick(float deltaTime) {

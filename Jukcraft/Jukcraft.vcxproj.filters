@@ -101,6 +101,10 @@
       <Filter>world\chunk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
+    <ClInclude Include="src\entity\Entity.h" />
+    <ClInclude Include="src\entity\player\Player.h" />
+    <ClInclude Include="src\entity\Mob.h" />
+    <ClInclude Include="src\models\Collider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -139,5 +143,7 @@
       <Filter>world\chunk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
+    <ClCompile Include="src\entity\player\Player.cpp" />
+    <ClCompile Include="src\entity\Mob.cpp" />
   </ItemGroup>
 </Project>

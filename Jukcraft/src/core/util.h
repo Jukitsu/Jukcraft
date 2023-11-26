@@ -51,6 +51,8 @@ namespace Jukcraft {
 	constexpr glm::vec3 SOUTH = glm::vec3(0.0f, 0.0f, 1.0f);
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
+	constexpr float TICK_RATE = 60.0f;
+
 	constexpr glm::vec3 DIRECTIONS[6] = {
 		EAST, WEST, UP, DOWN, SOUTH, NORTH
 	};

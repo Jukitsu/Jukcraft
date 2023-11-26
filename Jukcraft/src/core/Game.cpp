@@ -6,7 +6,7 @@
 namespace Jukcraft {
 
 	Game::Game()
-		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), camera(shader, glm::vec3(5.0f, 70.0f, 10.0f), glm::pi<float>() / 2.0f, 0.0f), textureManager(16) {
+		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), player(glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f), glm::pi<float>() / 2.0f, 0.0f), camera(shader, player), textureManager(16) {
 		textureManager.pushSubTexture("assets/textures/stone.png");
 		textureManager.pushSubTexture("assets/textures/grass.png");
 		textureManager.pushSubTexture("assets/textures/grass_side.png");
@@ -28,7 +28,7 @@ namespace Jukcraft {
 
 	void Game::onMousePress(int button) {
 
-		HitRay hitray(*world, camera);
+		HitRay hitray(*world, player);
 		World& w = *world;
 		while (hitray.distance < HIT_RANGE)
 			if (hitray.step(button,
@@ -54,8 +54,12 @@ namespace Jukcraft {
 
 
 	void Game::tick(const float deltaTime) {
-		world->tick(deltaTime);
+		world->tick(deltaTime);		
+	}
+
+	void Game::renderNewFrame(const float deltaTime) {
 		camera.update(deltaTime);
+		player.tick(deltaTime);
 
 		Renderer::Begin(world->getSkyColor());
 		world->render();
