@@ -79,7 +79,7 @@
     <ClInclude Include="src\renderer\gfx\objects\VertexArray.h">
       <Filter>renderer\gfx\objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\models\Model.h">
+    <ClInclude Include="src\models\Model.h">
       <Filter>renderer\models</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\texture\TextureManager.h">
@@ -103,8 +103,9 @@
     <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
     <ClInclude Include="src\entity\Entity.h" />
     <ClInclude Include="src\entity\player\Player.h" />
-    <ClInclude Include="src\entity\Mob.h" />
+    <ClInclude Include="src\entity\BipedEntity.h" />
     <ClInclude Include="src\models\Collider.h" />
+    <ClInclude Include="src\entity\LivingEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -144,6 +145,7 @@
     </ClCompile>
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
     <ClCompile Include="src\entity\player\Player.cpp" />
-    <ClCompile Include="src\entity\Mob.cpp" />
+    <ClCompile Include="src\entity\BipedEntity.cpp" />
+    <ClCompile Include="src\entity\LivingEntity.cpp" />
   </ItemGroup>
 </Project>

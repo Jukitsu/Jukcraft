@@ -3,8 +3,8 @@
 
 
 namespace Jukcraft {
-	HitRay::HitRay(World& world, Entity& entity)
-		:world(world), position(entity.getPos() - glm::vec3(0.5f)), block((glm::ivec3)glm::round(entity.getPos() - glm::vec3(0.5f))), distance(0.0f) {
+	HitRay::HitRay(World& world, LivingEntity& entity)
+		:world(world), position(entity.getPos() - glm::vec3(0.5f) + glm::vec3(0, entity.getEyeLevel(), 0)), block((glm::ivec3)glm::round(entity.getPos() - glm::vec3(0.5f) + glm::vec3(0, entity.getEyeLevel(), 0))), distance(0.0f) {
 		vector = glm::vec3(
 			glm::cos(entity.getYaw()) * glm::cos(entity.getPitch()),
 			glm::sin(entity.getPitch()),

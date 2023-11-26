@@ -1,6 +1,7 @@
 #pragma once
 #include "world/chunk/ChunkManager.h"
 #include "world/LightEngine.h"
+#include "entity/player/Player.h"
 
 namespace Jukcraft {
 	class World {
@@ -9,6 +10,7 @@ namespace Jukcraft {
 		void tick(float deltaTime);
 		void render();
 		void setBlock(const glm::ivec3& worldPos, BlockID block);
+		void trySetBlock(Player& player, const glm::ivec3& worldPos, BlockID block);
 
 		BlockID getBlock(const glm::ivec3& worldPos) const;
 
@@ -42,6 +44,10 @@ namespace Jukcraft {
 				1.36f * ((float)daylight / 1800 - 0.26f),
 				1.0f
 			);
+		}
+
+		constexpr const std::vector<Block>& getBlocks() {
+			return blocks;
 		}
 	private:
 		const std::vector<Block>& blocks;

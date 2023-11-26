@@ -1,4 +1,5 @@
 #pragma once
+#include "models/Collider.h"
 
 namespace Jukcraft {
 	static const std::vector<Quad> cube = {
@@ -50,17 +51,32 @@ namespace Jukcraft {
 	class Model {
 	public:
 		virtual const std::vector<Quad>& getQuads() const = 0;
+		constexpr const std::vector<Collider>& getColliders() const {
+			return colliders;
+		};
+	protected:
+		std::vector<Collider> colliders;
 	};
 
 	class Cube : public Model {
 	public:
+		Cube() {
+			colliders.push_back(
+				{
+					glm::vec3(0.0f),
+					glm::vec3(1.0f)
+				}
+			);
+		}
 		const std::vector<Quad>& getQuads() const override {
 			return cube;
 		}
+		
 	};
 
 	class Air : public Model {
 	public:
+
 		const std::vector<Quad>& getQuads() const override {
 			return air;
 		}

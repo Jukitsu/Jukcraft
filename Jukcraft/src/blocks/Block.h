@@ -1,5 +1,5 @@
 #pragma once
-#include "renderer/models/Model.h"
+#include "models/Model.h"
 
 namespace Jukcraft {
 	class Block {
@@ -10,6 +10,9 @@ namespace Jukcraft {
 		}
 		bool isCube() const {
 			return model.getQuads().size() == 6;
+		}
+		constexpr const std::vector<Collider>& getColliders() const {
+			return model.getColliders();
 		}
 		constexpr const Model& getModel() const {
 			return model;

@@ -6,7 +6,7 @@
 namespace Jukcraft {
 
 	Game::Game()
-		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), player(glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f), glm::pi<float>() / 2.0f, 0.0f), camera(shader, player), textureManager(16) {
+		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), camera(shader, player), textureManager(16) {
 		textureManager.pushSubTexture("assets/textures/stone.png");
 		textureManager.pushSubTexture("assets/textures/grass.png");
 		textureManager.pushSubTexture("assets/textures/grass_side.png");
@@ -24,11 +24,12 @@ namespace Jukcraft {
 		blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, true, 14);
 
 		world = std::make_unique<World>(blocks, shader);
+		player = std::make_unique<Player>(*world, glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f), glm::pi<float>() / 2.0f, 0.0f);
 	}
 
 	void Game::onMousePress(int button) {
 
-		HitRay hitray(*world, player);
+		HitRay hitray(*world, *player);
 		World& w = *world;
 		while (hitray.distance < HIT_RANGE)
 			if (hitray.step(button,
@@ -44,7 +45,7 @@ namespace Jukcraft {
 			world->setBlock(nextBlock, 0);
 			break;
 		case GLFW_MOUSE_BUTTON_RIGHT:
-			world->setBlock(currentBlock, holding);
+			world->trySetBlock(*player, currentBlock, holding);
 			break;
 		case GLFW_MOUSE_BUTTON_MIDDLE:
 			holding = world->getBlock(nextBlock);
@@ -54,12 +55,12 @@ namespace Jukcraft {
 
 
 	void Game::tick(const float deltaTime) {
-		world->tick(deltaTime);		
+		world->tick(deltaTime);	
+		player->tick(deltaTime);
 	}
 
 	void Game::renderNewFrame(const float deltaTime) {
 		camera.update(deltaTime);
-		player.tick(deltaTime);
 
 		Renderer::Begin(world->getSkyColor());
 		world->render();

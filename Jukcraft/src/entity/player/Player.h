@@ -1,14 +1,16 @@
 #pragma once
-#include "entity/Mob.h"
+#include "entity/BipedEntity.h"
 
 namespace Jukcraft {
-	class Player : public Mob {
+	class Player : public BipedEntity {
 	public:
-		Player(const glm::vec3& initialPos = glm::vec3(0.0f), const glm::vec3& initialVelocity = glm::vec3(0.0f),
+		Player(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), const glm::vec3& initialVelocity = glm::vec3(0.0f),
 			const glm::vec3& initialAcceleration = glm::vec3(0.0f), float initialYaw = 0.0f, float initialPitch = 0.0f);
 		virtual ~Player();
 
-
+		void tick(float deltaTime) override;
+	private:
+		float interpolationStep;
 		friend class Camera;
 	};
 }

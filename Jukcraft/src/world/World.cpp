@@ -22,7 +22,16 @@ namespace Jukcraft {
 		lightEngine.propagateLightIncrease();
 	}
 
+	void World::trySetBlock(Player& player, const glm::ivec3& worldPos, BlockID blockID) {
+		if (!blockID)
+			setBlock(worldPos, blockID);
 
+		for (const Collider& collider : blocks[blockID].getColliders()) 
+			if (player.getCollider() & (collider + worldPos))
+				return;
+		
+		setBlock(worldPos, blockID);
+	}
 	void World::setBlock(const glm::ivec3& worldPos, BlockID blockID) {
 		glm::ivec2 chunkPos = Chunk::ToChunkPos(worldPos);
 		std::optional<std::shared_ptr<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);

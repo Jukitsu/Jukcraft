@@ -43,27 +43,40 @@ namespace Jukcraft {
 	}
 
 	void App::run() {
-		float lastTime = static_cast<float>(glfwGetTime());
-		float lastTime2 = lastTime;
+
+		float lastTime = static_cast<float>(glfwGetTime()), timer = lastTime;
+		float deltaTimePerTick = 0.0f, renderDeltaTime = 0.0f, nowTime = 0.0f;
+		int frames = 0, updates = 0;
+
+		float deltaTime = 0.0f;
 		while (!window->shouldClose()) {
-			const float time = static_cast<float>(glfwGetTime());
-			const float deltaTime = time - lastTime;
-			lastTime = time;
 
-			game->tick(deltaTime);
+			nowTime = static_cast<float>(glfwGetTime());
+			renderDeltaTime = (nowTime - lastTime);
+			deltaTimePerTick += (nowTime - lastTime) * TICK_RATE;
+			lastTime = nowTime;
 
-			lastTime2 = lastTime;
-			while (glfwGetTime() - lastTime < 1.0f / TICK_RATE) {
-				const float time2 = static_cast<float>(glfwGetTime());
-				const float deltaTime2 = time2 - lastTime2;
-				lastTime2 = time2;
-				game->renderNewFrame(deltaTime2);
+			// - Only update at 60 tick / s
+			while (deltaTimePerTick >= 1.0) {
+				deltaTime = deltaTimePerTick / TICK_RATE;
+				game->tick(deltaTime);   // - Update function
+				updates++;
+				deltaTimePerTick--;
 
-				window->endFrame();
 			}
-				
+
+			game->renderNewFrame(renderDeltaTime);
+			frames++;
 
 			window->endFrame();
+
+			if (glfwGetTime() - timer > 1.0) {
+				timer++;
+				LOG_TRACE("FPS: {}, Updates: {}", frames, updates);
+				updates = 0, frames = 0;
+			}
+			
+			
 		}
 	}
 	void App::onKeyPress(int key) {

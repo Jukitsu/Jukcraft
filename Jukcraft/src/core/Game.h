@@ -26,7 +26,7 @@ namespace Jukcraft {
 		BlockID holding = 5;
 		bool inWorld = true;
 
-		Player player;
+		std::unique_ptr<Player> player;
 
 		std::vector<Block> blocks;
 	};
