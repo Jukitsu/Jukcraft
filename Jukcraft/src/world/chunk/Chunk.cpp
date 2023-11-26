@@ -7,7 +7,16 @@ namespace Jukcraft {
 
 
 	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes)
-		:blockTypes(blockTypes), chunkPos(chunkPos), mesh(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6 * 4)
+		:blockTypes(blockTypes), chunkPos(chunkPos), 
+		mesh(
+			CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6 * 4, 
+			MeshDelegates {
+				std::bind(&Chunk::canRenderFacing, this, std::placeholders::_1),
+				std::bind(&Chunk::getBlockLightSafe, this, std::placeholders::_1),
+				std::bind(&Chunk::getSkyLightSafe, this, std::placeholders::_1),
+			}
+				
+		)
 	{
 		blocks = new BlockID * *[CHUNK_HEIGHT];
 		for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
@@ -85,10 +94,10 @@ namespace Jukcraft {
 						for (uint8_t i = 0; i < 6; i++) {
 							if (canRenderFacing(localPos + IDIRECTIONS[i])) {
 								uint8_t light = 15 << 4;
-								Chunk* neighbourChunk = getNeighbourChunk(localPos + IDIRECTIONS[i]);
-								if (neighbourChunk)
-									light = neighbourChunk->getRawLight(ToLocalPos(localPos + IDIRECTIONS[i]));
-								mesh.pushQuad(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], light);
+								uint8_t blocklight = getBlockLightSafe(localPos + IDIRECTIONS[i]);
+								uint8_t skylight = getSkyLightSafe(localPos + IDIRECTIONS[i]);
+								BakedQuad bakedQuad = mesh.bakeCubeFace(localPos, i, blocklight, skylight);
+								mesh.pushCubeFace(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], bakedQuad);
 								quadCount++;
 							}
 						}

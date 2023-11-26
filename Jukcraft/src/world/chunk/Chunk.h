@@ -51,31 +51,61 @@ namespace Jukcraft {
 				|| localPos.y < 0 || localPos.y >= CHUNK_HEIGHT
 				|| localPos.z < 0 || localPos.z >= CHUNK_DIM);
 		}
-		template<typename VectorType>
-		[[nodiscard]] constexpr bool canRenderFacing(const glm::vec<3, VectorType>& localPos) const {
+		
+		[[nodiscard]] constexpr bool canRenderFacing(const glm::ivec3& localPos) const {
 			if (IsOutside(localPos)) {
-				return canRenderFacingOutside(localPos);
+				return getFromOutside([](std::shared_ptr<Chunk> c, const glm::ivec3& lpos)
+					{
+						return c->canRenderFacing(lpos);
+					}, localPos);
 			}
 			else {
 				return !getBlock(localPos);
 			}
 		}
-		template<typename VectorType>
-		[[nodiscard]] constexpr bool canRenderFacingOutside(const glm::vec<3, VectorType>& localPos) const {
-			if (localPos.z == -1 && !neighbourChunks.north.expired()) {
-				return !neighbourChunks.north.lock()->getBlock(glm::ivec3{ localPos.x, localPos.y, CHUNK_DIM - 1 });
+		
+		[[nodiscard]] constexpr bool getBlockLightSafe(const glm::ivec3& localPos) const {
+			if (IsOutside(localPos)) {
+				return getFromOutside([](std::shared_ptr<Chunk> c, const glm::ivec3& lpos)
+					{
+						return c->getBlockLightSafe(lpos);
+					}, localPos);
 			}
-			else if (localPos.z == CHUNK_DIM && !neighbourChunks.south.expired()) {
-				return !neighbourChunks.south.lock()->getBlock(glm::ivec3{ localPos.x, localPos.y, 0 });
+			else {
+				return getBlockLight(localPos);
 			}
-			else if (localPos.x == -1 && !neighbourChunks.west.expired()) {
-				return !neighbourChunks.west.lock()->getBlock(glm::ivec3{ CHUNK_DIM - 1, localPos.y, localPos.z });
+		}
+
+		[[nodiscard]] constexpr bool getSkyLightSafe(const glm::ivec3& localPos) const {
+			if (IsOutside(localPos)) {
+				return getFromOutside([](std::shared_ptr<Chunk> c, const glm::ivec3& lpos)
+					{
+						return c->getSkyLightSafe(lpos);
+					}, localPos);
 			}
-			else if (localPos.x == CHUNK_DIM && !neighbourChunks.east.expired()) {
-				return !neighbourChunks.east.lock()->getBlock(glm::ivec3{ 0, localPos.y, localPos.z });
+			else {
+				return getSkyLight(localPos);
+			}
+		}
+		[[nodiscard]] uint8_t getFromOutside(
+			std::function<uint8_t(std::shared_ptr<Chunk>, const glm::ivec3&)> f,
+				const glm::ivec3& localPos) const {
+			if (localPos.y >= CHUNK_HEIGHT || localPos.y < 0)
+				return 15;
+			else if (localPos.z <= -1 && !neighbourChunks.north.expired()) {
+				return f(neighbourChunks.north.lock(), glm::ivec3 { localPos.x, localPos.y, CHUNK_DIM - localPos.z });
+			}
+			else if (localPos.z >= CHUNK_DIM && !neighbourChunks.south.expired()) {
+				return f(neighbourChunks.south.lock(), glm::ivec3 { localPos.x, localPos.y, localPos.z - CHUNK_DIM });
+			}
+			else if (localPos.x <= -1 && !neighbourChunks.west.expired()) {
+				return f(neighbourChunks.west.lock(), glm::ivec3 { CHUNK_DIM - localPos.x, localPos.y, localPos.z });
+			}
+			else if (localPos.x >= CHUNK_DIM && !neighbourChunks.east.expired()) {
+				return f(neighbourChunks.east.lock(), glm::ivec3 { localPos.x - CHUNK_DIM, localPos.y, localPos.z });
 			}
 			else
-				return true;
+				return 15;
 		}
 		template<typename VectorType>
 		[[nodiscard]] constexpr uint8_t getRawLight(const glm::vec<3, VectorType>& localPos) const noexcept {

@@ -1,7 +1,7 @@
 #version 460 core
 
 layout(location = 0) in uint a_VertexData;
-layout(location = 1) in uint a_VertexLight;
+layout(location = 1) in uint a_SmoothLightData;
 
 layout(location = 0) out VS_OUT {
 	vec3 v_TexCoords;
@@ -27,8 +27,9 @@ layout(location = 1) uniform float u_Daylight;
 void main(void) {
 	vec3 pos = u_ChunkPos + vec3(a_VertexData >> 17 & 0x1F, a_VertexData >> 22, a_VertexData >> 12 & 0x1F);
 
-	uint blockLight = a_VertexLight & 0xF;
-	uint skyLight = (a_VertexLight >> 4) & 0xF;
+	float ao = float(a_SmoothLightData & 0x7) / 4.0f;
+	float blockLight = float(a_SmoothLightData >> 3 & 0x3F) / 4.0f;
+	float skyLight = float(a_SmoothLightData >> 9) / 4.0f;
 
 	float blocklightMultiplier = pow(0.8, 15.0 - blockLight);
 	float intermediateSkylightMultiplier = pow(0.8, 15.0 - skyLight * u_Daylight);

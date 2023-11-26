@@ -28,7 +28,7 @@ namespace Jukcraft {
 
 	struct VertexData {
 		uint32_t vertexData;
-		uint32_t lightData;
+		uint32_t smoothLightData;
 	};
 
 	struct ShaderCameraData {
@@ -52,6 +52,13 @@ namespace Jukcraft {
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	constexpr float TICK_RATE = 60.0f;
+
+	constexpr uint8_t EAST_INDEX  = 0;
+	constexpr uint8_t WEST_INDEX  = 1;
+	constexpr uint8_t UP_INDEX    = 2;
+	constexpr uint8_t DOWN_INDEX  = 3;
+	constexpr uint8_t SOUTH_INDEX = 4;
+	constexpr uint8_t NORTH_INDEX = 5;
 
 	constexpr glm::vec3 DIRECTIONS[6] = {
 		EAST, WEST, UP, DOWN, SOUTH, NORTH
