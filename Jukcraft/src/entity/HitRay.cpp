@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "core/HitRay.h"
+#include "entity/HitRay.h"
 
 
 namespace Jukcraft {

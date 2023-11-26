@@ -7,6 +7,18 @@
     <Filter Include="core">
       <UniqueIdentifier>{4E40957C-3A77-960D-E363-7C10CF79120F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="entity">
+      <UniqueIdentifier>{C2FD7FFB-AE9F-AAD1-975A-BE25839B3122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entity\player">
+      <UniqueIdentifier>{BE34F17E-2AF5-6CB5-F32F-B6325FAFB191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{2983320E-1525-5DE4-FEDF-7038EA20E434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{A823A1AC-1403-2048-1D1B-AB1E897986A9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
@@ -18,9 +30,6 @@
     </Filter>
     <Filter Include="renderer\gfx\objects">
       <UniqueIdentifier>{0949E6C7-F5D7-6F91-9EF6-838C8A648037}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderer\models">
-      <UniqueIdentifier>{EF8827A6-5B14-956A-6425-185FD02FF16A}</UniqueIdentifier>
     </Filter>
     <Filter Include="renderer\texture">
       <UniqueIdentifier>{1C040F70-08FD-2DC2-312F-13471D870DCE}</UniqueIdentifier>
@@ -51,9 +60,6 @@
     <ClInclude Include="src\core\Game.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\HitRay.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\Log.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -63,11 +69,38 @@
     <ClInclude Include="src\core\util.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="src\entity\BipedEntity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\Entity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\HitRay.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\LivingEntity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\player\Player.h">
+      <Filter>entity\player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\models\Collider.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="src\models\Model.h">
+      <Filter>models</Filter>
+    </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\physics\constants.h">
+      <Filter>physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h">
+      <Filter>renderer\gfx\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h">
       <Filter>renderer\gfx\buffers</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\objects\Buffer.h">
@@ -78,9 +111,6 @@
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\objects\VertexArray.h">
       <Filter>renderer\gfx\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\models\Model.h">
-      <Filter>renderer\models</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\texture\TextureManager.h">
       <Filter>renderer\texture</Filter>
@@ -100,12 +130,6 @@
     <ClInclude Include="src\world\chunk\util.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
-    <ClInclude Include="src\entity\Entity.h" />
-    <ClInclude Include="src\entity\player\Player.h" />
-    <ClInclude Include="src\entity\BipedEntity.h" />
-    <ClInclude Include="src\models\Collider.h" />
-    <ClInclude Include="src\entity\LivingEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -117,17 +141,29 @@
     <ClCompile Include="src\core\Game.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\HitRay.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\Log.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Window.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\BipedEntity.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\HitRay.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\LivingEntity.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\player\Player.cpp">
+      <Filter>entity\player</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp">
+      <Filter>renderer\gfx\buffers</Filter>
+    </ClCompile>
     <ClCompile Include="src\vendor\stb\stb_build.cpp">
       <Filter>vendor\stb</Filter>
     </ClCompile>
@@ -143,9 +179,5 @@
     <ClCompile Include="src\world\chunk\ChunkManager.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
-    <ClCompile Include="src\entity\player\Player.cpp" />
-    <ClCompile Include="src\entity\BipedEntity.cpp" />
-    <ClCompile Include="src\entity\LivingEntity.cpp" />
   </ItemGroup>
 </Project>

@@ -72,7 +72,7 @@ namespace Jukcraft {
 
 			if (glfwGetTime() - timer > 1.0) {
 				timer++;
-				LOG_TRACE("FPS: {}, Updates: {}", frames, updates);
+				LOG_TRACE("FPS: {}, TPS: {}", frames, updates);
 				updates = 0, frames = 0;
 			}
 			

@@ -3,16 +3,19 @@
 #include "world/World.h"
 
 namespace Jukcraft {
+
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
 		const glm::vec3& initialAcceleration, float initialYaw, float initialPitch, float width, float height)
-		:Entity(initialPos, initialVelocity, initialAcceleration, initialYaw, initialPitch), oldPosition(position),
-		width(0.6f), height(1.8f), collider(), world(world) {
+		:Entity(initialPos, initialVelocity, initialAcceleration, initialYaw, initialPitch), 
+		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
+		width(0.6f), height(1.8f), collider(), world(world), onGround(false) {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
 	LivingEntity::~LivingEntity() {
 
 	}
+
 	void LivingEntity::updateCollider() {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
@@ -83,18 +86,45 @@ namespace Jukcraft {
 			velocity.z = 0;
 			position.z += adjustedVelocity.z * entryTime;
 		}
+		if (normal.y == 1) {
+			onGround = true;
+		}
+
+	}
+
+	void LivingEntity::jump(float hmax) {
+		if (!onGround)
+			return;
+
+		velocity.y = glm::sqrt(-2 * g.y * hmax);
 	}
 
 	void LivingEntity::tick(float deltaTime) {
 		oldPosition = position;
+
+		velocity += acceleration * getFriction() * deltaTime;
+		acceleration = glm::vec3(0.0f);
+
 		updateCollider();
+		
+		onGround = false;
 
 		for (uint8_t i = 0; i < 3; i++)
 			resolveCollisions(deltaTime);
 
-		acceleration += velocity * deltaTime;
 		position += velocity * deltaTime;
+		velocity += g * deltaTime;
 
-		velocity = glm::vec3(0.0f);
+		auto comp = [](auto& a, auto& b) { return glm::abs(a) < glm::abs(b); };
+
+		glm::vec3 deltaFriction = glm::vec3(
+			std::min(velocity.x * getFriction().x * deltaTime, velocity.x, comp),
+			std::min(velocity.y * getFriction().y * deltaTime, velocity.y, comp),
+			std::min(velocity.z * getFriction().z * deltaTime, velocity.z, comp)
+		);
+		velocity -= deltaFriction;
+		updateCollider();
+
+
 	}
 }

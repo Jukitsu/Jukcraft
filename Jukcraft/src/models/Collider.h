@@ -41,7 +41,7 @@ namespace Jukcraft {
 		auto time = [](float x, float y) {
 			if (y)
 				return x / y;
-			return -sign(x) * std::numeric_limits<float>::infinity();
+			return -sign(x) * std::numeric_limits<float>::infinity(); // Fuck C++ can't do limits properly
 			};
 
 

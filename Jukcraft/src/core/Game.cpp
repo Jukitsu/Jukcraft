@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "core/Game.h"
 #include <GLFW/glfw3.h>
-#include "core/HitRay.h"
+#include "entity/HitRay.h"
 
 namespace Jukcraft {
 

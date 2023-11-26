@@ -2,6 +2,8 @@
 #include "entity/Entity.h"
 #include "models/Collider.h"
 
+#include "physics/constants.h"
+
 namespace Jukcraft {
 
 	class World;
@@ -16,12 +18,26 @@ namespace Jukcraft {
 
 		void updateCollider();
 		void resolveCollisions(float deltaTime);
+		void jump(float jumpHeight = JUMP_HEIGHT);
 		void tick(float deltaTime) override;
+
 
 		constexpr float getEyeLevel() const { return height - 0.2f; }
 		constexpr const Collider& getCollider() const { return collider; }
 	protected:
+
+		constexpr const glm::vec3& getFriction() const {
+			if (onGround)
+				return FRICTION;
+			else if (velocity.y > 0)
+				return DRAG_JUMP;
+			else
+				return DRAG_FALL;
+		}
+
 		float width, height;
+
+		bool onGround;
 
 		glm::vec3 oldPosition;
 		glm::vec3 interpolatedPos;

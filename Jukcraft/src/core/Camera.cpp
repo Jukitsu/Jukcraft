@@ -4,12 +4,13 @@
 #include <GLFW/glfw3.h>
 #include "core/App.h"
 
-static constexpr float WALKING_SPEED = 4.317f;
+#include "physics/constants.h"
+
 static constexpr float sensitivity = 0.005f;
 
 namespace Jukcraft {
 	Camera::Camera(gfx::Shader& shader, std::unique_ptr<Player>& player)
-		:shader(shader), player(player), speed(WALKING_SPEED) {
+		:shader(shader), player(player), speed(WALK_SPEED) {
 		ubo.allocate(sizeof(ShaderCameraData), nullptr, true);
 		mappedUbo = reinterpret_cast<ShaderCameraData*>(ubo.map(0, sizeof(ShaderCameraData)));
 
@@ -43,18 +44,18 @@ namespace Jukcraft {
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_SHIFT)) input.y += -1;
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_SPACE))		input.y += 1;
 
-		if (deltaTime * 20.0f > 1.0f) speed = WALKING_SPEED;
-
+		if (deltaTime * 20.0f > 1.0f) 
+			speed = WALK_SPEED;
 		else 
-			speed += (WALKING_SPEED - speed) * deltaTime * 20;
+			speed += (WALK_SPEED - speed) * deltaTime * 20;
 
-		const float multiplier = speed;
-		if (input.y) {
-			player->velocity.y = input.y * multiplier;
+
+		if (input.y > 0) {
+			player->jump();
 		} if (input.x || input.z) {
 			const float angle = player->yaw - glm::atan<float>((float)input.z, (float)input.x) + glm::pi<float>() / 2;
-			player->velocity.x = glm::cos(angle) * multiplier;
-			player->velocity.z = glm::sin(angle) * multiplier;
+			player->acceleration.x = glm::cos(angle) * speed;
+			player->acceleration.z = glm::sin(angle) * speed;
 		}
 
 

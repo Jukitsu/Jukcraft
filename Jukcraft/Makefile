@@ -12,9 +12,9 @@ endif
 
 ifeq ($(config),debug)
   RESCOMP = windres
-  TARGETDIR = ../bin/Debug-windowsJukcraft
+  TARGETDIR = ../bin/Debug-windows-Jukcraft
   TARGET = $(TARGETDIR)/Jukcraft.exe
-  OBJDIR = ../bin-int/Debug-windowsJukcraft
+  OBJDIR = ../bin-int/Debug-windows-Jukcraft
   PCH = src/pch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DGLFW_INCLUDE_NONE
@@ -41,9 +41,9 @@ endif
 
 ifeq ($(config),beta)
   RESCOMP = windres
-  TARGETDIR = ../bin/Beta-windowsJukcraft
+  TARGETDIR = ../bin/Beta-windows-Jukcraft
   TARGET = $(TARGETDIR)/Jukcraft.exe
-  OBJDIR = ../bin-int/Beta-windowsJukcraft
+  OBJDIR = ../bin-int/Beta-windows-Jukcraft
   PCH = src/pch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DGLFW_INCLUDE_NONE -DGLM_FORCE_INLINE
@@ -70,9 +70,9 @@ endif
 
 ifeq ($(config),release)
   RESCOMP = windres
-  TARGETDIR = ../bin/Release-windowsJukcraft
+  TARGETDIR = ../bin/Release-windows-Jukcraft
   TARGET = $(TARGETDIR)/Jukcraft.exe
-  OBJDIR = ../bin-int/Release-windowsJukcraft
+  OBJDIR = ../bin-int/Release-windows-Jukcraft
   PCH = src/pch.h
   GCH = $(OBJDIR)/$(notdir $(PCH)).gch
   DEFINES += -DGLFW_INCLUDE_NONE -DGLM_FORCE_INLINE -DSPDLOG_NO_EXCEPTIONS
@@ -101,11 +101,15 @@ OBJECTS := \
 	$(OBJDIR)/App.o \
 	$(OBJDIR)/Camera.o \
 	$(OBJDIR)/Game.o \
-	$(OBJDIR)/HitRay.o \
 	$(OBJDIR)/Log.o \
 	$(OBJDIR)/Window.o \
+	$(OBJDIR)/BipedEntity.o \
+	$(OBJDIR)/HitRay.o \
+	$(OBJDIR)/LivingEntity.o \
+	$(OBJDIR)/Player.o \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/pch.o \
+	$(OBJDIR)/DynamicBuffer.o \
 	$(OBJDIR)/stb_build.o \
 	$(OBJDIR)/LightEngine.o \
 	$(OBJDIR)/World.o \
@@ -178,19 +182,31 @@ $(OBJDIR)/Camera.o: src/core/Camera.cpp
 $(OBJDIR)/Game.o: src/core/Game.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/HitRay.o: src/core/HitRay.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Log.o: src/core/Log.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Window.o: src/core/Window.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/BipedEntity.o: src/entity/BipedEntity.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/HitRay.o: src/entity/HitRay.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/LivingEntity.o: src/entity/LivingEntity.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Player.o: src/entity/player/Player.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: src/main.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/pch.o: src/pch.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/DynamicBuffer.o: src/renderer/gfx/buffers/DynamicBuffer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/stb_build.o: src/vendor/stb/stb_build.cpp

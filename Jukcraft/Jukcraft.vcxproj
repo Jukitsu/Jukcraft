@@ -56,22 +56,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\Debug-windowsJukcraft\</OutDir>
-    <IntDir>..\bin-int\Debug-windowsJukcraft\</IntDir>
+    <OutDir>..\bin\Debug-windows-Jukcraft\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Beta-windowsJukcraft\</OutDir>
-    <IntDir>..\bin-int\Beta-windowsJukcraft\</IntDir>
+    <OutDir>..\bin\Beta-windows-Jukcraft\</OutDir>
+    <IntDir>..\bin-int\Beta-windows-Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release-windowsJukcraft\</OutDir>
-    <IntDir>..\bin-int\Release-windowsJukcraft\</IntDir>
+    <OutDir>..\bin\Release-windows-Jukcraft\</OutDir>
+    <IntDir>..\bin-int\Release-windows-Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -154,23 +154,24 @@
     <ClInclude Include="src\core\App.h" />
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\Game.h" />
-    <ClInclude Include="src\core\HitRay.h" />
     <ClInclude Include="src\core\Log.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
-    <ClInclude Include="src\entity\Entity.h" />
-    <ClInclude Include="src\entity\LivingEntity.h" />
     <ClInclude Include="src\entity\BipedEntity.h" />
+    <ClInclude Include="src\entity\Entity.h" />
+    <ClInclude Include="src\entity\HitRay.h" />
+    <ClInclude Include="src\entity\LivingEntity.h" />
     <ClInclude Include="src\entity\player\Player.h" />
     <ClInclude Include="src\models\Collider.h" />
+    <ClInclude Include="src\models\Model.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
+    <ClInclude Include="src\physics\constants.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
+    <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
     <ClInclude Include="src\renderer\gfx\objects\Buffer.h" />
     <ClInclude Include="src\renderer\gfx\objects\Shader.h" />
     <ClInclude Include="src\renderer\gfx\objects\VertexArray.h" />
-    <ClInclude Include="src\models\Model.h" />
     <ClInclude Include="src\renderer\texture\TextureManager.h" />
     <ClInclude Include="src\world\LightEngine.h" />
     <ClInclude Include="src\world\World.h" />
@@ -182,11 +183,11 @@
     <ClCompile Include="src\core\App.cpp" />
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\Game.cpp" />
-    <ClCompile Include="src\core\HitRay.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
-    <ClCompile Include="src\entity\LivingEntity.cpp" />
     <ClCompile Include="src\entity\BipedEntity.cpp" />
+    <ClCompile Include="src\entity\HitRay.cpp" />
+    <ClCompile Include="src\entity\LivingEntity.cpp" />
     <ClCompile Include="src\entity\player\Player.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp">
