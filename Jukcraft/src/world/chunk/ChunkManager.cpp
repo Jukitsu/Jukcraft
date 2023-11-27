@@ -9,7 +9,11 @@ namespace Jukcraft {
 			for (uint8_t z = 0; z < WORLD_SIZE; z++) {
 				std::shared_ptr<Chunk>& chunk
 					= chunks[x][z]
-					= std::make_shared<Chunk>(glm::ivec2(x, z), blocks);
+					= std::make_shared<Chunk>(
+						glm::ivec2(x, z),
+						blocks, 
+						std::bind(&ChunkManager::getChunkConst, this, std::placeholders::_1)
+					);
 				chunksToUpdates.insert(chunk);
 				chunksToLight.insert(chunk);
 				if (z > 0) {
@@ -34,7 +38,7 @@ namespace Jukcraft {
 		int z = chunkPos.x;
 		std::shared_ptr<Chunk>& chunk
 			= chunks[x][z]
-			= std::make_shared<Chunk>(glm::ivec2(x, z), blocks);
+			= std::make_shared<Chunk>(glm::ivec2(x, z), blocks, std::bind(&ChunkManager::getChunkConst, this, std::placeholders::_1));
 		chunksToUpdates.insert(chunk);
 		chunksToLight.insert(chunk);
 		return chunk;
@@ -72,7 +76,7 @@ namespace Jukcraft {
 		return { chunks[chunkPos.x][chunkPos.y] };
 	}
 
-	std::optional<std::shared_ptr<const Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) const {
+	std::optional<std::shared_ptr<const Chunk>> ChunkManager::getChunkConst(const glm::ivec2& chunkPos) const {
 		if (chunkPos.x < 0 || chunkPos.x >= WORLD_SIZE || chunkPos.y < 0 || chunkPos.y >= WORLD_SIZE)
 			return {};
 		return { chunks[chunkPos.x][chunkPos.y] };

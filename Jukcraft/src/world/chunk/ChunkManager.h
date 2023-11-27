@@ -13,18 +13,22 @@ namespace Jukcraft {
 		void drawChunksDecoLayers(gfx::Shader& shader) {}
 		void drawChunksTranslucentLayers(gfx::Shader& shader) {}
 		std::optional<std::shared_ptr<Chunk>> getChunk(const glm::ivec2& pos);
-		std::optional<std::shared_ptr<const Chunk>> getChunk(const glm::ivec2& pos) const;
+		std::optional<std::shared_ptr<const Chunk>> getChunk(const glm::ivec2& pos) const { return getChunkConst(pos); }
+		std::optional<std::shared_ptr<const Chunk>> getChunkConst(const glm::ivec2& pos) const;
 
 		std::unordered_set<std::shared_ptr<Chunk>>& getSkyLightPendingChunks() {
 			return chunksToLight;
 		}
 	private:
+		
 		std::shared_ptr<Chunk> chunks[WORLD_SIZE][WORLD_SIZE];
 		std::unordered_set<std::shared_ptr<Chunk>> chunksToUpdates;
 		std::unordered_set<std::shared_ptr<Chunk>> chunksToLight;
 		const std::vector<Block>& blocks;
 		gfx::Buffer chunkUbo;
 		PerChunkData* mappedChunkUbo;
+
+
 
 		friend class Chunk;
 	};

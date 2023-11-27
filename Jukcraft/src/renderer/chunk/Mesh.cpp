@@ -1,34 +1,38 @@
 #include "pch.h"
 #include "renderer/chunk/Mesh.h"
+#include "world/chunk/ChunkManager.h"
 
 namespace Jukcraft {
-	static constexpr uint8_t smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
+	static inline uint8_t smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
 		if (!(light && b && c && d)) {
 			std::array<uint8_t, 4> l = {
 				light,
-				std::numeric_limits<uint8_t>::infinity(),
-				std::numeric_limits<uint8_t>::infinity(),
-				std::numeric_limits<uint8_t>::infinity()
+				std::numeric_limits<uint8_t>::max(),
+				std::numeric_limits<uint8_t>::max(),
+				std::numeric_limits<uint8_t>::max()
 			};
-			if (b)
+			if (b > 0)
 				l[1] = b;
-			if (c)
+			if (c > 0)
 				l[2] = c;
-			if (d)
+			if (d > 0)
 				l[3] = d;
-			uint8_t min_val = *std::min_element(l.begin(), l.end());
+			uint8_t min_val = *(std::min_element(l.begin(), l.end()));
 			uint8_t light = std::max(light, min_val);
 			uint8_t b = std::max(b, min_val);
 			uint8_t c = std::max(c, min_val);
 			uint8_t d = std::max(d, min_val);
-			return light + b + c + d; // To divide by 4
+			
+			
+			
 		}
+		return light + b + c + d; // To divide by 4
 
 	}
 
-	constexpr uint8_t ao(uint8_t s1, uint8_t s2, uint8_t c) {
+	static inline uint8_t ao(uint8_t s1, uint8_t s2, uint8_t c) {
 		if (s1 && s2)
-			return 1;
+			return 4;
 
 		return 4 - (s1 + s2 + c); // To divide by 4
 	}
@@ -107,7 +111,7 @@ namespace Jukcraft {
 		case DOWN_INDEX:
 			neighbours = {
 				npos + ISOUTH + IWEST, npos + ISOUTH, npos + ISOUTH + IEAST,
-				npos + IWEST,                       npos + IEAST,
+				npos + IWEST,                         npos + IEAST,
 				npos + INORTH + IWEST, npos + INORTH, npos + INORTH + IEAST
 			};
 			break;
@@ -133,11 +137,12 @@ namespace Jukcraft {
 	}
 
 	BakedQuad Mesh::bakeCubeFace(const glm::ivec3& localPos, uint8_t normalIndex, uint8_t blocklight, uint8_t skylight) {
-		BakedQuad bakedQuad;
+		BakedQuad bakedQuad(blocklight, skylight);
 
 		glm::ivec3 npos = localPos + IDIRECTIONS[normalIndex];
 		std::array<glm::ivec3, 8> neighbours = getNeighbourVoxels(npos, normalIndex);
 		std::array<uint8_t, 8> neighbourOpacity, neighbourLights, neighbourSkyLights;
+
 		for (uint8_t i = 0; i < 8; i++) {
 			neighbourOpacity[i]		= meshDelegates.opacityGetterDelegate(npos + neighbours[i]);
 			neighbourLights[i]		= meshDelegates.lightGetterDelegate(npos + neighbours[i]);

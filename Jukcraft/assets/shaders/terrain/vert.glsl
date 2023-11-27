@@ -35,6 +35,8 @@ void main(void) {
 	float intermediateSkylightMultiplier = pow(0.8, 15.0 - skyLight * u_Daylight);
 	float skylightMultiplier = pow(0.8, 15.0 - skyLight);
 
+	float shading = float((a_VertexData & 0x3) + 2) / 5.0f;
+
 	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
 
 	vs_Out.v_TexCoords = vec3(c_TexCoords[a_VertexData >> 10 & 0x3], a_VertexData >> 2 & 0xFF);
@@ -43,5 +45,5 @@ void main(void) {
 		clamp(blocklightMultiplier * 1.25, intermediateSkylightMultiplier, 1.0), 
 		clamp(skylightMultiplier, blocklightMultiplier, 1.0)
 	);
-	vs_Out.v_Shading = pow(float((a_VertexData & 0x3) + 2) / 5.0f, 2.2f);
+	vs_Out.v_Shading = pow(shading * ao, 2.2f);
 }

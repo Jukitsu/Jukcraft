@@ -5,6 +5,26 @@
 namespace Jukcraft {
 
 	struct BakedQuad {
+		BakedQuad(uint8_t blocklight, uint8_t skylight) {
+			smoothBlockLightData = {
+				(uint8_t)(blocklight * 4),
+				(uint8_t)(blocklight * 4),
+				(uint8_t)(blocklight * 4),
+				(uint8_t)(blocklight * 4)
+			};
+			smoothSkyLightData = {
+				(uint8_t)(skylight * 4),
+				(uint8_t)(skylight * 4),
+				(uint8_t)(skylight * 4),
+				(uint8_t)(skylight * 4)
+			};
+			ambientOcclusionData = {
+				4,
+				4,
+				4,
+				4
+			};
+		}
 		std::array<uint8_t, 4> smoothBlockLightData;
 		std::array<uint8_t, 4> smoothSkyLightData;
 		std::array<uint8_t, 4> ambientOcclusionData;
