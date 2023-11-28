@@ -5,14 +5,15 @@
 
 namespace Jukcraft {
 
-	class ChunkManager;
+	class Chunk;
 
+	using ChunkGetter = std::function<std::optional<std::shared_ptr<const Chunk>>(const glm::ivec2&)>;
 	
 
 	class Chunk {
 	public:
 		Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, 
-			const std::function<std::optional<std::shared_ptr<const Chunk>>(const glm::ivec2&)>& chunkGetter);
+			const ChunkGetter& chunkGetter);
 		~Chunk();
 		void buildCubeLayer();
 		void drawCubeLayer();
@@ -59,7 +60,7 @@ namespace Jukcraft {
 			std::weak_ptr<Chunk> north;
 		} neighbourChunks;
 
-		std::function<std::optional<std::shared_ptr<const Chunk>>(const glm::ivec2&)> chunkGetter;
+		ChunkGetter chunkGetter;
 
 		BlockID*** blocks;
 
@@ -114,7 +115,7 @@ namespace Jukcraft {
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr glm::vec<2, VectorType> Chunk::ToChunkPos(const glm::vec<3, VectorType>& worldPos) {
-		return { worldPos.x / CHUNK_DIM, worldPos.z / CHUNK_DIM };
+		return { glm::floor((float)worldPos.x / CHUNK_DIM), glm::floor((float)worldPos.z / CHUNK_DIM) };
 	}
 	template<typename VectorType>
 	[[nodiscard]] static constexpr glm::vec<3, VectorType> Chunk::ToLocalPos(const glm::vec<3, VectorType>& worldPos) {

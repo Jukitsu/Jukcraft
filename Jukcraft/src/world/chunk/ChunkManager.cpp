@@ -12,7 +12,9 @@ namespace Jukcraft {
 					= std::make_shared<Chunk>(
 						glm::ivec2(x, z),
 						blocks, 
-						std::bind(&ChunkManager::getChunkConst, this, std::placeholders::_1)
+						[&](const glm::ivec2& chunkPos) {
+							return this->getChunkConst(chunkPos);
+						}
 					);
 				chunksToUpdates.insert(chunk);
 				chunksToLight.insert(chunk);
@@ -38,7 +40,13 @@ namespace Jukcraft {
 		int z = chunkPos.x;
 		std::shared_ptr<Chunk>& chunk
 			= chunks[x][z]
-			= std::make_shared<Chunk>(glm::ivec2(x, z), blocks, std::bind(&ChunkManager::getChunkConst, this, std::placeholders::_1));
+			= std::make_shared<Chunk>(
+				glm::ivec2(x, z), 
+				blocks, 
+				[&](const glm::ivec2& chunkPos) {
+					return this->getChunkConst(chunkPos);
+				}
+			);
 		chunksToUpdates.insert(chunk);
 		chunksToLight.insert(chunk);
 		return chunk;

@@ -32,7 +32,7 @@ namespace Jukcraft {
 
 	static inline uint8_t ao(uint8_t s1, uint8_t s2, uint8_t c) {
 		if (s1 && s2)
-			return 4;
+			return 1;
 
 		return 4 - (s1 + s2 + c); // To divide by 4
 	}
