@@ -6,16 +6,11 @@
 
 namespace Jukcraft {
 
-	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, const ChunkGetter& chunkGetter)
-		:blockTypes(blockTypes), chunkPos(chunkPos), chunkGetter(chunkGetter),
+	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, ChunkManager& chunkManager)
+		:blockTypes(blockTypes), chunkPos(chunkPos), chunkManager(chunkManager),
 		mesh(
 			CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6 * 4, 
-			MeshDelegates {
-				std::bind(&Chunk::canRenderFacing, this, std::placeholders::_1),
-				std::bind(&Chunk::getBlockLightSafe, this, std::placeholders::_1),
-				std::bind(&Chunk::getSkyLightSafe, this, std::placeholders::_1),
-			}
-				
+			*this		
 		)
 	{
 		blocks = new BlockID * *[CHUNK_HEIGHT];
@@ -98,7 +93,7 @@ namespace Jukcraft {
 								uint8_t skylight = getSkyLightSafe(localPos + IDIRECTIONS[i]);
 
 								BakedQuad bakedQuad = mesh.bakeCubeFace(localPos, i, blocklight, skylight);
-								//BakedQuad bakedQuad(blocklight, skylight);
+								// BakedQuad bakedQuad(blocklight, skylight);
 								mesh.pushCubeFace(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], bakedQuad);
 								quadCount++;
 							}
@@ -126,18 +121,19 @@ namespace Jukcraft {
 		return nullptr;
 	}
 
-	bool Chunk::canRenderFacing(const glm::ivec3& localPos) const {
+
+	[[nodiscard]] uint8_t Chunk::getOpacitySafe(const glm::ivec3& localPos) const {
 		if (IsOutside(localPos)) {
 			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
 			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkGetter(newChunkPos);
+			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || worldPos.y < 0 || worldPos.y >= CHUNK_HEIGHT)
-				return 1;
-			return !(*chunk)->getBlock(newLocalPos);
+				return 0;
+			return (*chunk)->getBlock(newLocalPos);
 		}
 		else {
-			return !getBlock(localPos);
+			return getBlock(localPos);
 		}
 	}
 
@@ -146,7 +142,7 @@ namespace Jukcraft {
 			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
 			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkGetter(newChunkPos);
+			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(localPos))
 				return 0;
 			return (*chunk)->getBlockLight(newLocalPos);
@@ -161,7 +157,7 @@ namespace Jukcraft {
 			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
 			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkGetter(newChunkPos);
+			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(localPos))
 				return 15;
 			return (*chunk)->getSkyLight(newLocalPos);

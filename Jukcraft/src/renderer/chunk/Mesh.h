@@ -4,6 +4,8 @@
 
 namespace Jukcraft {
 
+	class Chunk;
+
 	struct BakedQuad {
 		BakedQuad(uint8_t blocklight, uint8_t skylight) {
 			smoothBlockLightData = {
@@ -25,22 +27,20 @@ namespace Jukcraft {
 				4
 			};
 		}
+		~BakedQuad() {
+
+		}
 		std::array<uint8_t, 4> smoothBlockLightData;
 		std::array<uint8_t, 4> smoothSkyLightData;
 		std::array<uint8_t, 4> ambientOcclusionData;
 	};
 
-	struct MeshDelegates {
-		std::function<bool(const glm::ivec3&)> opacityGetterDelegate;
-		std::function<uint8_t(const glm::ivec3&)> lightGetterDelegate;
-		std::function<uint8_t(const glm::ivec3&)> skylightGetterDelegate;
-	};
 
 	using OpacityCheckDelegate = std::function<bool(const glm::ivec3&)>;
 
 	class Mesh {
 	public:
-		Mesh(size_t size, const MeshDelegates& meshDelegates);
+		Mesh(size_t size, Chunk& chunk);
 		~Mesh();
 		void begin();
 		BakedQuad bakeCubeFace(const glm::ivec3& localPos, uint8_t normalIndex, uint8_t blocklight, uint8_t skylight);
@@ -60,7 +60,7 @@ namespace Jukcraft {
 		size_t size;
 		size_t quadCount;
 
-		MeshDelegates meshDelegates;
+		Chunk& chunk;
 		gfx::VertexArray vao;
 
 		gfx::DynamicBuffer<VertexData> vbo;

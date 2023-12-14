@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "world/chunk/Chunk.h"
 #include "renderer/chunk/Mesh.h"
 #include "world/chunk/ChunkManager.h"
 
@@ -18,10 +19,10 @@ namespace Jukcraft {
 			if (d > 0)
 				l[3] = d;
 			uint8_t min_val = *(std::min_element(l.begin(), l.end()));
-			uint8_t light = std::max(light, min_val);
-			uint8_t b = std::max(b, min_val);
-			uint8_t c = std::max(c, min_val);
-			uint8_t d = std::max(d, min_val);
+			light = std::max(light, min_val);
+			b = std::max(b, min_val);
+			c = std::max(c, min_val);
+			d = std::max(d, min_val);
 			
 			
 			
@@ -37,8 +38,8 @@ namespace Jukcraft {
 		return 4 - (s1 + s2 + c); // To divide by 4
 	}
 
-	Mesh::Mesh(size_t size, const MeshDelegates& meshDelegates)
-		:size(size), meshDelegates(meshDelegates) {
+	Mesh::Mesh(size_t size, Chunk& chunk)
+		:size(size), chunk(chunk) {
 		vbo.allocate(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24, nullptr);
 
 		vao.bindLayout(gfx::VertexArrayLayout{
@@ -144,9 +145,9 @@ namespace Jukcraft {
 		std::array<uint8_t, 8> neighbourOpacity, neighbourLights, neighbourSkyLights;
 
 		for (uint8_t i = 0; i < 8; i++) {
-			neighbourOpacity[i]		= meshDelegates.opacityGetterDelegate(npos + neighbours[i]);
-			neighbourLights[i]		= meshDelegates.lightGetterDelegate(npos + neighbours[i]);
-			neighbourSkyLights[i]	= meshDelegates.skylightGetterDelegate(npos + neighbours[i]);
+			neighbourOpacity[i]		= chunk.getOpacitySafe(neighbours[i]);
+			neighbourLights[i]		= chunk.getBlockLightSafe(neighbours[i]);
+			neighbourSkyLights[i]	= chunk.getSkyLightSafe(neighbours[i]);
 		}
 
 		bakedQuad.ambientOcclusionData = getFaceAO(

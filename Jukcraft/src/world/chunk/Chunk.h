@@ -5,15 +5,12 @@
 
 namespace Jukcraft {
 
-	class Chunk;
-
-	using ChunkGetter = std::function<std::optional<std::shared_ptr<const Chunk>>(const glm::ivec2&)>;
+	class ChunkManager;
 	
 
 	class Chunk {
 	public:
-		Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, 
-			const ChunkGetter& chunkGetter);
+		Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, ChunkManager& chunkGetter);
 		~Chunk();
 		void buildCubeLayer();
 		void drawCubeLayer();
@@ -37,7 +34,8 @@ namespace Jukcraft {
 		template<typename VectorType>
 		[[nodiscard]] static constexpr bool IsOutside(const glm::vec<3, VectorType>& localPos);
 		
-		[[nodiscard]] bool canRenderFacing(const glm::ivec3& localPos) const; 
+		[[nodiscard]] bool canRenderFacing(const glm::ivec3& localPos) const { return !getOpacitySafe(localPos); }
+		[[nodiscard]] uint8_t getOpacitySafe(const glm::ivec3& localPos) const;
 		[[nodiscard]] uint8_t getBlockLightSafe(const glm::ivec3& localPos) const;
 		[[nodiscard]] uint8_t getSkyLightSafe(const glm::ivec3& localPos) const;
 
@@ -60,7 +58,7 @@ namespace Jukcraft {
 			std::weak_ptr<Chunk> north;
 		} neighbourChunks;
 
-		ChunkGetter chunkGetter;
+		ChunkManager& chunkManager;
 
 		BlockID*** blocks;
 
