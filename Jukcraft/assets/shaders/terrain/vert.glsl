@@ -27,8 +27,8 @@ layout(location = 1) uniform float u_Daylight;
 void main(void) {
 	vec3 pos = u_ChunkPos + vec3(a_VertexData >> 17 & 0x1F, a_VertexData >> 22, a_VertexData >> 12 & 0x1F);
 
-	float ao = float(a_SmoothLightData & 0x7) / 4.0f;
-	float blockLight = float(a_SmoothLightData >> 3 & 0x3F) / 4.0f;
+	float ao = float(1 + (a_SmoothLightData & 0x7)) / 5.0f;
+	float blockLight = float((a_SmoothLightData >> 3) & 0x3F) / 4.0f;
 	float skyLight = float(a_SmoothLightData >> 9) / 4.0f;
 
 	float blocklightMultiplier = pow(0.8, 15.0 - blockLight);
@@ -45,5 +45,5 @@ void main(void) {
 		clamp(blocklightMultiplier * (1.0 + 0.25 * (1.0 - u_Daylight)), intermediateSkylightMultiplier, 1.0), 
 		clamp(skylightMultiplier * u_Daylight, blocklightMultiplier, 1.0)
 	);
-	vs_Out.v_Shading = pow(shading * ao, 2.2f);
+	vs_Out.v_Shading = pow(shading, 2.2f) * ao;
 }

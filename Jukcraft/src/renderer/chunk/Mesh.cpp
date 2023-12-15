@@ -8,17 +8,13 @@ namespace Jukcraft {
 		if (!(light && b && c && d)) {
 			std::array<uint8_t, 4> l = {
 				light,
-				std::numeric_limits<uint8_t>::max(),
-				std::numeric_limits<uint8_t>::max(),
-				std::numeric_limits<uint8_t>::max()
+				b > 0 ? b : std::numeric_limits<uint8_t>::max(),
+				c > 0 ? c : std::numeric_limits<uint8_t>::max(),
+				d > 0 ? d : std::numeric_limits<uint8_t>::max()
 			};
-			if (b > 0)
-				l[1] = b;
-			if (c > 0)
-				l[2] = c;
-			if (d > 0)
-				l[3] = d;
+
 			uint8_t min_val = *(std::min_element(l.begin(), l.end()));
+
 			light = std::max(light, min_val);
 			b = std::max(b, min_val);
 			c = std::max(c, min_val);
@@ -31,7 +27,7 @@ namespace Jukcraft {
 
 	}
 
-	static inline uint8_t ao(uint8_t s1, uint8_t s2, uint8_t c) {
+	static inline uint8_t ao(bool s1, bool s2, bool c) {
 		if (s1 && s2)
 			return 1;
 
@@ -169,7 +165,7 @@ namespace Jukcraft {
 		return bakedQuad;
 	}
 	void Mesh::begin() {
-		vbo.beginEditRegion(0, size);
+		vbo.beginEditRegion(0, (uint32_t)size);
 		quadCount = 0;
 	}
 
@@ -187,7 +183,7 @@ namespace Jukcraft {
 	void Mesh::end() {
 		vbo.endEditRegion();
 		DrawIndirectCommand cmd;
-		cmd.count = quadCount * 6;
+		cmd.count = (uint32_t)quadCount * 6;
 		cmd.instanceCount = 1;
 		cmd.firstIndex = 0;
 		cmd.baseVertex = 0;

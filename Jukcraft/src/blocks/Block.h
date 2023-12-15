@@ -23,6 +23,9 @@ namespace Jukcraft {
 		constexpr bool isTransparent() const {
 			return transparent;
 		}
+		constexpr bool getOpacity() const {
+			return !transparent;
+		}
 		constexpr uint8_t getLight() const {
 			return light;
 		}
