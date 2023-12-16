@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(early_fragment_tests) in;
+// layout(early_fragment_tests) in;
 
 layout(location = 0) in VS_OUT {
 	vec3 v_TexCoords;
