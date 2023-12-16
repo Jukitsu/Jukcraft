@@ -23,7 +23,7 @@ namespace Jukcraft {
 		TextureManager textureManager;
 		Camera camera;
 		std::unique_ptr<World> world;
-		BlockID holding = 5;
+		BlockID holding = 6;
 		bool inWorld = true;
 
 		std::unique_ptr<Player> player;

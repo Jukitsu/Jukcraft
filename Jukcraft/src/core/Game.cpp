@@ -13,6 +13,7 @@ namespace Jukcraft {
 		textureManager.pushSubTexture("assets/textures/dirt.png");
 		textureManager.pushSubTexture("assets/textures/cobblestone.png");
 		textureManager.pushSubTexture("assets/textures/planks.png");
+		textureManager.pushSubTexture("assets/textures/leaves.png");
 		textureManager.setSamplerUnit(0);
 
 
@@ -21,7 +22,8 @@ namespace Jukcraft {
 		blocks.emplace_back("Grass", 2, models.cube, std::vector<uint8_t>{2, 2, 1, 3, 2, 2}, false, 0);
 		blocks.emplace_back("Dirt", 3, models.cube, std::vector<uint8_t>{3, 3, 3, 3, 3, 3}, false, 0);
 		blocks.emplace_back("Cobblestone", 4, models.cube, std::vector<uint8_t>{4, 4, 4, 4, 4, 4}, false, 0);
-		blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, true, 14);
+		blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, false, 0);
+		blocks.emplace_back("Leaves", 6, models.cube, std::vector<uint8_t>{6, 6, 6, 6, 6, 6}, true, 14);
 
 		world = std::make_unique<World>(blocks, shader);
 		player = std::make_unique<Player>(*world, glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f), glm::pi<float>() / 2.0f, 0.0f);
