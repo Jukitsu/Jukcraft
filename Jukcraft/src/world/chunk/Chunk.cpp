@@ -84,11 +84,10 @@ namespace Jukcraft {
 					if (!block)
 						continue;
 
-					Block type = blockTypes[block];
+					const Block& type = blockTypes[block];
 					if (true) {
 						for (uint8_t i = 0; i < 6; i++) {
 							if (canRenderFacing(localPos + IDIRECTIONS[i])) {
-								uint8_t light = 15 << 4;
 								uint8_t blocklight = getBlockLightSafe(localPos + IDIRECTIONS[i]);
 								uint8_t skylight = getSkyLightSafe(localPos + IDIRECTIONS[i]);
 
@@ -173,7 +172,7 @@ namespace Jukcraft {
 	}
 
 	void Chunk::uploadMesh() {
-		
+		// For future use
 	}
 	void Chunk::drawCubeLayer() {
 		if (!drawable)

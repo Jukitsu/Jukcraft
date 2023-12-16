@@ -22,7 +22,7 @@ namespace Jukcraft {
 	private:
 		
 		std::shared_ptr<Chunk> chunks[WORLD_SIZE][WORLD_SIZE];
-		std::unordered_set<std::shared_ptr<Chunk>> chunksToUpdates;
+		std::queue<std::shared_ptr<Chunk>> chunksToUpdates;
 		std::unordered_set<std::shared_ptr<Chunk>> chunksToLight;
 		const std::vector<Block>& blocks;
 		gfx::Buffer chunkUbo;
