@@ -45,5 +45,5 @@ void main(void) {
 		clamp(blocklightMultiplier * (1.0 + 0.25 * (1.0 - u_Daylight)), intermediateSkylightMultiplier, 1.0), 
 		clamp(skylightMultiplier * u_Daylight, blocklightMultiplier, 1.0)
 	);
-	vs_Out.v_Shading = pow(shading, 2.2f) * ao;
+	vs_Out.v_Shading = shading * ao;
 }
