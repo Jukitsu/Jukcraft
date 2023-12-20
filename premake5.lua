@@ -218,6 +218,8 @@ project "Jukcraft"
 		runtime "debug"
 		symbols "on"
 
+		defines "JUK_DEBUG"
+
 	filter "configurations:Beta"
 		runtime "debug"
  		optimize "on"
@@ -227,6 +229,7 @@ project "Jukcraft"
 
 		defines {
 			"GLM_FORCE_INLINE",
+			"JUK_BETA"
 		}
 
 	filter "configurations:Release"

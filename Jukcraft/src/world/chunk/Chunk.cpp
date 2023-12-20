@@ -30,7 +30,7 @@ namespace Jukcraft {
 					else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
 						setBlock(glm::uvec3(lx, ly, lz), 3);
 					else
-						setBlock(glm::uvec3(lx, ly, lz), 1);
+						setBlock(glm::uvec3(lx, ly, lz), std::rand() % 3 ? 1 : 0);
 				}
 
 		lightMap = new uint8_t * *[CHUNK_HEIGHT];

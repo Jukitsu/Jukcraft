@@ -50,11 +50,13 @@ namespace Jukcraft {
 		glfwSetWindowUserPointer(handle, this);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			THROW_ERROR("Failed to load GL");
-#ifdef _DEBUG
+
+#ifdef JUK_DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(GLDebugMsgCallback, nullptr);
 #endif
+
 		glfwSetWindowSizeCallback(handle, [](GLFWwindow* window, int width, int height) {
 			((Window*)glfwGetWindowUserPointer(window))->onResize(width, height);
 			});

@@ -22,6 +22,9 @@
     <Filter Include="renderer">
       <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer\chunk">
+      <UniqueIdentifier>{C4E6214A-B0B4-1550-9948-867685B5F1B4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="renderer\gfx">
       <UniqueIdentifier>{30E2E770-1C45-7715-C5CA-AFCBB10C4398}</UniqueIdentifier>
     </Filter>
@@ -97,6 +100,9 @@
     <ClInclude Include="src\renderer\Renderer.h">
       <Filter>renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\chunk\Mesh.h">
+      <Filter>renderer\chunk</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h">
       <Filter>renderer\gfx\buffers</Filter>
     </ClInclude>
@@ -130,7 +136,6 @@
     <ClInclude Include="src\world\chunk\util.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\chunk\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -162,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\renderer\chunk\Mesh.cpp">
+      <Filter>renderer\chunk</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp">
       <Filter>renderer\gfx\buffers</Filter>
     </ClCompile>
@@ -180,6 +188,5 @@
     <ClCompile Include="src\world\chunk\ChunkManager.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\chunk\Mesh.cpp" />
   </ItemGroup>
 </Project>
