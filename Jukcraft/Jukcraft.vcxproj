@@ -163,6 +163,7 @@
     <ClInclude Include="src\models\Model.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physics\constants.h" />
+    <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\chunk\Mesh.h" />
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
@@ -192,6 +193,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\renderer\chunk\Mesh.cpp" />
+    <ClCompile Include="src\renderer\chunk\RenderRegion.cpp" />
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
     <ClCompile Include="src\world\LightEngine.cpp" />

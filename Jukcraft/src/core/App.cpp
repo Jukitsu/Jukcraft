@@ -45,27 +45,25 @@ namespace Jukcraft {
 	void App::run() {
 
 		float lastTime = static_cast<float>(glfwGetTime()), timer = lastTime;
-		float deltaTimePerTick = 0.0f, renderDeltaTime = 0.0f, nowTime = 0.0f;
+		float partialTicks = 0.0f, nowTime = 0.0f;
 		int frames = 0, updates = 0;
 
 		float deltaTime = 0.0f;
 		while (!window->shouldClose()) {
 
 			nowTime = static_cast<float>(glfwGetTime());
-			renderDeltaTime = (nowTime - lastTime);
-			deltaTimePerTick += (nowTime - lastTime) * TICK_RATE;
+			partialTicks += (nowTime - lastTime) * TICK_RATE;
 			lastTime = nowTime;
 
-			// - Only update at 60 tick / s
-			while (deltaTimePerTick >= 1.0) {
-				deltaTime = deltaTimePerTick / TICK_RATE;
-				game->tick(deltaTime);   // - Update function
+			// - Only update at 64 tick / s
+			while (partialTicks >= 1.0) {
+				game->tick();   // - Update function
 				updates++;
-				deltaTimePerTick--;
+				partialTicks--;
 
 			}
 
-			game->renderNewFrame(renderDeltaTime);
+			game->renderNewFrame(partialTicks);
 			frames++;
 
 			window->endFrame();

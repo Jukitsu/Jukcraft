@@ -41,7 +41,7 @@ namespace Jukcraft {
 			}
 
 	}
-	void Game::hitCallback(int button, const glm::vec3& currentBlock, const glm::vec3& nextBlock) {
+	void Game::hitCallback(int button, const BlockPos& currentBlock, const BlockPos& nextBlock) {
 		switch (button) {
 		case GLFW_MOUSE_BUTTON_LEFT:
 			world->setBlock(nextBlock, 0);
@@ -56,13 +56,13 @@ namespace Jukcraft {
 	}
 
 
-	void Game::tick(const float deltaTime) {
-		world->tick(deltaTime);	
-		player->tick(deltaTime);
+	void Game::tick() {
+		world->tick();	
+		player->tick();
 	}
 
-	void Game::renderNewFrame(const float deltaTime) {
-		camera.update(deltaTime);
+	void Game::renderNewFrame(const float partialTicks) {
+		camera.update(partialTicks);
 
 		Renderer::Begin(world->getSkyColor());
 		world->render();

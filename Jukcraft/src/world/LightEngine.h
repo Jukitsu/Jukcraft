@@ -6,10 +6,10 @@ namespace Jukcraft {
 	public:
 		LightEngine(ChunkManager& chunkManager, const std::vector<Block>& blocks)
 			:chunkManager(chunkManager), blocks(blocks) {}
-		void increaseLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk, uint8_t light);
+		void increaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk, uint8_t light);
 		void initSkyLight(std::shared_ptr<Chunk>& chunk);
-		void decreaseLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk);
-		void decreaseSkyLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk);
+		void decreaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk);
+		void decreaseSkyLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk);
 		void propagateLightIncrease();
 		void propagateLightDecrease();
 		void propagateSkyLightIncrease();
@@ -19,19 +19,19 @@ namespace Jukcraft {
 	private:
 		void markPositionForUpdate(std::shared_ptr<Chunk>&, const glm::ivec3& localPos);
 		struct BlockLightIncreaseNode {
-			glm::ivec3 pos;
+			BlockPos pos;
 			uint8_t light;
 		};
 		struct BlockLightDecreaseNode {
-			glm::ivec3 pos;
+			BlockPos pos;
 			uint8_t oldlight;
 		};
 		struct SkyLightIncreaseNode {
-			glm::ivec3 pos;
+			BlockPos pos;
 			uint8_t light;
 		};
 		struct SkyLightDecreaseNode {
-			glm::ivec3 pos;
+			BlockPos pos;
 			uint8_t oldlight;
 		};
 		std::queue<BlockLightIncreaseNode> lightIncreaseQueue;

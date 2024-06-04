@@ -13,7 +13,7 @@ namespace Jukcraft {
 	}
 
 	bool HitRay::check(int button, HitCallback callback,
-		float distance, const glm::vec3& currentBlock, const glm::vec3& nextBlock) {
+		float distance, const BlockPos& currentBlock, const BlockPos& nextBlock) {
 
 		if (world.getBlock(nextBlock)) {
 			callback(button, currentBlock, nextBlock);
@@ -26,20 +26,13 @@ namespace Jukcraft {
 			return false;
 		}
 	}
+
 	bool HitRay::step(int button, HitCallback callback) {
-		glm::ivec3 sign = glm::ivec3(1, 1, 1);
-		glm::vec3 localPos = position - (glm::vec3)block;
+		glm::ivec3 sign = glm::sign(vector);
+		glm::vec3 localPos = (glm::vec3)sign * (position - (glm::vec3)block);
 
-		glm::vec3 absoluteVector = vector;
+		glm::vec3 absoluteVector = glm::abs(vector);
 
-		for (uint8_t component = 0; component < 3; component++) {
-			if (vector[component] < 0) {
-				sign[component] = -1;
-
-				absoluteVector[component] = -absoluteVector[component];
-				localPos[component] = -localPos[component];
-			}
-		}
 
 		float vx = absoluteVector.x, vy = absoluteVector.y, vz = absoluteVector.z;
 		float lx = localPos.x, ly = localPos.y, lz = localPos.z;
@@ -52,7 +45,7 @@ namespace Jukcraft {
 
 			if (y >= -0.5f && y <= 0.5f && z >= -0.5f && z <= 0.5f) {
 				float distance = glm::distance(glm::vec3(x, y, z), localPos);
-				return check(button, callback, distance, block, glm::vec3(block.x + sign.x, block.y, block.z));
+				return check(button, callback, distance, block, glm::ivec3(block.x + sign.x, block.y, block.z));
 			}
 		}
 
@@ -63,7 +56,7 @@ namespace Jukcraft {
 
 			if (x >= -0.5f && x <= 0.5f && z >= -0.5f && z <= 0.5f) {
 				float distance = glm::distance(glm::vec3(x, y, z), localPos);
-				return check(button, callback, distance, block, glm::vec3(block.x, block.y + sign.y, block.z));
+				return check(button, callback, distance, block, glm::ivec3(block.x, block.y + sign.y, block.z));
 			}
 		}
 
@@ -74,7 +67,7 @@ namespace Jukcraft {
 
 			if (x >= -0.5f && x <= 0.5f && y >= -0.5f && y <= 0.5f) {
 				float distance = glm::distance(glm::vec3(x, y, z), localPos);
-				return check(button, callback, distance, block, glm::vec3(block.x, block.y, block.z + sign.z));
+				return check(button, callback, distance, block, glm::ivec3(block.x, block.y, block.z + sign.z));
 			}
 		}
 

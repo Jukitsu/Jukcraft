@@ -78,31 +78,25 @@ namespace Jukcraft {
 			for (uint8_t x = 0; x < CHUNK_DIM; x++)
 				for (uint8_t z = 0; z < CHUNK_DIM; z++) {
 					glm::ivec3 localPos = glm::ivec3(x, y, z);
-
 					BlockID block = getBlock(localPos);
 
 					if (!block)
 						continue;
-
+			
 					const Block& type = blockTypes[block];
-					if (true) {
-						for (uint8_t i = 0; i < 6; i++) {
-							if (canRenderFacing(localPos + IDIRECTIONS[i])) {
-								uint8_t blocklight = getBlockLightSafe(localPos + IDIRECTIONS[i]);
-								uint8_t skylight = getSkyLightSafe(localPos + IDIRECTIONS[i]);
+					
+					for (uint8_t i = 0; i < 6; i++) {
+						if (canRenderFacing(localPos + IDIRECTIONS[i])) {
+							uint8_t blocklight = getBlockLightSafe(localPos + IDIRECTIONS[i]);
+							uint8_t skylight = getSkyLightSafe(localPos + IDIRECTIONS[i]);
 
-								BakedQuad bakedQuad = mesh.bakeCubeFace(localPos, i, blocklight, skylight);
-								// BakedQuad bakedQuad(blocklight, skylight);
-								mesh.pushCubeFace(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], bakedQuad);
-								quadCount++;
-							}
+							BakedQuad bakedQuad = mesh.bakeCubeFace(localPos, i, blocklight, skylight);
+							mesh.pushCubeFace(type.getModel().getQuads()[i], localPos, type.getTextureLayout()[i], bakedQuad);
+							quadCount++;
 						}
 					}
-
 				}
 		mesh.end();
-
-		
 		drawable = true;
 	}
 
@@ -123,9 +117,9 @@ namespace Jukcraft {
 
 	[[nodiscard]] uint8_t Chunk::getOpacitySafe(const glm::ivec3& localPos) const {
 		if (IsOutside(localPos)) {
-			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
-			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
-			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
+			BlockPos blockPos(chunkPos, localPos);
+			glm::ivec2 newChunkPos = blockPos.getChunkPos();
+			glm::ivec3 newLocalPos = blockPos.getLocalPos();
 			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 0;
@@ -138,9 +132,9 @@ namespace Jukcraft {
 
 	[[nodiscard]] uint8_t Chunk::getBlockLightSafe(const glm::ivec3& localPos) const {
 		if (IsOutside(localPos)) {
-			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
-			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
-			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
+			BlockPos blockPos(chunkPos, localPos);
+			glm::ivec2 newChunkPos = blockPos.getChunkPos();
+			glm::ivec3 newLocalPos = blockPos.getLocalPos();
 			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 0;
@@ -153,9 +147,9 @@ namespace Jukcraft {
 
 	[[nodiscard]] uint8_t Chunk::getSkyLightSafe(const glm::ivec3& localPos) const {
 		if (IsOutside(localPos)) {
-			glm::ivec3 worldPos = Chunk::ToWorldPos(chunkPos, localPos);
-			glm::ivec2 newChunkPos = Chunk::ToChunkPos(worldPos);
-			glm::ivec3 newLocalPos = Chunk::ToLocalPos(worldPos);
+			BlockPos blockPos(chunkPos, localPos);
+			glm::ivec2 newChunkPos = blockPos.getChunkPos();
+			glm::ivec3 newLocalPos = blockPos.getLocalPos();
 			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 15;

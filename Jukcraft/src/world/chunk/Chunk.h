@@ -20,19 +20,11 @@ namespace Jukcraft {
 
 		[[nodiscard]] constexpr const glm::ivec2& getChunkPos() { return chunkPos; }
 
-		template<typename VectorType>
-		[[nodiscard]] constexpr BlockID getBlock(const glm::vec<3, VectorType>& localPos) const;
-		template<typename VectorType>
-		void setBlock(const glm::vec<3, VectorType>& localPos, const BlockID block);
+		[[nodiscard]] constexpr BlockID getBlock(const glm::ivec3& localPos) const;
 
-		template<typename VectorType>
-		[[nodiscard]] static constexpr glm::vec<2, VectorType> ToChunkPos(const glm::vec<3, VectorType>& worldPos);
-		template<typename VectorType>
-		[[nodiscard]] static constexpr glm::vec<3, VectorType> ToLocalPos(const glm::vec<3, VectorType>& worldPos);
-		template<typename VectorType>
-		[[nodiscard]] static constexpr glm::vec<3, VectorType> ToWorldPos(const glm::vec<2, VectorType>& chunkPos, const glm::vec<3, VectorType>& localPos);
-		template<typename VectorType>
-		[[nodiscard]] static constexpr bool IsOutside(const glm::vec<3, VectorType>& localPos);
+		void setBlock(const glm::ivec3& localPos, const BlockID block);
+
+		[[nodiscard]] static constexpr bool IsOutside(const glm::ivec3& localPos);
 		
 		[[nodiscard]] bool canRenderFacing(const glm::ivec3& localPos) const { return !getOpacitySafe(localPos); }
 		[[nodiscard]] uint8_t getOpacitySafe(const glm::ivec3& localPos) const;
@@ -40,16 +32,25 @@ namespace Jukcraft {
 		[[nodiscard]] uint8_t getSkyLightSafe(const glm::ivec3& localPos) const;
 
 
-		template<typename VectorType>
-		[[nodiscard]] constexpr uint8_t getRawLight(const glm::vec<3, VectorType>& localPos) const noexcept;
-		template<typename VectorType>
-		[[nodiscard]] constexpr uint8_t getBlockLight(const glm::vec<3, VectorType>& localPos) const noexcept;
-		template<typename VectorType>
-		[[nodiscard]] constexpr uint8_t getSkyLight(const glm::vec<3, VectorType>& localPos) const noexcept;
-		template<typename VectorType>
-		void setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept;
-		template<typename VectorType>
-		void setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept;
+		[[nodiscard]] constexpr uint8_t getRawLight(const glm::ivec3& localPos) const noexcept {
+			return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
+		}
+
+		[[nodiscard]] constexpr uint8_t getBlockLight(const glm::ivec3& localPos) const noexcept {
+			return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF;
+		}
+
+		[[nodiscard]] constexpr uint8_t getSkyLight(const glm::ivec3& localPos) const noexcept {
+			return (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] >> 4) & 0xF;
+		}
+
+		void setBlockLight(const glm::ivec3& localPos, uint8_t value) noexcept {
+			lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF0) | value;
+		}
+
+		void setSkyLight(const glm::ivec3& localPos, uint8_t value) noexcept {
+			lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
+		}
 	private:
 		struct {
 			std::weak_ptr<Chunk> east;
@@ -77,54 +78,22 @@ namespace Jukcraft {
 		friend class ChunkManager;
 	};
 
-	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t Chunk::getRawLight(const glm::vec<3, VectorType>& localPos) const noexcept {
-		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
-	}
-	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t Chunk::getBlockLight(const glm::vec<3, VectorType>& localPos) const noexcept {
-		return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF;
-	}
-	template<typename VectorType>
-	[[nodiscard]] constexpr uint8_t Chunk::getSkyLight(const glm::vec<3, VectorType>& localPos) const noexcept {
-		return (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] >> 4) & 0xF;
-	}
-	template<typename VectorType>
-	inline void Chunk::setBlockLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept {
-		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF0) | value;
-	}
-	template<typename VectorType>
-	inline void Chunk::setSkyLight(const glm::vec<3, VectorType>& localPos, uint8_t value) noexcept {
-		lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
-	}
-	template<typename VectorType>
-	[[nodiscard]] constexpr BlockID Chunk::getBlock(const glm::vec<3, VectorType>& localPos) const {
+	
+
+	[[nodiscard]] constexpr BlockID Chunk::getBlock(const glm::ivec3& localPos) const {
 		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return 0;
 		return blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
 	}
-	template<typename VectorType>
-	inline void Chunk::setBlock(const glm::vec<3, VectorType>& localPos, const BlockID block) {
+	inline void Chunk::setBlock(const glm::ivec3& localPos, const BlockID block) {
 		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return;
 		blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = block;
 	}
-	template<typename VectorType>
-	[[nodiscard]] static constexpr glm::vec<2, VectorType> Chunk::ToChunkPos(const glm::vec<3, VectorType>& worldPos) {
-		return { glm::floor((float)worldPos.x / CHUNK_DIM), glm::floor((float)worldPos.z / CHUNK_DIM) };
-	}
-	template<typename VectorType>
-	[[nodiscard]] static constexpr glm::vec<3, VectorType> Chunk::ToLocalPos(const glm::vec<3, VectorType>& worldPos) {
-		return { glm::mod<float>((float)worldPos.x, (float)CHUNK_DIM), worldPos.y, glm::mod<float>((float)worldPos.z, (float)CHUNK_DIM) };
-	}
-	template<typename VectorType>
-	[[nodiscard]] static constexpr glm::vec<3, VectorType> Chunk::ToWorldPos(const glm::vec<2, VectorType>& chunkPos, const glm::vec<3, VectorType>& localPos) {
-		return { localPos.x + chunkPos.x * CHUNK_DIM, localPos.y, localPos.z + chunkPos.y * CHUNK_DIM };
-	}
-	template<typename VectorType>
-	[[nodiscard]] static constexpr bool Chunk::IsOutside(const glm::vec<3, VectorType>& localPos) {
+
+	[[nodiscard]] constexpr bool Chunk::IsOutside(const glm::ivec3& localPos) {
 		return (localPos.x < 0 || localPos.x >= CHUNK_DIM
 			|| localPos.y < 0 || localPos.y >= CHUNK_HEIGHT
 			|| localPos.z < 0 || localPos.z >= CHUNK_DIM);

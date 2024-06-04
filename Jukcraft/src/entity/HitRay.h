@@ -4,18 +4,18 @@
 
 
 namespace Jukcraft {
-	using HitCallback = std::function<void(int, const glm::vec3&, const glm::vec3&)>;
+	using HitCallback = std::function<void(int, const BlockPos&, const BlockPos&)>;
 
 	struct HitRay {
 		HitRay(World& world, LivingEntity& entity);
 		bool check(int button, HitCallback callback,
-			float distance, const glm::vec3& currentBlock, const glm::vec3& nextBlock);
+			float distance, const BlockPos& currentBlock, const BlockPos& nextBlock);
 		bool step(int button, HitCallback callback);
 
 		World& world;
 		glm::vec3 vector;
 		glm::vec3 position;
-		glm::ivec3 block;
+		BlockPos block;
 		float distance;
 	};
 

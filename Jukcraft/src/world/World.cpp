@@ -15,14 +15,14 @@ namespace Jukcraft {
 		);
 	}
 
-	void World::tick(float deltaTime) {
+	void World::tick() {
 		time += 1;
 		updateDaylight();
 		chunkManager.tick();
 		lightEngine.propagateLightIncrease();
 	}
 
-	void World::trySetBlock(Player& player, const glm::ivec3& worldPos, BlockID blockID) {
+	void World::trySetBlock(Player& player, const BlockPos& worldPos, BlockID blockID) {
 		if (!blockID)
 			setBlock(worldPos, blockID);
 
@@ -32,40 +32,42 @@ namespace Jukcraft {
 		
 		setBlock(worldPos, blockID);
 	}
-	void World::setBlock(const glm::ivec3& worldPos, BlockID blockID) {
-		glm::ivec2 chunkPos = Chunk::ToChunkPos(worldPos);
+	void World::setBlock(const BlockPos& blockPos, BlockID blockID) {
+		glm::ivec2 chunkPos = blockPos.getChunkPos();
 		std::optional<std::shared_ptr<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
+
 		if (!pendingChunk.has_value())
 			return;
+
 		std::shared_ptr<Chunk>& chunk = *pendingChunk;
-		glm::ivec3 localPos = Chunk::ToLocalPos(worldPos);
+		glm::ivec3 localPos = blockPos.getLocalPos();
 		const Block& block = blocks[blockID];
 		chunk->setBlock(localPos, blockID);
 
 		if (!blockID) {
-			lightEngine.decreaseLight(worldPos, chunk);
-			lightEngine.decreaseSkyLight(worldPos, chunk);
+			lightEngine.decreaseLight(blockPos, chunk);
+			lightEngine.decreaseSkyLight(blockPos, chunk);
 		}
 		else {
 			if (block.getLight()) {
-				lightEngine.increaseLight(worldPos, chunk, block.getLight());
+				lightEngine.increaseLight(blockPos, chunk, block.getLight());
 			}
 			else if (!block.isTransparent()) {
-				lightEngine.decreaseLight(worldPos, chunk);
-				lightEngine.decreaseSkyLight(worldPos, chunk);
+				lightEngine.decreaseLight(blockPos, chunk);
+				lightEngine.decreaseSkyLight(blockPos, chunk);
 			}
 		}
 
 		chunkManager.updateChunkAtPosition(chunk, localPos);
 	}
 
-	BlockID World::getBlock(const glm::ivec3& worldPos) const {
-		glm::ivec2 chunkPos = Chunk::ToChunkPos(worldPos);
+	BlockID World::getBlock(const BlockPos& blockPos) const {
+		glm::ivec2 chunkPos = blockPos.getChunkPos();
 		std::optional<std::shared_ptr<const Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
 		if (!pendingChunk.has_value())
 			return 0;
 		std::shared_ptr<const Chunk>& chunk = *pendingChunk;
-		glm::ivec3 localPos = Chunk::ToLocalPos(worldPos);
+		glm::ivec3 localPos = blockPos.getLocalPos();
 		return chunk->getBlock(localPos);
 	}
 

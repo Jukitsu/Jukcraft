@@ -21,9 +21,9 @@ namespace Jukcraft {
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
 
-	void LivingEntity::resolveCollisions(float deltaTime) {
+	void LivingEntity::resolveCollisions() {
 
-		glm::vec3 adjustedVelocity = velocity * deltaTime;
+		glm::vec3 adjustedVelocity = velocity;
 
 		// find all the blocks we could potentially be colliding with
 		// this step is known as "broad-phasing"
@@ -45,7 +45,7 @@ namespace Jukcraft {
 		for (int i = p.x - step_x * (steps_xz + 1); step_x * (i - (c.x + step_x * (steps_xz + 2))) < 0; i += step_x)
 			for (int j = p.y - step_y * (steps_y + 2); step_y * (j - (c.y + step_y * (steps_y + 3))) < 0; j += step_y)
 				for (int k = p.z - step_z * (steps_xz + 1); step_z * (k - (c.z + step_z * (steps_xz + 2))) < 0; k += step_z) {
-					glm::ivec3 pos = { i, j, k };
+					BlockPos pos = { i, j, k };
 					BlockID block = world.getBlock(pos);
 
 					if (!block)
@@ -99,32 +99,48 @@ namespace Jukcraft {
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
 	}
 
-	void LivingEntity::tick(float deltaTime) {
-		oldPosition = position;
+	void LivingEntity::tick() {
+		aiStep();
+	}
 
-		velocity += acceleration * getFriction() * deltaTime;
-		acceleration = glm::vec3(0.0f);
+	void LivingEntity::aiStep() {
+		applyPhysics();
+	}
+
+	void LivingEntity::applyPhysics() {
+		float accelMagnitude = glm::length(glm::vec2(relativeAccel.x, relativeAccel.z));
+		float headingAngle = yaw - glm::atan<float>(relativeAccel.z, relativeAccel.x) + glm::pi<float>() / 2;
+
+		velocity += glm::vec3(
+			glm::cos(headingAngle) * accelMagnitude,
+			relativeAccel.y,
+			glm::sin(headingAngle) * accelMagnitude
+		) * getFriction();
+
+		setRelativeAccel(glm::vec3(0.0f));
 
 		updateCollider();
-		
+
 		onGround = false;
 
 		for (uint8_t i = 0; i < 3; i++)
-			resolveCollisions(deltaTime);
+			resolveCollisions();
 
-		position += velocity * deltaTime;
-		velocity += g * deltaTime;
+		oldPosition = position;
+		position += velocity;
+		velocity += g;
 
-		auto comp = [](auto& a, auto& b) { return glm::abs(a) < glm::abs(b); };
 
-		glm::vec3 deltaFriction = glm::vec3(
-			std::min(velocity.x * getFriction().x * deltaTime, velocity.x, comp),
-			std::min(velocity.y * getFriction().y * deltaTime, velocity.y, comp),
-			std::min(velocity.z * getFriction().z * deltaTime, velocity.z, comp)
-		);
-		velocity -= deltaFriction;
+		velocity *= glm::max(glm::vec3(0.0), glm::vec3(1.0) - getFriction());
+
 		updateCollider();
+	}
 
+	void LivingEntity::move(const glm::vec3& motion) {
+		velocity += motion;
+	}
 
+	void LivingEntity::push(const glm::vec3& motion) {
+		velocity += motion;
 	}
 }

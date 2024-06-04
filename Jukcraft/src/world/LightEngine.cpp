@@ -11,7 +11,7 @@ namespace Jukcraft {
 			for (uint32_t lz = 0; lz < CHUNK_DIM; lz++) {
 				int ly = CHUNK_HEIGHT - 1;
 				for (; ly >= 0; ly--) {
-					if (chunk->getBlock(glm::ivec3(lx, ly, lz)))
+					if (chunk->getBlock(BlockPos(lx, ly, lz)))
 						break;
 
 				}
@@ -23,17 +23,17 @@ namespace Jukcraft {
 		for (uint32_t ly = CHUNK_HEIGHT - 1; ly >= height; ly--)
 			for (uint32_t lx = 0; lx < CHUNK_DIM; lx++)
 				for (uint32_t lz = 0; lz < CHUNK_DIM; lz++) {
-					chunk->setSkyLight(glm::ivec3(lx, ly, lz), 15);
+					chunk->setSkyLight(BlockPos(lx, ly, lz), 15);
 				}
 
 
 		for (uint32_t lx = 0; lx < CHUNK_DIM; lx++)
 			for (uint32_t lz = 0; lz < CHUNK_DIM; lz++) {
-				glm::ivec3 localPos = glm::ivec3(lx, height, lz);
-				glm::ivec3 LightEnginePos = Chunk::ToWorldPos(chunkPos, localPos);
+				glm::ivec3 localPos(lx, height, lz);
+				BlockPos lightEnginePos(chunkPos, localPos);
 				skylightIncreaseQueue.push(
 					SkyLightIncreaseNode{
-						LightEnginePos,
+						lightEnginePos,
 						15
 					}
 				);
@@ -41,8 +41,8 @@ namespace Jukcraft {
 			}
 	}
 
-	void LightEngine::increaseLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk, uint8_t light) {
-		chunk->setBlockLight(Chunk::ToLocalPos(pos), light);
+	void LightEngine::increaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk, uint8_t light) {
+		chunk->setBlockLight(pos.getLocalPos(), light);
 
 		lightIncreaseQueue.push(
 			BlockLightIncreaseNode{
@@ -53,9 +53,9 @@ namespace Jukcraft {
 		propagateLightIncrease();
 	}
 
-	void LightEngine::decreaseLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk) {
-		uint8_t oldlight = chunk->getBlockLight(Chunk::ToLocalPos(pos));
-		chunk->setBlockLight(Chunk::ToLocalPos(pos), 0);
+	void LightEngine::decreaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk) {
+		uint8_t oldlight = chunk->getBlockLight(pos.getLocalPos());
+		chunk->setBlockLight(pos.getLocalPos(), 0);
 
 		lightDecreaseQueue.push(
 			BlockLightDecreaseNode{
@@ -67,9 +67,9 @@ namespace Jukcraft {
 		propagateLightIncrease();
 	}
 
-	void LightEngine::decreaseSkyLight(const glm::ivec3& pos, std::shared_ptr<Chunk>& chunk) {
-		uint8_t oldlight = chunk->getSkyLight(Chunk::ToLocalPos(pos));
-		chunk->setSkyLight(Chunk::ToLocalPos(pos), 0);
+	void LightEngine::decreaseSkyLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk) {
+		uint8_t oldlight = chunk->getSkyLight(pos.getLocalPos());
+		chunk->setSkyLight(pos.getLocalPos(), 0);
 
 		skylightDecreaseQueue.push(
 			SkyLightDecreaseNode{
@@ -84,23 +84,24 @@ namespace Jukcraft {
 	void LightEngine::propagateLightIncrease() {
 		while (!lightIncreaseQueue.empty()) {
 			const BlockLightIncreaseNode& node = lightIncreaseQueue.front();
-			glm::ivec3 pos = node.pos;
+			BlockPos pos = node.pos;
 			uint8_t light = node.light;
 			lightIncreaseQueue.pop();
 
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
-				glm::ivec3 newPos = pos + direction;
+				BlockPos newPos = pos + direction;
 
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
+				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 
-				glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
-				if (chunk.value()->getBlockLight(localPos) + 2 <= light && blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
+				glm::ivec3 localPos = newPos.getLocalPos();
+				if (chunk.value()->getBlockLight(localPos) + 2 <= light 
+						&& blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
 					chunk.value()->setBlockLight(localPos, light - 1);
 					lightIncreaseQueue.push(
 						BlockLightIncreaseNode{
@@ -117,22 +118,23 @@ namespace Jukcraft {
 	void LightEngine::propagateSkyLightIncrease() {
 		while (!skylightIncreaseQueue.empty()) {
 			const SkyLightIncreaseNode& node = skylightIncreaseQueue.front();
-			glm::ivec3 pos = node.pos;
+			BlockPos pos = node.pos;
 			uint8_t skylight = node.light;
 			skylightIncreaseQueue.pop();
 
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
-				glm::ivec3 newPos = pos + direction;
+				BlockPos newPos = pos + direction;
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
+				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
+				glm::ivec3 localPos = newPos.getLocalPos();
 
-				if (chunk.value()->getSkyLight(localPos) < skylight && blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
+				if (chunk.value()->getSkyLight(localPos) < skylight 
+					&& blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
 					if (direction.y == -1) {
 						chunk.value()->setSkyLight(localPos, skylight);
 						skylightIncreaseQueue.push(
@@ -161,21 +163,21 @@ namespace Jukcraft {
 	void LightEngine::propagateLightDecrease() {
 		while (!lightDecreaseQueue.empty()) {
 			const BlockLightDecreaseNode& node = lightDecreaseQueue.front();
-			glm::ivec3 pos = node.pos;
+			BlockPos pos = node.pos;
 			uint8_t oldlight = node.oldlight;
 			lightDecreaseQueue.pop();
 
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
-				glm::ivec3 newPos = pos + direction;
+				BlockPos newPos = pos + direction;
 
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
+				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
+				glm::ivec3 localPos = newPos.getLocalPos();
 				Block block = blocks[chunk.value()->getBlock(localPos)];
 
 				if (block.getLight()) {
@@ -220,20 +222,20 @@ namespace Jukcraft {
 	void LightEngine::propagateSkyLightDecrease() {
 		while (!skylightDecreaseQueue.empty()) {
 			const SkyLightDecreaseNode& node = skylightDecreaseQueue.front();
-			glm::ivec3 pos = node.pos;
+			BlockPos pos = node.pos;
 			uint8_t oldlight = node.oldlight;
 			skylightDecreaseQueue.pop();
 
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
-				glm::ivec3 newPos = pos + direction;
+				BlockPos newPos = pos + direction;
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(Chunk::ToChunkPos(newPos));
+				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = Chunk::ToLocalPos(newPos);
+				glm::ivec3 localPos = newPos.getLocalPos();
 				Block block = blocks[chunk.value()->getBlock(localPos)];
 
 				if (block.isTransparent()) {

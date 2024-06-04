@@ -7,12 +7,12 @@ namespace Jukcraft {
 	class World {
 	public:
 		World(const std::vector<Block>& blocks, gfx::Shader& shader);
-		void tick(float deltaTime);
+		void tick();
 		void render();
-		void setBlock(const glm::ivec3& worldPos, BlockID block);
-		void trySetBlock(Player& player, const glm::ivec3& worldPos, BlockID block);
+		void setBlock(const BlockPos& blockPos, BlockID block);
+		void trySetBlock(Player& player, const BlockPos& blockPos, BlockID block);
 
-		BlockID getBlock(const glm::ivec3& worldPos) const;
+		BlockID getBlock(const BlockPos& worldPos) const;
 
 		void speedTime() {
 			if (daylight <= 480)

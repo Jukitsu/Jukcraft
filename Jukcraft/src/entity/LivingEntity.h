@@ -17,9 +17,13 @@ namespace Jukcraft {
 		virtual ~LivingEntity();
 
 		void updateCollider();
-		void resolveCollisions(float deltaTime);
+		void resolveCollisions();
 		void jump(float jumpHeight = JUMP_HEIGHT);
-		void tick(float deltaTime) override;
+		void aiStep() override;
+		void tick() override;
+		void applyPhysics() override;
+		void move(const glm::vec3& motion) override;
+		void push(const glm::vec3& motion) override;
 
 
 		constexpr float getEyeLevel() const { return height - 0.2f; }

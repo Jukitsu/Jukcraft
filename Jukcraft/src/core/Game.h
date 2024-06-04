@@ -9,8 +9,8 @@ namespace Jukcraft {
 	class Game {
 	public:
 		Game();
-		void hitCallback(int button, const glm::vec3& currentBlock, const glm::vec3& nextBlock);
-		void tick(const float deltaTime);
+		void hitCallback(int button, const BlockPos& currentBlock, const BlockPos& nextBlock);
+		void tick();
 		void renderNewFrame(const float deltaTime);
 		void onMousePress(int button);
 		void speedTime() {

@@ -6,21 +6,18 @@
 namespace Jukcraft {
 	static inline uint8_t smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
 		if (!(light && b && c && d)) {
-			std::array<uint8_t, 4> l = {
-				light,
-				b > 0 ? b : std::numeric_limits<uint8_t>::max(),
-				c > 0 ? c : std::numeric_limits<uint8_t>::max(),
-				d > 0 ? d : std::numeric_limits<uint8_t>::max()
-			};
-
-			uint8_t min_val = *(std::min_element(l.begin(), l.end()));
+			uint8_t min_val = light;
+			if (b && b < min_val)
+				min_val = b;
+			if (c && c < min_val)
+				min_val = c;
+			if (d && d < min_val)
+				min_val = d;
 
 			light = std::max(light, min_val);
 			b = std::max(b, min_val);
 			c = std::max(c, min_val);
 			d = std::max(d, min_val);
-			
-			
 			
 		}
 		return light + b + c + d; // To divide by 4

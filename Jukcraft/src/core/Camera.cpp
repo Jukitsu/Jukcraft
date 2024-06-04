@@ -20,9 +20,8 @@ namespace Jukcraft {
 	}
 
 
-	void Camera::update(const float deltaTime) {
-		glm::vec3 interpolatedPos = glm::mix(player->position, player->oldPosition, player->interpolationStep);
-		player->interpolationStep -= deltaTime;
+	void Camera::update(const float partialTicks) {
+		glm::vec3 interpolatedPos = glm::mix(player->oldPosition, player->position, partialTicks);
 
 		const glm::vec2 cursorPos = App::GetWindow().getCursorPos();
 		const glm::vec2 deltaCursor = cursorPos - lastCursorPos;
@@ -44,18 +43,14 @@ namespace Jukcraft {
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_SHIFT)) input.y += -1;
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_SPACE))		input.y += 1;
 
-		if (deltaTime * 20.0f > 1.0f) 
-			speed = WALK_SPEED;
-		else 
-			speed += (WALK_SPEED - speed) * deltaTime * 20;
+
+		speed = WALK_SPEED;
 
 
 		if (input.y > 0) {
 			player->jump();
 		} if (input.x || input.z) {
-			const float angle = player->yaw - glm::atan<float>((float)input.z, (float)input.x) + glm::pi<float>() / 2;
-			player->acceleration.x = glm::cos(angle) * speed;
-			player->acceleration.z = glm::sin(angle) * speed;
+			player->setRelativeAccel(glm::vec3((float)input.x * speed, 0.0f, (float)input.z * speed));
 		}
 
 

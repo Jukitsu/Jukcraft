@@ -44,6 +44,41 @@ namespace Jukcraft {
 		uint32_t  baseInstance;
 	};
 
+	constexpr uint8_t CHUNK_DIM = 16;
+	constexpr uint8_t CHUNK_HEIGHT = 128;
+
+	constexpr uint8_t WORLD_SIZE = 2;
+
+
+	struct PerChunkData {
+		glm::vec3 chunkPos;
+	};
+
+	struct BlockPos : public glm::ivec3 {
+
+		BlockPos() :glm::ivec3() {}
+		BlockPos(const glm::ivec3& vec) :glm::ivec3() {}
+		BlockPos(glm::ivec3&& vec) :glm::ivec3(vec) {}
+		BlockPos(int x, int y, int z) :glm::ivec3(x, y, z) {}
+		BlockPos(int scalar) :glm::ivec3(scalar) {}
+		BlockPos(const glm::ivec2& chunkPos, const glm::ivec3& localPos) 
+			:glm::ivec3((int)CHUNK_DIM * glm::ivec3(chunkPos.x, 0, chunkPos.y) + localPos)
+		{
+			
+		}
+
+		constexpr glm::ivec2 getChunkPos() const noexcept {
+			return { glm::floor((float)x / CHUNK_DIM), glm::floor((float)z / CHUNK_DIM) };
+		}
+
+		constexpr glm::ivec3 getLocalPos() const noexcept {
+			return { glm::mod((float)x, (float)CHUNK_DIM), y, glm::mod((float)z, (float)CHUNK_DIM) };
+		}
+
+	};
+
+
+
 	constexpr glm::vec3 EAST = glm::vec3(1.0f, 0.0f, 0.0f);
 	constexpr glm::vec3 WEST = glm::vec3(-1.0f, 0.0f, 0.0f);
 	constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -51,7 +86,7 @@ namespace Jukcraft {
 	constexpr glm::vec3 SOUTH = glm::vec3(0.0f, 0.0f, 1.0f);
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	constexpr float TICK_RATE = 60.0f;
+	constexpr float TICK_RATE = 64.0f;
 
 	constexpr uint8_t EAST_INDEX  = 0;
 	constexpr uint8_t WEST_INDEX  = 1;
@@ -91,7 +126,7 @@ namespace Jukcraft {
 	}
 
 	template<typename T>
-	int sign(T x) {
+	constexpr int sign(T x) {
 		return (x > 0) - (x <= 0);
 	}
 }
