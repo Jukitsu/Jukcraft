@@ -18,22 +18,32 @@ namespace Jukcraft {
 		void toggleLightUpdates(bool value) noexcept { doLightUpdates = value; }
 	private:
 		void markPositionForUpdate(std::shared_ptr<Chunk>&, const glm::ivec3& localPos);
+
 		struct BlockLightIncreaseNode {
 			BlockPos pos;
 			uint8_t light;
+
+			BlockLightIncreaseNode(const BlockPos& pos, uint8_t light) :pos(pos), light(light) {}
 		};
 		struct BlockLightDecreaseNode {
 			BlockPos pos;
 			uint8_t oldlight;
+
+			BlockLightDecreaseNode(const BlockPos& pos, uint8_t oldlight) :pos(pos), oldlight(oldlight) {}
 		};
 		struct SkyLightIncreaseNode {
 			BlockPos pos;
 			uint8_t light;
+
+			SkyLightIncreaseNode(const BlockPos& pos, uint8_t light) :pos(pos), light(light) {}
 		};
 		struct SkyLightDecreaseNode {
 			BlockPos pos;
 			uint8_t oldlight;
+
+			SkyLightDecreaseNode(const BlockPos& pos, uint8_t oldlight) :pos(pos), oldlight(oldlight) {}
 		};
+
 		std::queue<BlockLightIncreaseNode> lightIncreaseQueue;
 		std::queue<SkyLightIncreaseNode> skylightIncreaseQueue;
 		std::queue<BlockLightDecreaseNode> lightDecreaseQueue;

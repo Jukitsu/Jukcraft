@@ -13,6 +13,8 @@ namespace Jukcraft {
 				}
 			}
 		);
+
+		lightEngine.toggleLightUpdates(true);
 	}
 
 	void World::tick() {
