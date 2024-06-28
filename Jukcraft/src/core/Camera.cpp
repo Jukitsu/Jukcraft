@@ -28,7 +28,7 @@ namespace Jukcraft {
 		lastCursorPos = cursorPos;
 
 
-		player->yaw = player->yaw + deltaCursor.x * sensitivity, 2.0f * glm::pi<float>();
+		player->yaw = glm::mod(player->yaw + deltaCursor.x * sensitivity, 2.0f * glm::pi<float>());
 		player->pitch = glm::clamp(player->pitch - deltaCursor.y * sensitivity, -glm::pi<float>() / 2, glm::pi<float>() / 2);
 		// It is negative because the origin is in the top left corner, not bottom left
 
@@ -50,7 +50,7 @@ namespace Jukcraft {
 		if (input.y > 0) {
 			player->jump();
 		} if (input.x || input.z) {
-			player->setRelativeAccel(glm::vec3((float)input.x * speed, 0.0f, (float)input.z * speed));
+			player->setRelativeAccel(glm::vec3((float)input.x, 0.0f, (float)input.z) * speed);
 		}
 
 

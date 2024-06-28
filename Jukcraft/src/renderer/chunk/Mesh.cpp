@@ -35,17 +35,22 @@ namespace Jukcraft {
 		:size(size), chunk(chunk) {
 		vbo.allocate(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 24, nullptr);
 
-		vao.bindLayout(gfx::VertexArrayLayout{
-			{
-			   { 1, false },
-			   { 1, false }
+		vao.bindLayout(
+			gfx::VertexArrayLayout{
+				{
+				   { 1, false },
+				   { 1, false }
+				}
 			}
-			});
-		vao.bindVertexBuffer(vbo.getTargetBuffer(), 0, gfx::VertexBufferLayout{
-			{{ 0, 0 }, { 1, offsetof(VertexData, smoothLightData)}},
-			0,
-			sizeof(VertexData)
-			});
+		);
+		vao.bindVertexBuffer(
+			vbo.getTargetBuffer(), 0, 
+			gfx::VertexBufferLayout{
+				{{ 0, 0 }, { 1, offsetof(VertexData, smoothLightData)}},
+				0,
+				sizeof(VertexData)
+			}
+		);
 		vao.bindIndexBuffer(Renderer::GetChunkIbo());
 
 		icbo.allocate(sizeof(DrawIndirectCommand), nullptr);

@@ -6,7 +6,7 @@ namespace Jukcraft {
 
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
 		const glm::vec3& initialAcceleration, float initialYaw, float initialPitch, float width, float height)
-		:Entity(initialPos, initialVelocity, initialAcceleration, initialYaw, initialPitch), 
+		:Entity(initialPos, initialVelocity, initialAcceleration, initialYaw, initialPitch, width * width * height), 
 		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
 		width(0.6f), height(1.8f), collider(), world(world), onGround(false) {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
@@ -28,12 +28,12 @@ namespace Jukcraft {
 		// find all the blocks we could potentially be colliding with
 		// this step is known as "broad-phasing"
 
-		int step_x = (int)sign(velocity.x);
-		int step_y = (int)sign(velocity.y);
-		int step_z = (int)sign(velocity.z);
+		int step_x = sign(velocity.x);
+		int step_y = sign(velocity.y);
+		int step_z = sign(velocity.z);
 
-		int steps_xz = (int)(width / 2);
-		int steps_y = (int)(height);
+		int steps_xz = width / 2;
+		int steps_y = height;
 
 		glm::ivec3 p = static_cast<glm::ivec3>(position);
 		glm::ivec3 c = static_cast<glm::ivec3>(position + adjustedVelocity);
@@ -130,7 +130,7 @@ namespace Jukcraft {
 		position += velocity;
 		velocity += g;
 
-
+ 
 		velocity *= glm::max(glm::vec3(0.0), glm::vec3(1.0) - getFriction());
 
 		updateCollider();

@@ -3,13 +3,13 @@
 namespace Jukcraft {
 	class Entity {
 	public:
-		Entity() {
+		Entity() :mass(1.0f) {
 
 		}
 		Entity(const glm::vec3& initialPos, const glm::vec3& initialVelocity,
-			const glm::vec3& initialAcceleration, float initialYaw, float initialPitch)
+			const glm::vec3& initialAcceleration, float initialYaw, float initialPitch, float mass)
 			:position(initialPos), velocity(initialVelocity), relativeAccel(initialAcceleration),
-			yaw(initialYaw), pitch(initialPitch) {
+			yaw(initialYaw), pitch(initialPitch), mass(mass) {
 
 		}
 		virtual ~Entity() {}
@@ -26,6 +26,7 @@ namespace Jukcraft {
 		constexpr const glm::vec3& getRelativeAccel() const { return relativeAccel; }
 		constexpr float getYaw() const { return yaw; }
 		constexpr float getPitch() const { return pitch; }
+		constexpr float getKineticEnergy() const { return 0.5f * mass * velocity.length() * velocity.length(); }
 
 		void setPos(const glm::vec3& pos) { position = pos; }
 		void setVelocity(const glm::vec3& v) { velocity = v; }
@@ -37,5 +38,6 @@ namespace Jukcraft {
 		glm::vec3 velocity;
 		glm::vec3 relativeAccel;
 		float yaw, pitch;
+		const float mass;
 	};
 }

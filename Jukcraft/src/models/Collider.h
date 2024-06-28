@@ -6,23 +6,23 @@ namespace Jukcraft {
 		glm::ivec3 normal;
 	};
 
-	constexpr const CollisionResult NO_COLLISION = { 1, { 0, 0, 0 } };
+	constexpr const CollisionResult NO_COLLISION = { 1.0f, glm::ivec3(0)};
 
 	struct Collider {
 		glm::vec3 vx1;
 		glm::vec3 vx2;
 
-		Collider operator+(const glm::vec3& v) const;
-		bool operator&(const Collider& other) const;
+		constexpr Collider operator+(const glm::vec3& v) const;
+		constexpr bool operator&(const Collider& other) const;
 
 		CollisionResult collide(const Collider& collider, const glm::vec3& velocity) const;
 	};
 
-	inline Collider Collider::operator+(const glm::vec3& v) const{ 
+	constexpr Collider Collider::operator+(const glm::vec3& v) const{ 
 		return Collider{ vx1 + v, vx2 + v }; 
 	}
 
-	inline bool Collider::operator&(const Collider& other) const {
+	constexpr bool Collider::operator&(const Collider& other) const {
 		return (glm::min(vx2.x, other.vx2.x) - glm::max(vx1.x, other.vx1.x) > 0)
 			&& (glm::min(vx2.y, other.vx2.y) - glm::max(vx1.y, other.vx1.y) > 0)
 			&& (glm::min(vx2.z, other.vx2.z) - glm::max(vx1.z, other.vx1.z) > 0);
@@ -56,10 +56,8 @@ namespace Jukcraft {
 
 		// make sure we actually got a collision
 
-		if (x_entry < 0 && y_entry < 0 && z_entry < 0)
-			return NO_COLLISION;
-
-		if (x_entry > 1 || y_entry > 1 || z_entry > 1)
+		if ((x_entry < 0 && y_entry < 0 && z_entry < 0) 
+			|| (x_entry > 1 || y_entry > 1 || z_entry > 1))
 			return NO_COLLISION;
 		
 		// on which axis did we collide first?
@@ -73,9 +71,9 @@ namespace Jukcraft {
 		// find normal of surface we collided with
 
 		glm::vec3 normal = {
-			entry != x_entry ? 0 : -(int)sign(velocity.x),
-			entry != y_entry ? 0 : -(int)sign(velocity.y),
-			entry != z_entry ? 0 : -(int)sign(velocity.z)
+			entry != x_entry ? 0 : -sign(velocity.x),
+			entry != y_entry ? 0 : -sign(velocity.y),
+			entry != z_entry ? 0 : -sign(velocity.z)
 		};
 
 		return { entry, normal };

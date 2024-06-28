@@ -36,7 +36,7 @@ void main(void) {
 	float skylightMultiplier = pow(0.8, 15.0 - skyLight);
 	float skylightBlueTint = pow(0.8, 15.0 - skyLight * (2.0 - pow(u_Daylight, 2)));
 
-	float shading = float((a_VertexData & 0x3) + 2) / 5.0f;
+	float shading = float((a_VertexData & 0x3) + 1) / 4.0f;
 
 	gl_Position = u_CameraTransforms * vec4(pos, 1.0f);
 

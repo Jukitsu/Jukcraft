@@ -53,7 +53,7 @@ namespace Jukcraft {
 			Renderer::GetStagingBuffer().sync();
 			if (length > STAGING_BUFFER_CAPACITY)
 				THROW_ERROR("Staging Buffer Overflow")
-				currentOffset = 0;
+			currentOffset = 0;
 			regionData = { offset, length };
 		}
 
