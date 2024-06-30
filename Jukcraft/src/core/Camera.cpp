@@ -9,7 +9,7 @@
 static constexpr float sensitivity = 0.005f;
 
 namespace Jukcraft {
-	Camera::Camera(gfx::Shader& shader, std::unique_ptr<Player>& player)
+	Camera::Camera(gfx::Shader& shader, Auto<Player>& player)
 		:shader(shader), player(player), speed(WALK_SPEED) {
 		ubo.allocate(sizeof(ShaderCameraData), nullptr, true);
 		mappedUbo = reinterpret_cast<ShaderCameraData*>(ubo.map(0, sizeof(ShaderCameraData)));

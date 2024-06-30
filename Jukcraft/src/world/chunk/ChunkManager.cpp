@@ -3,11 +3,11 @@
 
 namespace Jukcraft {
 	ChunkManager::ChunkManager(const std::vector<Block>& blocks) :blocks(blocks) {
-		std::vector<std::shared_ptr<Chunk>> chunksToInitSkyLight;
+		std::vector<Shared<Chunk>> chunksToInitSkyLight;
 		chunksToInitSkyLight.reserve(WORLD_SIZE * WORLD_SIZE);
 		for (uint8_t x = 0; x < WORLD_SIZE; x++)
 			for (uint8_t z = 0; z < WORLD_SIZE; z++) {
-				std::shared_ptr<Chunk>& chunk
+				Shared<Chunk>& chunk
 					= chunks[x][z]
 					= std::make_shared<Chunk>(
 						glm::ivec2(x, z),
@@ -23,10 +23,10 @@ namespace Jukcraft {
 		chunkUbo.bindRange(gfx::BufferBindingTarget::Uniform, 1, 0, sizeof(PerChunkData));
 	}
 
-	std::shared_ptr<Chunk> ChunkManager::createChunk(const glm::ivec2& chunkPos) {
+	Shared<Chunk> ChunkManager::createChunk(const glm::ivec2& chunkPos) {
 		int x = chunkPos.x;
 		int z = chunkPos.x;
-		std::shared_ptr<Chunk>& chunk
+		Shared<Chunk>& chunk
 			= chunks[x][z]
 			= std::make_shared<Chunk>(
 				glm::ivec2(x, z), 
@@ -40,7 +40,7 @@ namespace Jukcraft {
 
 	void ChunkManager::tick() {
 		// std::vector<std::future<void>> results;
-		for (std::shared_ptr<Chunk> chunk : chunksToUpdates) {
+		for (Shared<Chunk> chunk : chunksToUpdates) {
 			chunk->updateLayers();
 			// results.push_back(std::async(std::launch::async, std::bind(&Chunk::updateLayers, chunk.get())));
 		}
@@ -48,7 +48,7 @@ namespace Jukcraft {
 			
 	}
 
-	void ChunkManager::updateChunkAtPosition(std::shared_ptr<Chunk>& chunk, const glm::ivec3& localPos) {
+	void ChunkManager::updateChunkAtPosition(Shared<Chunk>& chunk, const glm::ivec3& localPos) {
 		chunksToUpdates.insert(chunk);
 		const glm::ivec2& chunkPos = chunk->getChunkPos();
 
@@ -63,13 +63,13 @@ namespace Jukcraft {
 
 	}
 
-	std::optional<std::shared_ptr<Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) {
+	Nullable<Shared<Chunk>> ChunkManager::getChunk(const glm::ivec2& chunkPos) {
 		if (chunkPos.x < 0 || chunkPos.x >= WORLD_SIZE || chunkPos.y < 0 || chunkPos.y >= WORLD_SIZE)
 			return {};
 		return { chunks[chunkPos.x][chunkPos.y] };
 	}
 
-	std::optional<std::shared_ptr<const Chunk>> ChunkManager::getChunkConst(const glm::ivec2& chunkPos) const {
+	Nullable<Shared<const Chunk>> ChunkManager::getChunkConst(const glm::ivec2& chunkPos) const {
 		if (chunkPos.x < 0 || chunkPos.x >= WORLD_SIZE || chunkPos.y < 0 || chunkPos.y >= WORLD_SIZE)
 			return {};
 		return { chunks[chunkPos.x][chunkPos.y] };

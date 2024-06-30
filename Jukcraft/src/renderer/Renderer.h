@@ -19,7 +19,7 @@ namespace Jukcraft {
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_CULL_FACE);
 			glEnable(GL_MULTISAMPLE);
-
+			// glEnable(GL_FRAMEBUFFER_SRGB);
 
 			std::vector<uint32_t> indices;
 			indices.resize(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 36);
@@ -97,8 +97,8 @@ namespace Jukcraft {
 	private:
 		inline static std::queue<GLsync> fences;
 		inline static std::queue<std::pair<const gfx::Buffer*, GLsync>> bufferWriteFences;
-		inline static std::optional<gfx::Buffer> chunkIbo;
-		inline static std::optional<gfx::StagingBuffer> stagingBuffer;
+		inline static Nullable<gfx::Buffer> chunkIbo;
+		inline static Nullable<gfx::StagingBuffer> stagingBuffer;
 		inline static void* mappedStagingBuffer;
 	};
 }

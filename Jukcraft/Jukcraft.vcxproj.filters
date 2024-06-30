@@ -133,9 +133,6 @@
     <ClInclude Include="src\world\chunk\ChunkManager.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\chunk\util.h">
-      <Filter>world\chunk</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
   </ItemGroup>
   <ItemGroup>

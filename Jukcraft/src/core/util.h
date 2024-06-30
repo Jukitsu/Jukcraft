@@ -121,6 +121,18 @@ namespace Jukcraft {
 
 	using BlockID = uint8_t;
 
+	template<typename T>
+	using Auto = std::unique_ptr<T>;
+
+	template<typename T>
+	using Shared = std::shared_ptr<T>;
+
+	template<typename T>
+	using WeakRef = std::weak_ptr<T>;
+
+	template<typename T>
+	using Nullable = std::optional<T>;
+
 
 	[[nodiscard]] inline std::string parseFile(const std::string_view& filepath) {
 		std::ifstream stream(filepath.data(), std::ios::in);

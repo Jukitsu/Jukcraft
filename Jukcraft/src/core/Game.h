@@ -22,11 +22,11 @@ namespace Jukcraft {
 		gfx::Shader shader;
 		TextureManager textureManager;
 		Camera camera;
-		std::unique_ptr<World> world;
+		Auto<World> world;
 		BlockID holding = 6;
 		bool inWorld = true;
 
-		std::unique_ptr<Player> player;
+		Auto<Player> player;
 
 		std::vector<Block> blocks;
 	};

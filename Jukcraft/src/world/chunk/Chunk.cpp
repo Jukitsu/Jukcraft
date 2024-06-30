@@ -32,7 +32,8 @@ namespace Jukcraft {
 					else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
 						setBlock(glm::uvec3(lx, ly, lz), 3);
 					else
-						setBlock(glm::uvec3(lx, ly, lz), std::rand() % 3 ? 1 : 0);
+						setBlock(glm::uvec3(lx, ly, lz), 1);
+						
 				}
 
 		lightMap = new uint8_t * *[CHUNK_HEIGHT];
@@ -99,7 +100,7 @@ namespace Jukcraft {
 			BlockPos blockPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = blockPos.getChunkPos();
 			glm::ivec3 newLocalPos = blockPos.getLocalPos();
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
+			Nullable<Shared<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 0;
 			return blockTypes[(*chunk)->getBlock(newLocalPos)].getOpacity();
@@ -114,7 +115,7 @@ namespace Jukcraft {
 			BlockPos blockPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = blockPos.getChunkPos();
 			glm::ivec3 newLocalPos = blockPos.getLocalPos();
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
+			Nullable<Shared<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 0;
 			return (*chunk)->getBlockLight(newLocalPos);
@@ -129,7 +130,7 @@ namespace Jukcraft {
 			BlockPos blockPos(chunkPos, localPos);
 			glm::ivec2 newChunkPos = blockPos.getChunkPos();
 			glm::ivec3 newLocalPos = blockPos.getLocalPos();
-			std::optional<std::shared_ptr<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
+			Nullable<Shared<const Chunk>> chunk = chunkManager.getChunk(newChunkPos);
 			if (!chunk.has_value() || IsOutside(newLocalPos))
 				return 15;
 			return (*chunk)->getSkyLight(newLocalPos);

@@ -28,7 +28,7 @@ namespace Jukcraft {
 			Buffer targetBuffer;
 			Arena<T> arena;
 			size_t currentOffset;
-			std::optional<SharedContext> sharedContext;
+			Nullable<SharedContext> sharedContext;
 
 			FORBID_COPY(DynamicBuffer);
 			FORBID_MOVE(DynamicBuffer);

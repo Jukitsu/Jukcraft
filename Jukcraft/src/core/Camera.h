@@ -5,14 +5,14 @@ namespace Jukcraft {
 
 	class Camera {
 	public:
-		Camera(gfx::Shader& shader, std::unique_ptr<Player>& player);
+		Camera(gfx::Shader& shader, Auto<Player>& player);
 		void update(const float delta_time);
 	private:
 		gfx::Buffer ubo;
 		gfx::Shader& shader;
 
 		glm::vec2 lastCursorPos;
-		std::unique_ptr<Player>& player;		
+		Auto<Player>& player;		
 
 		float speed;
 

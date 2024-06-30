@@ -23,8 +23,8 @@ namespace Jukcraft {
 		constexpr bool isMouseCaptured() const { return mouseCaptured; }
 	private:
 		static App* Instance;
-		std::optional<Window> window;
-		std::shared_ptr<Game> game;
+		Nullable<Window> window;
+		Shared<Game> game;
 
 		bool mouseCaptured = false;
 

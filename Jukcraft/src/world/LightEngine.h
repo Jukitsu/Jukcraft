@@ -6,10 +6,10 @@ namespace Jukcraft {
 	public:
 		LightEngine(ChunkManager& chunkManager, const std::vector<Block>& blocks)
 			:chunkManager(chunkManager), blocks(blocks) {}
-		void increaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk, uint8_t light);
-		void initSkyLight(std::shared_ptr<Chunk>& chunk);
-		void decreaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk);
-		void decreaseSkyLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk);
+		void increaseLight(const BlockPos& pos, Shared<Chunk>& chunk, uint8_t light);
+		void initSkyLight(Shared<Chunk>& chunk);
+		void decreaseLight(const BlockPos& pos, Shared<Chunk>& chunk);
+		void decreaseSkyLight(const BlockPos& pos, Shared<Chunk>& chunk);
 		void propagateLightIncrease();
 		void propagateLightDecrease();
 		void propagateSkyLightIncrease();
@@ -17,7 +17,7 @@ namespace Jukcraft {
 
 		void toggleLightUpdates(bool value) noexcept { doLightUpdates = value; }
 	private:
-		void markPositionForUpdate(std::shared_ptr<Chunk>&, const glm::ivec3& localPos);
+		void markPositionForUpdate(Shared<Chunk>&, const glm::ivec3& localPos);
 
 		struct BlockLightIncreaseNode {
 			BlockPos pos;

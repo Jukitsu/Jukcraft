@@ -3,7 +3,7 @@
 
 namespace Jukcraft {
 
-	void LightEngine::initSkyLight(std::shared_ptr<Chunk>& chunk) {
+	void LightEngine::initSkyLight(Shared<Chunk>& chunk) {
 		glm::ivec2 chunkPos = chunk->getChunkPos();
 
 		int32_t height = 0;
@@ -36,14 +36,14 @@ namespace Jukcraft {
 			}
 	}
 
-	void LightEngine::increaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk, uint8_t light) {
+	void LightEngine::increaseLight(const BlockPos& pos, Shared<Chunk>& chunk, uint8_t light) {
 		chunk->setBlockLight(pos.getLocalPos(), light);
 
 		lightIncreaseQueue.emplace(pos, light);
 		propagateLightIncrease();
 	}
 
-	void LightEngine::decreaseLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk) {
+	void LightEngine::decreaseLight(const BlockPos& pos, Shared<Chunk>& chunk) {
 		uint8_t oldlight = chunk->getBlockLight(pos.getLocalPos());
 		chunk->setBlockLight(pos.getLocalPos(), 0);
 
@@ -52,7 +52,7 @@ namespace Jukcraft {
 		propagateLightIncrease();
 	}
 
-	void LightEngine::decreaseSkyLight(const BlockPos& pos, std::shared_ptr<Chunk>& chunk) {
+	void LightEngine::decreaseSkyLight(const BlockPos& pos, Shared<Chunk>& chunk) {
 		uint8_t oldlight = chunk->getSkyLight(pos.getLocalPos());
 		chunk->setSkyLight(pos.getLocalPos(), 0);
 
@@ -75,7 +75,7 @@ namespace Jukcraft {
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 
@@ -103,7 +103,7 @@ namespace Jukcraft {
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 				glm::ivec3 localPos = newPos.getLocalPos();
@@ -139,7 +139,7 @@ namespace Jukcraft {
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 				glm::ivec3 localPos = newPos.getLocalPos();
@@ -182,7 +182,7 @@ namespace Jukcraft {
 				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
 					continue;
 
-				std::optional<std::shared_ptr<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 				glm::ivec3 localPos = newPos.getLocalPos();
@@ -203,7 +203,7 @@ namespace Jukcraft {
 		}
 	}
 
-	void LightEngine::markPositionForUpdate(std::shared_ptr<Chunk>& chunk, const glm::ivec3& localPos) {
+	void LightEngine::markPositionForUpdate(Shared<Chunk>& chunk, const glm::ivec3& localPos) {
 		if (doLightUpdates) {
 			chunkManager.updateChunkAtPosition(chunk, localPos);
 		}

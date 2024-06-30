@@ -8,7 +8,7 @@ namespace Jukcraft {
 		std::future<void> result = std::async(
 			std::launch::async,
 			[&]() {
-				for (std::shared_ptr<Chunk> chunk : chunkManager.getSkyLightPendingChunks()) {
+				for (Shared<Chunk> chunk : chunkManager.getSkyLightPendingChunks()) {
 					lightEngine.initSkyLight(chunk);
 				}
 			}
@@ -36,12 +36,12 @@ namespace Jukcraft {
 	}
 	void World::setBlock(const BlockPos& blockPos, BlockID blockID) {
 		glm::ivec2 chunkPos = blockPos.getChunkPos();
-		std::optional<std::shared_ptr<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
+		Nullable<Shared<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
 
 		if (!pendingChunk.has_value())
 			return;
 
-		std::shared_ptr<Chunk>& chunk = *pendingChunk;
+		Shared<Chunk>& chunk = *pendingChunk;
 		glm::ivec3 localPos = blockPos.getLocalPos();
 		const Block& block = blocks[blockID];
 		chunk->setBlock(localPos, blockID);
@@ -65,10 +65,10 @@ namespace Jukcraft {
 
 	BlockID World::getBlock(const BlockPos& blockPos) const {
 		glm::ivec2 chunkPos = blockPos.getChunkPos();
-		std::optional<std::shared_ptr<const Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
+		Nullable<Shared<const Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
 		if (!pendingChunk.has_value())
 			return 0;
-		std::shared_ptr<const Chunk>& chunk = *pendingChunk;
+		Shared<const Chunk>& chunk = *pendingChunk;
 		glm::ivec3 localPos = blockPos.getLocalPos();
 		return chunk->getBlock(localPos);
 	}
