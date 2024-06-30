@@ -68,7 +68,7 @@ namespace Jukcraft {
 				auto it = freeList.begin();
 				while (it != freeList.end()) {
 					auto next = std::next(it);
-					if (next != freeList.end() && it->start + it->size == next->start) {
+					if (next != freeList.end() && it->start + it->size >= next->start) {
 						it->size += next->size;
 						freeList.erase(next);
 					}
