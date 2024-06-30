@@ -6,13 +6,15 @@
 
 namespace Jukcraft {
 
-	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, ChunkManager& chunkManager)
+	Chunk::Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes,
+		ChunkManager& chunkManager)
 		:blockTypes(blockTypes), chunkPos(chunkPos), chunkManager(chunkManager),
 		mesh(
 			CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6 * 4, 
 			*this		
-		)
-	{
+		) {
+
+
 		blocks = new BlockID * *[CHUNK_HEIGHT];
 		for (size_t j = 0; j < CHUNK_HEIGHT; j++) {
 			blocks[j] = new BlockID * [CHUNK_DIM];
@@ -58,15 +60,6 @@ namespace Jukcraft {
 			delete[] lightMap[j];
 		}
 		delete[] lightMap;
-
-		if (!neighbourChunks.east.expired())
-			neighbourChunks.east.lock()->neighbourChunks.west.reset();
-		if (!neighbourChunks.west.expired())
-			neighbourChunks.west.lock()->neighbourChunks.east.reset();
-		if (!neighbourChunks.south.expired())
-			neighbourChunks.south.lock()->neighbourChunks.north.reset();
-		if (!neighbourChunks.north.expired())
-			neighbourChunks.north.lock()->neighbourChunks.south.reset();
 	}
 
 
@@ -98,20 +91,6 @@ namespace Jukcraft {
 				}
 		mesh.end();
 		drawable = true;
-	}
-
-	Chunk* Chunk::getNeighbourChunk(const glm::ivec3& localPos) {
-		if (!IsOutside(localPos))
-			return this;
-		if (localPos.x >= CHUNK_DIM && !neighbourChunks.east.expired())
-			return neighbourChunks.east.lock().get();
-		if (localPos.z < 0 && !neighbourChunks.north.expired())
-			return neighbourChunks.north.lock().get();
-		if (localPos.x < 0 && !neighbourChunks.west.expired())
-			return neighbourChunks.west.lock().get();
-		if (localPos.z >= CHUNK_DIM && !neighbourChunks.south.expired())
-			return neighbourChunks.south.lock().get();
-		return nullptr;
 	}
 
 

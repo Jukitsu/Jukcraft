@@ -20,6 +20,7 @@ namespace Jukcraft {
 			glEnable(GL_CULL_FACE);
 			glEnable(GL_MULTISAMPLE);
 
+
 			std::vector<uint32_t> indices;
 			indices.resize(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 36);
 			for (uint32_t nquad = 0; nquad < CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6; nquad++) {

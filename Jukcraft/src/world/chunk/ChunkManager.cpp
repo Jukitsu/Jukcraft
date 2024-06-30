@@ -16,16 +16,6 @@ namespace Jukcraft {
 					);
 				chunksToUpdates.insert(chunk);
 				chunksToLight.insert(chunk);
-				if (z > 0) {
-					std::shared_ptr<Chunk>& northernChunk = chunks[x][z - 1];
-					northernChunk->neighbourChunks.south = chunk;
-					chunk->neighbourChunks.north = northernChunk;
-				}
-				if (x > 0) {
-					std::shared_ptr<Chunk>& westernChunk = chunks[x - 1][z];
-					westernChunk->neighbourChunks.east = chunk;
-					chunk->neighbourChunks.west = westernChunk;
-				}
 			}
 
 		chunkUbo.allocate(sizeof(PerChunkData), nullptr, true);
@@ -60,15 +50,16 @@ namespace Jukcraft {
 
 	void ChunkManager::updateChunkAtPosition(std::shared_ptr<Chunk>& chunk, const glm::ivec3& localPos) {
 		chunksToUpdates.insert(chunk);
+		const glm::ivec2& chunkPos = chunk->getChunkPos();
 
-		if (Chunk::IsOutside(localPos + IEAST) && !chunk->neighbourChunks.east.expired())
-			chunksToUpdates.insert(chunk->neighbourChunks.east.lock());
-		if (Chunk::IsOutside(localPos + INORTH) && !chunk->neighbourChunks.north.expired())
-			chunksToUpdates.insert(chunk->neighbourChunks.north.lock());
-		if (Chunk::IsOutside(localPos + IWEST) && !chunk->neighbourChunks.west.expired())
-			chunksToUpdates.insert(chunk->neighbourChunks.west.lock());
-		if (Chunk::IsOutside(localPos + ISOUTH) && !chunk->neighbourChunks.south.expired())
-			chunksToUpdates.insert(chunk->neighbourChunks.south.lock());
+		for (const glm::ivec2& axis : HAXIS) {
+			if (Chunk::IsOutside(localPos + glm::ivec3(axis.x, 0, axis.y))) {
+				auto nextChunk = getChunk(chunkPos + axis);
+				if (nextChunk.has_value()) {
+					chunksToUpdates.insert(*nextChunk);
+				}
+			}
+		}
 
 	}
 

@@ -17,5 +17,5 @@ void main(void) {
 	if (texel.a < 0.5f) {
 		discard;
 	}
-	fragColor = texel * vec4(fs_In.v_Light, 1.0f) * fs_In.v_Shading;
+	fragColor = texel * vec4(fs_In.v_Light * fs_In.v_Shading, 1.0f);
 }

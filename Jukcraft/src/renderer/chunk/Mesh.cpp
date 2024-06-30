@@ -174,8 +174,15 @@ namespace Jukcraft {
 	void Mesh::pushCubeFace(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, const BakedQuad& bakedQuad) {
 		int i = 0;
 		for (const Vertex& vertex : quad.vertices) {
-			uint32_t v = ((vertex.pos.y + localPos.y) << 22) | ((vertex.pos.x + localPos.x) << 17) | ((vertex.pos.z + localPos.z) << 12) | (vertex.texUV << 10) | (textureID << 2) | (vertex.shading);
-			uint32_t s = (bakedQuad.smoothSkyLightData[i] << 9) | (bakedQuad.smoothBlockLightData[i] << 3) | (bakedQuad.ambientOcclusionData[i]);
+			uint32_t v = ((vertex.pos.y + localPos.y) << 22) 
+				| ((vertex.pos.x + localPos.x) << 17) 
+				| ((vertex.pos.z + localPos.z) << 12) 
+				| (vertex.texUV << 10) 
+				| (textureID << 2) 
+				| (vertex.shading);
+			uint32_t s = (bakedQuad.smoothSkyLightData[i] << 9) 
+				| (bakedQuad.smoothBlockLightData[i] << 3) 
+				| (bakedQuad.ambientOcclusionData[i]);
 			vbo.push({ v, s });
 			i++;
 		}

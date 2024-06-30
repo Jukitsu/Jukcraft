@@ -6,17 +6,17 @@
 namespace Jukcraft {
 
 	class ChunkManager;
-	
+
 
 	class Chunk {
 	public:
-		Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, ChunkManager& chunkGetter);
+		Chunk(const glm::ivec2& chunkPos, const std::vector<Block>& blockTypes, 
+			ChunkManager& chunkGetter);
 		~Chunk();
 		void buildCubeLayer();
 		void drawCubeLayer();
 		void updateLayers();
 		void uploadMesh();
-		Chunk* getNeighbourChunk(const glm::ivec3& localPos);
 
 		[[nodiscard]] constexpr const glm::ivec2& getChunkPos() { return chunkPos; }
 
@@ -33,31 +33,27 @@ namespace Jukcraft {
 
 
 		[[nodiscard]] constexpr uint8_t getRawLight(const glm::ivec3& localPos) const noexcept {
-			return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
+			return lightMap[localPos.y][localPos.x][localPos.z];
 		}
 
 		[[nodiscard]] constexpr uint8_t getBlockLight(const glm::ivec3& localPos) const noexcept {
-			return lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF;
+			return lightMap[localPos.y][localPos.x][localPos.z] & 0xF;
 		}
 
 		[[nodiscard]] constexpr uint8_t getSkyLight(const glm::ivec3& localPos) const noexcept {
-			return (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] >> 4) & 0xF;
+			return (lightMap[localPos.y][localPos.x][localPos.z] >> 4) & 0xF;
 		}
 
 		void setBlockLight(const glm::ivec3& localPos, uint8_t value) noexcept {
-			lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF0) | value;
+			lightMap[localPos.y][localPos.x][localPos.z] = 
+				(lightMap[localPos.y][localPos.x][localPos.z] & 0xF0) | value;
 		}
 
 		void setSkyLight(const glm::ivec3& localPos, uint8_t value) noexcept {
-			lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = (lightMap[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] & 0xF) | (value << 4);
+			lightMap[localPos.y][localPos.x][localPos.z] = 
+				(lightMap[localPos.y][localPos.x][localPos.z] & 0xF) | (value << 4);
 		}
 	private:
-		struct {
-			std::weak_ptr<Chunk> east;
-			std::weak_ptr<Chunk> west;
-			std::weak_ptr<Chunk> south;
-			std::weak_ptr<Chunk> north;
-		} neighbourChunks;
 
 		ChunkManager& chunkManager;
 
@@ -84,13 +80,13 @@ namespace Jukcraft {
 		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return 0;
-		return blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z];
+		return blocks[localPos.y][localPos.x][localPos.z];
 	}
 	inline void Chunk::setBlock(const glm::ivec3& localPos, const BlockID block) {
 		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return;
-		blocks[(uint8_t)localPos.y][(uint8_t)localPos.x][(uint8_t)localPos.z] = block;
+		blocks[localPos.y][localPos.x][localPos.z] = block;
 	}
 
 	[[nodiscard]] constexpr bool Chunk::IsOutside(const glm::ivec3& localPos) {

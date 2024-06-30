@@ -33,9 +33,7 @@ namespace Jukcraft {
 
 		// self: the dynamic collider, which moves
 		// collider: the static collider, which stays put
-
-		
-
+	
 		// find entry & exit times for each axis
 
 		auto time = [](float x, float y) {

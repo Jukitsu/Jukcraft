@@ -106,9 +106,19 @@ namespace Jukcraft {
 	constexpr glm::ivec3 ISOUTH = glm::ivec3(0, 0, 1);
 	constexpr glm::ivec3 INORTH = glm::ivec3(0, 0, -1);
 
+	constexpr glm::ivec2 HEAST(1, 0);
+	constexpr glm::ivec2 HWEST(-1, 0);
+	constexpr glm::ivec2 HSOUTH(0, 1);
+	constexpr glm::ivec2 HNORTH(0, -1);
+
 	constexpr glm::ivec3 IDIRECTIONS[6] = {
 		IEAST, IWEST, IUP, IDOWN, ISOUTH, INORTH
 	};
+
+	constexpr glm::ivec2 HAXIS[4] = {
+		HEAST, HWEST, HSOUTH, HNORTH
+	};
+
 	using BlockID = uint8_t;
 
 

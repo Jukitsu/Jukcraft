@@ -32,8 +32,8 @@ namespace Jukcraft {
 		int step_y = sign(velocity.y);
 		int step_z = sign(velocity.z);
 
-		int steps_xz = width / 2;
-		int steps_y = height;
+		int steps_xz = static_cast<int>(width / 2);
+		int steps_y = static_cast<int>(height);
 
 		glm::ivec3 p = static_cast<glm::ivec3>(position);
 		glm::ivec3 c = static_cast<glm::ivec3>(position + adjustedVelocity);
