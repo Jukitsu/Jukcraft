@@ -4,6 +4,8 @@
 #include "world/chunk/ChunkManager.h"
 
 namespace Jukcraft {
+
+	// Helper function to interpolate the neighbouring light values at each vertex
 	static inline uint8_t smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
 		if (!(light && b && c && d)) {
 			uint8_t min_val = light;
@@ -20,15 +22,16 @@ namespace Jukcraft {
 			d = std::max(d, min_val);
 			
 		}
-		return light + b + c + d; // To divide by 4
+		return light + b + c + d; 
 
 	}
 
+	// Helper function to compute the ambient occlusion level
 	static inline uint8_t ao(bool s1, bool s2, bool c) {
 		if (s1 && s2)
-			return 1;
+			return 0;
 
-		return 4 - (s1 + s2 + c); // To divide by 4
+		return 3 - (s1 + s2 + c); 
 	}
 
 	Mesh::Mesh(size_t size, Chunk& chunk)
@@ -83,6 +86,9 @@ namespace Jukcraft {
 		return { vertex1, vertex2, vertex3, vertex4 };
 	}
 		
+	/*
+	* TO DO: rewrite this function using cross products etc... 
+	*/
 	std::array<glm::ivec3, 8> Mesh::getNeighbourVoxels(const glm::ivec3& npos, uint8_t normalIndex){
 		std::array<glm::ivec3, 8> neighbours;
 		switch (normalIndex) {

@@ -5,7 +5,10 @@
 #include "core/Game.h"
 
 namespace Jukcraft {
-
+	/*
+	*	Client application singleton. 
+	*	Wrapper for application related logic, events, etc...
+	*/
 	class App {
 	public:
 		App();

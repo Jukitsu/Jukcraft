@@ -14,8 +14,5 @@ layout(location = 0) out vec4 fragColor;
 
 void main(void) {
 	vec4 texel = texture(u_TextureArraySampler, fs_In.v_TexCoords);
-	if (texel.a < 0.5f) {
-		discard;
-	}
 	fragColor = texel * vec4(fs_In.v_Light * fs_In.v_Shading, 1.0f);
 }

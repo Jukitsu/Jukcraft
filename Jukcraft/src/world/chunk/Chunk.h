@@ -77,13 +77,13 @@ namespace Jukcraft {
 	
 
 	[[nodiscard]] constexpr BlockID Chunk::getBlock(const glm::ivec3& localPos) const {
-		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
+		if (localPos.y >= CHUNK_HEIGHT || localPos.x >= CHUNK_DIM || localPos.z >= CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return 0;
 		return blocks[localPos.y][localPos.x][localPos.z];
 	}
 	inline void Chunk::setBlock(const glm::ivec3& localPos, const BlockID block) {
-		if (localPos.y > CHUNK_HEIGHT || localPos.x > CHUNK_DIM || localPos.z > CHUNK_DIM ||
+		if (localPos.y >= CHUNK_HEIGHT || localPos.x >= CHUNK_DIM || localPos.z >= CHUNK_DIM ||
 			localPos.y < 0 || localPos.x < 0 || localPos.z < 0)
 			return;
 		blocks[localPos.y][localPos.x][localPos.z] = block;

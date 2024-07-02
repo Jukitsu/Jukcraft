@@ -2,6 +2,10 @@
 #include "models/Model.h"
 
 namespace Jukcraft {
+	/*
+	*	Block class that stores all relevant information on the Block, 
+	* such as its model, its colliders, its textures, etc... 
+	*/
 	class Block {
 	public:
 		Block(const char*, BlockID id, const Model& model, const std::vector<uint8_t>& textures, bool transparent, uint8_t light)

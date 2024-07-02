@@ -2,6 +2,7 @@
 #include "world/chunk/ChunkManager.h"
 
 namespace Jukcraft {
+	/* Light Engine logic */
 	class LightEngine {
 	public:
 		LightEngine(ChunkManager& chunkManager, const std::vector<Block>& blocks)

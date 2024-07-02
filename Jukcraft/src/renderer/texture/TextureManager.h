@@ -11,14 +11,15 @@ namespace Jukcraft {
 		~TextureManager() {
 			glDeleteTextures(1, &handle);
 		}
+		/* Loads a texture in */
 		void pushSubTexture(const std::string_view& path) {
 			stbi_set_flip_vertically_on_load(true);
 			int x, y, channels;
 			stbi_uc* pixels = stbi_load(path.data(), &x, &y, &channels, 0);
 			GLenum format;
-			if (channels == 3)
+			if (channels == 3) // RGB channels
 				format = GL_RGB;
-			else if (channels == 4)
+			else if (channels == 4) // RGBA channels
 				format = GL_RGBA;
 			else
 				THROW_ERROR("Wrong file format");

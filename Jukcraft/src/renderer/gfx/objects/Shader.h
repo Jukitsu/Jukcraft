@@ -56,19 +56,22 @@ namespace Jukcraft {
 				glShaderSource(sh, 1, &src, nullptr);
 				glCompileShader(sh);
 
-				int result;
+				GLint result;
 				glGetShaderiv(sh, GL_COMPILE_STATUS, &result);
+
 				if (!result) {
-					int logLength;
+					GLint logLength;
 					glGetShaderiv(sh, GL_INFO_LOG_LENGTH, &logLength);
-					char* log = new char[logLength];
+					GLchar* log = new GLchar[logLength];
 					glGetShaderInfoLog(sh, logLength, &logLength, log);
 					THROW_ERROR("Error in {} stage: {}", (stage == GL_VERTEX_SHADER ? "vertex" : "fragment"), log);
 					delete[] log;
 					return 0;
 				}
+
 				return sh;
 			}
+		private:
 			GLuint handle;
 			FORBID_COPY(Shader);
 			FORBID_MOVE(Shader);

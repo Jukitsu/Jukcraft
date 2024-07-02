@@ -127,10 +127,9 @@ namespace Jukcraft {
 			resolveCollisions();
 
 		oldPosition = position;
+
 		position += velocity;
 		velocity += g;
-
- 
 		velocity *= glm::max(glm::vec3(0.0), glm::vec3(1.0) - getFriction());
 
 		updateCollider();

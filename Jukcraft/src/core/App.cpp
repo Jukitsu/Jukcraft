@@ -12,9 +12,10 @@ extern "C" {
 
 namespace Jukcraft {
 
-	App* App::Instance = nullptr;
+	App* App::Instance = nullptr; // Singleton pointer
 
 	App::App() {
+		/* Application Initialisation */
 		if (!Instance) {
 			Instance = this;
 			Log::Init();
@@ -31,19 +32,22 @@ namespace Jukcraft {
 		callbacks.keyPressCallback = std::bind(&App::onKeyPress, this, std::placeholders::_1);
 		callbacks.mousePressCallback = std::bind(&App::onMousePress, this, std::placeholders::_1);
 		callbacks.resizeCallback = std::bind(&App::onResize, this, std::placeholders::_1, std::placeholders::_2);
-		window.emplace(852, 480, callbacks);
+		window.emplace(852, 480, callbacks); // Window created
 
-		Renderer::Init();
+		Renderer::Init(); // Render system
 
-		game = std::make_shared<Game>();
+		game = std::make_shared<Game>(); // Game logic
 	}
 
 	App::~App() {
 
 	}
 
+	/* Application main loop.
+	* Use a tick system for game logic, 
+	* and partial ticks for rendering
+	*/
 	void App::run() {
-
 		float lastTime = static_cast<float>(glfwGetTime()), timer = lastTime;
 		float partialTicks = 0.0f, nowTime = 0.0f;
 		int frames = 0, updates = 0;
@@ -52,7 +56,7 @@ namespace Jukcraft {
 		while (!window->shouldClose()) {
 
 			nowTime = static_cast<float>(glfwGetTime());
-			partialTicks += (nowTime - lastTime) * TICK_RATE;
+			partialTicks += (nowTime - lastTime) * TICK_RATE; // Compute the partial tick value
 			lastTime = nowTime;
 
 			// - Only update at 64 tick / s
@@ -60,23 +64,24 @@ namespace Jukcraft {
 				game->tick();   // - Update function
 				updates++;
 				partialTicks--;
-
 			}
 
-			game->renderNewFrame(partialTicks);
+			game->renderNewFrame(partialTicks); // Rendering
 			frames++;
 
-			window->endFrame();
+			window->endFrame(); // Refresh the window
 
 			if (glfwGetTime() - timer > 1.0) {
 				timer++;
-				LOG_TRACE("FPS: {}, TPS: {}", frames, updates);
+				LOG_TRACE("FPS: {}, TPS: {}", frames, updates); // Debug
 				updates = 0, frames = 0;
 			}
 			
 			
 		}
 	}
+
+
 	void App::onKeyPress(int key) {
 		if (key == GLFW_KEY_ESCAPE){
 			if (mouseCaptured) {

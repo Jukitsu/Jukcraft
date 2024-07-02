@@ -19,8 +19,10 @@ namespace Jukcraft {
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_CULL_FACE);
 			glEnable(GL_MULTISAMPLE);
+			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 			// glEnable(GL_FRAMEBUFFER_SRGB);
 
+			/* Initialize the general quad index buffer */
 			std::vector<uint32_t> indices;
 			indices.resize(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 36);
 			for (uint32_t nquad = 0; nquad < CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6; nquad++) {
@@ -41,6 +43,7 @@ namespace Jukcraft {
 
 		}
 		static void Begin(const glm::vec4& skyColor) {
+			/* Wait for GPU tasks if they are 3 frames in */
 			while (fences.size() > 3) {
 				GLsync fence = fences.front();
 				glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 2147483647);

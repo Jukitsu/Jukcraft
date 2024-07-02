@@ -54,7 +54,7 @@ namespace Jukcraft {
 
 		for (const glm::ivec2& axis : HAXIS) {
 			if (Chunk::IsOutside(localPos + glm::ivec3(axis.x, 0, axis.y))) {
-				auto nextChunk = getChunk(chunkPos + axis);
+				auto&& nextChunk = getChunk(chunkPos + axis);
 				if (nextChunk.has_value()) {
 					chunksToUpdates.insert(*nextChunk);
 				}

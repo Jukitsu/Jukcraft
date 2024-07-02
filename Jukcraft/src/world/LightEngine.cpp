@@ -1,7 +1,12 @@
 #include "pch.h"
 #include "world/LightEngine.h"
 
+
 namespace Jukcraft {
+	/*
+	*	LightEngine uses a Breadth-First Search Algorithm to compute 
+	* the lighting of each block.
+	*/
 
 	void LightEngine::initSkyLight(Shared<Chunk>& chunk) {
 		glm::ivec2 chunkPos = chunk->getChunkPos();
@@ -72,19 +77,19 @@ namespace Jukcraft {
 			for (const glm::ivec3& direction : IDIRECTIONS) {
 				BlockPos newPos = pos + direction;
 
-				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				if (newPos.y < 0 || newPos.y >= CHUNK_HEIGHT)
 					continue;
 
-				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>>&& chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
 
-				glm::ivec3 localPos = newPos.getLocalPos();
+				const glm::ivec3& localPos = newPos.getLocalPos();
 				if (chunk.value()->getBlockLight(localPos) + 2 <= light 
 						&& blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
 					chunk.value()->setBlockLight(localPos, light - 1);
 					lightIncreaseQueue.emplace(newPos, light - 1);
-					markPositionForUpdate(chunk.value(), localPos);
+					markPositionForUpdate(*chunk, localPos);
 				}
 			}
 		}
@@ -100,13 +105,13 @@ namespace Jukcraft {
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
 				BlockPos newPos = pos + direction;
-				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				if (newPos.y < 0 || newPos.y >= CHUNK_HEIGHT)
 					continue;
 
-				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>>&& chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = newPos.getLocalPos();
+				const glm::ivec3& localPos = newPos.getLocalPos();
 
 				if (chunk.value()->getSkyLight(localPos) < skylight 
 					&& blocks[chunk.value()->getBlock(localPos)].isTransparent()) {
@@ -136,13 +141,13 @@ namespace Jukcraft {
 			for (const glm::ivec3& direction : IDIRECTIONS) {
 				BlockPos newPos = pos + direction;
 
-				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				if (newPos.y < 0 || newPos.y >= CHUNK_HEIGHT)
 					continue;
 
-				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>>&& chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = newPos.getLocalPos();
+				const glm::ivec3& localPos = newPos.getLocalPos();
 				Block block = blocks[chunk.value()->getBlock(localPos)];
 
 				if (block.getLight()) {
@@ -179,13 +184,13 @@ namespace Jukcraft {
 
 			for (const glm::ivec3& direction : IDIRECTIONS) {
 				BlockPos newPos = pos + direction;
-				if (newPos.y < 0 || newPos.y > CHUNK_HEIGHT)
+				if (newPos.y < 0 || newPos.y >= CHUNK_HEIGHT)
 					continue;
 
-				Nullable<Shared<Chunk>> chunk = chunkManager.getChunk(newPos.getChunkPos());
+				Nullable<Shared<Chunk>>&& chunk = chunkManager.getChunk(newPos.getChunkPos());
 				if (!chunk.has_value())
 					continue;
-				glm::ivec3 localPos = newPos.getLocalPos();
+				const glm::ivec3& localPos = newPos.getLocalPos();
 				Block block = blocks[chunk.value()->getBlock(localPos)];
 
 				if (block.isTransparent()) {

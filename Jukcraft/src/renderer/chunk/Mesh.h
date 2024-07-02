@@ -38,13 +38,19 @@ namespace Jukcraft {
 
 	using OpacityCheckDelegate = std::function<bool(const glm::ivec3&)>;
 
+	/*
+	*	Mesh-related logic helper class
+	* Contains the mesh vertex array and buffers
+	*/
 	class Mesh {
 	public:
 		Mesh(size_t size, Chunk& chunk);
 		~Mesh();
 		void begin();
-		BakedQuad bakeCubeFace(const glm::ivec3& localPos, uint8_t normalIndex, uint8_t blocklight, uint8_t skylight);
-		void pushCubeFace(const Quad& quad, const glm::uvec3& localPos, uint8_t textureID, const BakedQuad& bakedQuad);
+		BakedQuad bakeCubeFace(const glm::ivec3& localPos, uint8_t normalIndex, 
+			uint8_t blocklight, uint8_t skylight); // "Bake" the cube face
+		void pushCubeFace(const Quad& quad, const glm::uvec3& localPos, 
+			uint8_t textureID, const BakedQuad& bakedQuad); // Push the cube face into the vertex buffer
 		void end();
 		void draw();
 	private:

@@ -35,9 +35,11 @@ namespace Jukcraft {
 					glEnableVertexArrayAttrib(handle, element.attribIndex);
 					glVertexArrayAttribBinding(handle, element.attribIndex, binding);
 					if (attrib.is_float)
-						glVertexArrayAttribFormat(handle, element.attribIndex, attrib.size, GL_FLOAT, GL_FALSE, element.relativeOffset);
+						glVertexArrayAttribFormat(handle, element.attribIndex, 
+							attrib.size, GL_FLOAT, GL_FALSE, element.relativeOffset);
 					else
-						glVertexArrayAttribIFormat(handle, element.attribIndex, attrib.size, GL_UNSIGNED_INT, element.relativeOffset);
+						glVertexArrayAttribIFormat(handle, element.attribIndex, 
+							attrib.size, GL_UNSIGNED_INT, element.relativeOffset);
 				}
 			}
 			void bindIndexBuffer(const Buffer& ibo) {

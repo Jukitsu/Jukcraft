@@ -5,6 +5,7 @@ namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
 
+		/* Initialize lighting */
 		std::future<void> result = std::async(
 			std::launch::async,
 			[&]() {
@@ -21,7 +22,7 @@ namespace Jukcraft {
 		time += 1;
 		updateDaylight();
 		chunkManager.tick();
-		lightEngine.propagateLightIncrease();
+		lightEngine.propagateLightIncrease(); // Always check for any pending light updates
 	}
 
 	void World::trySetBlock(Player& player, const BlockPos& worldPos, BlockID blockID) {
@@ -29,14 +30,14 @@ namespace Jukcraft {
 			setBlock(worldPos, blockID);
 
 		for (const Collider& collider : blocks[blockID].getColliders()) 
-			if (player.getCollider() & (collider + worldPos))
-				return;
+			if (player.getCollider() & (collider + worldPos)) // Do not place a block at the player's feet
+				return; 
 		
 		setBlock(worldPos, blockID);
 	}
 	void World::setBlock(const BlockPos& blockPos, BlockID blockID) {
 		glm::ivec2 chunkPos = blockPos.getChunkPos();
-		Nullable<Shared<Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
+		Nullable<Shared<Chunk>>&& pendingChunk = chunkManager.getChunk(chunkPos);
 
 		if (!pendingChunk.has_value())
 			return;
@@ -60,12 +61,12 @@ namespace Jukcraft {
 			}
 		}
 
-		chunkManager.updateChunkAtPosition(chunk, localPos);
+		chunkManager.updateChunkAtPosition(chunk, localPos); // Chunk Update
 	}
 
 	BlockID World::getBlock(const BlockPos& blockPos) const {
 		glm::ivec2 chunkPos = blockPos.getChunkPos();
-		Nullable<Shared<const Chunk>> pendingChunk = chunkManager.getChunk(chunkPos);
+		Nullable<Shared<const Chunk>>&& pendingChunk = chunkManager.getChunk(chunkPos);
 		if (!pendingChunk.has_value())
 			return 0;
 		Shared<const Chunk>& chunk = *pendingChunk;
