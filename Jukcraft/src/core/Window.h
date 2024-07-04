@@ -10,6 +10,31 @@ namespace Jukcraft {
 		std::function<void(uint16_t, uint16_t)> resizeCallback; // App::onResize
 	};
 
+	struct SharedContext {
+		GLFWwindow* context;
+		GLFWwindow*& window;
+
+		SharedContext(GLFWwindow*& window) :window(window) {
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+
+			context = glfwCreateWindow(1, 1, "New Context", nullptr, window);
+		}
+		~SharedContext() {
+			glfwDestroyWindow(context);
+		}
+
+		void bind() {
+			glfwMakeContextCurrent(context);
+		}
+
+		void unbind() {
+			glfwMakeContextCurrent(window);
+		}
+	};
+
 	class Window {
 	public:
 		Window(uint16_t width, uint16_t height, EventCallbacks callbacks);
@@ -45,6 +70,9 @@ namespace Jukcraft {
 		constexpr uint16_t getWidth() const { return width; }
 		constexpr uint16_t getHeight() const { return height; }
 
+		constexpr const SharedContext& getSharedContext() const { return *sharedContext; } // Good faith please :(
+		constexpr SharedContext& getSharedContext() { return *sharedContext; }
+
 		void captureMouse() {
 			glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			glfwSetInputMode(handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -63,27 +91,10 @@ namespace Jukcraft {
 		FORBID_COPY(Window);
 		FORBID_MOVE(Window);
 		EventCallbacks callbacks;
-		friend struct SharedContext;
+
+		Nullable<SharedContext> sharedContext;
 	};
 
-	struct SharedContext {
-		GLFWwindow* context;
-		Window& window;
-
-		SharedContext(Window& window) :window(window) {
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			context = glfwCreateWindow(window.getWidth(), window.getHeight(), "New Context", nullptr, window.handle);
-		}
-		~SharedContext() {
-			glfwMakeContextCurrent(window.handle);
-			glfwDestroyWindow(context);
-		}
-
-		void makeCurrent() {
-			glfwMakeContextCurrent(context);
-		}
-	};
+	
 
 }

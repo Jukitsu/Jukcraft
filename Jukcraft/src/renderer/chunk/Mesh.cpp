@@ -172,6 +172,7 @@ namespace Jukcraft {
 		);
 		return bakedQuad;
 	}
+
 	void Mesh::begin() {
 		vbo.beginEditRegion(0, (uint32_t)size);
 		quadCount = 0;

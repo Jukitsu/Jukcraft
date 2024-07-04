@@ -47,6 +47,10 @@ namespace Jukcraft {
 	constexpr uint8_t CHUNK_DIM = 16;
 	constexpr uint8_t CHUNK_HEIGHT = 128;
 
+	constexpr uint8_t RENDER_REGION_SIZE = 2;
+
+	constexpr size_t MAX_QUADS = RENDER_REGION_SIZE * CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6;
+
 	constexpr uint8_t WORLD_SIZE = 2;
 
 

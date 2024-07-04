@@ -5,8 +5,8 @@
 
 namespace Jukcraft {
 	namespace gfx {
-		Window& GetMainWindow() noexcept {
-			return App::GetWindow();
+		SharedContext& GetSharedContext() {
+			return App::GetWindow().getSharedContext();
 		}
 	}
 }

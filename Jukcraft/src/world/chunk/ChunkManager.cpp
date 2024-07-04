@@ -39,13 +39,20 @@ namespace Jukcraft {
 	}
 
 	void ChunkManager::tick() {
-		// std::vector<std::future<void>> results;
-		for (Shared<Chunk> chunk : chunksToUpdates) {
-			chunk->updateLayers();
-			// results.push_back(std::async(std::launch::async, std::bind(&Chunk::updateLayers, chunk.get())));
-		}
-		chunksToUpdates.clear();
-			
+		if (!chunksToUpdates.empty()) {
+			/*
+			std::future<void> result = std::async(std::launch::async, [&]() {
+					for (Shared<Chunk> chunk : chunksToUpdates) {
+						chunk->updateLayers();
+					}
+				});
+			*/
+
+			for (auto&& chunk : chunksToUpdates) {
+				chunk->updateLayers();
+			}
+			chunksToUpdates.clear();
+		}	
 	}
 
 	void ChunkManager::updateChunkAtPosition(Shared<Chunk>& chunk, const glm::ivec3& localPos) {

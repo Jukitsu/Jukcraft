@@ -46,6 +46,8 @@ namespace Jukcraft {
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		handle = glfwCreateWindow(width, height, "Jukcraft", nullptr, nullptr);
 
+		sharedContext.emplace(handle);
+
 		glfwMakeContextCurrent(handle);
 		glfwSetWindowUserPointer(handle, this);
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

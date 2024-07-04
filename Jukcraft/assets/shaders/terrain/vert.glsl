@@ -16,7 +16,7 @@ const vec2 c_TexCoords[4] = vec2[4] (
 	vec2(1.0f, 1.0f)
 );
 
-const float c_Gamma = 1.0f;
+const float c_Gamma = 0.0f;
 
 layout(std140, binding = 0) uniform u_Camera {
 	mat4 u_CameraTransforms;

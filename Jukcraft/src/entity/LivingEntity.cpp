@@ -9,8 +9,9 @@ namespace Jukcraft {
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
 		float initialYaw, float initialPitch, float width, float height)
 		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height),
-		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
+		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f), input(0),
 		width(width), height(height), collider(), world(world), onGround(false), speed(WALK_SPEED) {
+		LOG_TRACE("{}", velocity.y);
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
@@ -44,10 +45,10 @@ namespace Jukcraft {
 		std::vector<CollisionResult> potentialCollisions;
 		potentialCollisions.reserve(4 * 4 * 4);
 
-		for (int i = p.x - step_x * (steps_xz + 1); step_x * (i - (c.x + step_x * (steps_xz + 2))) < 0; i += step_x)
-			for (int j = p.y - step_y * (steps_y + 2); step_y * (j - (c.y + step_y * (steps_y + 3))) < 0; j += step_y)
-				for (int k = p.z - step_z * (steps_xz + 1); step_z * (k - (c.z + step_z * (steps_xz + 2))) < 0; k += step_z) {
-					BlockPos pos = { i, j, k };
+		for (int32_t i = p.x - step_x * (steps_xz + 1); step_x * (i - (c.x + step_x * (steps_xz + 2))) < 0; i += step_x)
+			for (int32_t j = p.y - step_y * (steps_y + 2); step_y * (j - (c.y + step_y * (steps_y + 3))) < 0; j += step_y)
+				for (int32_t k = p.z - step_z * (steps_xz + 1); step_z * (k - (c.z + step_z * (steps_xz + 2))) < 0; k += step_z) {
+					BlockPos pos(i, j, k);
 					BlockID block = world.getBlock(pos);
 
 					if (!block)

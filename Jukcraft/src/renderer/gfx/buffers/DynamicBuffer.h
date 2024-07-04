@@ -7,7 +7,7 @@ namespace Jukcraft {
 
 
 	namespace gfx {
-		Window& GetMainWindow() noexcept;
+		SharedContext& GetSharedContext();
 
 		template<typename T>
 		class DynamicBuffer {
@@ -28,7 +28,8 @@ namespace Jukcraft {
 			Buffer targetBuffer;
 			Arena<T> arena;
 			size_t currentOffset;
-			Nullable<SharedContext> sharedContext;
+
+			SharedContext& sharedContext;
 
 			FORBID_COPY(DynamicBuffer);
 			FORBID_MOVE(DynamicBuffer);
@@ -36,7 +37,7 @@ namespace Jukcraft {
 
 		template<typename T>
 		inline DynamicBuffer<T>::DynamicBuffer()
-			:targetBuffer() {
+			:targetBuffer(), sharedContext(GetSharedContext()) {
 
 		}
 
@@ -47,9 +48,8 @@ namespace Jukcraft {
 
 		template<typename T>
 		inline void DynamicBuffer<T>::beginEditRegion(uint32_t offset, uint32_t length) {
-			// sharedContext.emplace(GetMainWindow());
 			arena = Renderer::AllocateArena<T>(length);
-			// sharedContext->makeCurrent();
+			// sharedContext.bind();
 			Renderer::GetStagingBuffer().sync();
 			if (length > STAGING_BUFFER_CAPACITY)
 				THROW_ERROR("Staging Buffer Overflow")
@@ -73,7 +73,7 @@ namespace Jukcraft {
 			Renderer::GetStagingBuffer().flush(arena.offset + regionData.offset * sizeof(T), regionData.length * sizeof(T));
 			targetBuffer.copy(Renderer::GetStagingBuffer(), arena.offset + regionData.offset * sizeof(T), regionData.offset * sizeof(T), regionData.length * sizeof(T));
 			Renderer::FreeArena(arena);
-			// sharedContext.reset();
+			// sharedContext.unbind();
 			currentOffset = 0;
 		}
 
