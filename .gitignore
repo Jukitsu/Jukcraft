@@ -36,5 +36,4 @@
 bin/
 bin-int/
 *.user
-*.sln
-*.vcxproj
+*.vcxitems*
