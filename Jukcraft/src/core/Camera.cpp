@@ -4,8 +4,6 @@
 #include <GLFW/glfw3.h>
 #include "core/App.h"
 
-#include "physics/constants.h"
-
 static constexpr float sensitivity = 0.005f;
 
 namespace Jukcraft {
@@ -44,14 +42,11 @@ namespace Jukcraft {
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_SPACE))		input.y += 1;
 
 
-		speed = WALK_SPEED;
-
-
 		if (input.y > 0) {
 			player->jump();
-		} if (input.x || input.z) {
-			player->setRelativeAccel(glm::vec3((float)input.x, 0.0f, (float)input.z) * speed);
-		}
+		} 
+
+		player->setInput(glm::ivec3(input.x, 0, input.z));
 
 
 		glm::mat4 proj = glm::perspective(

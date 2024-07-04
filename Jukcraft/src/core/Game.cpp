@@ -26,7 +26,8 @@ namespace Jukcraft {
 		blocks.emplace_back("Leaves", 6, models.cube, std::vector<uint8_t>{6, 6, 6, 6, 6, 6}, true, 14);
 
 		world = std::make_unique<World>(blocks, shader);
-		player = std::make_unique<Player>(*world, glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f), glm::pi<float>() / 2.0f, 0.0f);
+		player = std::make_unique<Player>(*world, glm::vec3(5.0f, 70.0f, 10.0f), glm::vec3(0.0f), 
+			glm::pi<float>() / 2.0f, 0.0f);
 	}
 
 	void Game::onMousePress(int button) {

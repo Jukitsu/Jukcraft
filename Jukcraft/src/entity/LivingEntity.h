@@ -12,7 +12,6 @@ namespace Jukcraft {
 	public:
 		LivingEntity(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), 
 			const glm::vec3& initialVelocity = glm::vec3(0.0f),
-			const glm::vec3& initialAcceleration = glm::vec3(0.0f), 
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~LivingEntity();
 
@@ -25,10 +24,13 @@ namespace Jukcraft {
 		void move(const glm::vec3& motion) override;
 		void push(const glm::vec3& motion) override;
 
+		void setInput(const glm::ivec3& inputAccel) { input = inputAccel; }
 
 		constexpr float getEyeLevel() const { return height - 0.2f; }
 		constexpr const Collider& getCollider() const { return collider; }
+		constexpr const glm::ivec3& getInput() const { return input; }
 	protected:
+		glm::ivec3 input;
 
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
@@ -40,6 +42,8 @@ namespace Jukcraft {
 		}
 
 		float width, height;
+
+		const float speed;
 
 		bool onGround;
 

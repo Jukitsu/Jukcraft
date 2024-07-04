@@ -2,13 +2,15 @@
 #include "entity/LivingEntity.h"
 #include "world/World.h"
 
+#include "physics/constants.h"
+
 namespace Jukcraft {
 
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
-		const glm::vec3& initialAcceleration, float initialYaw, float initialPitch, float width, float height)
-		:Entity(initialPos, initialVelocity, initialAcceleration, initialYaw, initialPitch, width * width * height), 
+		float initialYaw, float initialPitch, float width, float height)
+		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height), 
 		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
-		width(0.6f), height(1.8f), collider(), world(world), onGround(false) {
+		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED) {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
@@ -108,16 +110,18 @@ namespace Jukcraft {
 	}
 
 	void LivingEntity::applyPhysics() {
-		float accelMagnitude = glm::length(glm::vec2(relativeAccel.x, relativeAccel.z));
-		float headingAngle = yaw - glm::atan<float>(relativeAccel.z, relativeAccel.x) + glm::pi<float>() / 2;
+		if (input.x || input.z) {
+			float headingAngle = yaw - glm::atan<float>((float)input.z, (float)input.x) + glm::pi<float>() / 2;
 
-		velocity += glm::vec3(
-			glm::cos(headingAngle) * accelMagnitude,
-			relativeAccel.y,
-			glm::sin(headingAngle) * accelMagnitude
-		) * getFriction();
+			velocity += glm::vec3(
+				glm::cos(headingAngle) * speed,
+				input.y,
+				glm::sin(headingAngle) * speed
+			) * getFriction();
 
-		setRelativeAccel(glm::vec3(0.0f));
+			setInput(glm::ivec3(0));
+		}
+			
 
 		updateCollider();
 
