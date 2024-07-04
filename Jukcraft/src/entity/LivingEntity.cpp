@@ -8,9 +8,9 @@ namespace Jukcraft {
 
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
 		float initialYaw, float initialPitch, float width, float height)
-		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height), 
+		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height),
 		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
-		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED) {
+		width(width), height(height), collider(), world(world), onGround(false), speed(WALK_SPEED) {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
@@ -70,8 +70,8 @@ namespace Jukcraft {
 
 		auto it = std::min_element(potentialCollisions.begin(), potentialCollisions.end(), [](auto&& a, auto&& b) {
 			return a.entryTime < b.entryTime;
-			
-		});
+
+			});
 		auto&& [entryTime, normal] = *it;
 
 		entryTime -= 0.001f;
@@ -121,7 +121,7 @@ namespace Jukcraft {
 
 			setInput(glm::ivec3(0));
 		}
-			
+
 
 		updateCollider();
 
