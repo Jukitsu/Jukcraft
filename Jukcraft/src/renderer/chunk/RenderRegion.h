@@ -1,5 +1,6 @@
 #pragma once
 #include "renderer/gfx/buffers/DynamicBuffer.h"
+#include "renderer/gfx/buffers/StreamingBuffer.h"
 #include "blocks/Block.h"
 
 namespace Jukcraft {

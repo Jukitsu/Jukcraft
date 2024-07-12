@@ -13,5 +13,25 @@ namespace Jukcraft {
 
 	}
 
+	void Player::aiStep() {
+		BipedEntity::aiStep();
+		dashCooldown = glm::max(dashCooldown - 1, 0);
+		if (dashing && onGround)
+			dashing = false;
+	}
+
+	void Player::dash() {
+		if (!dashing && dashCooldown <= 0) {
+			velocity += glm::vec3(
+				glm::cos(yaw) * glm::cos(pitch),
+				glm::sin(pitch),
+				glm::sin(yaw) * glm::cos(pitch)
+			) * DASH_SPEED;
+			dashing = true;
+			dashCooldown = (int16_t)TICK_RATE;
+		}
+		
+	}
+
 
 }

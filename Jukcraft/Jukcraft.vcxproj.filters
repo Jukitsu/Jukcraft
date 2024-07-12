@@ -134,6 +134,7 @@
       <Filter>world\chunk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
+    <ClInclude Include="src\renderer\gfx\buffers\StreamingBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">

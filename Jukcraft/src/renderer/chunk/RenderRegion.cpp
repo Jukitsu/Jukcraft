@@ -24,10 +24,10 @@ namespace Jukcraft {
 		);
 		vao.bindIndexBuffer(Renderer::GetChunkIbo());
 
-		icbo.allocate(sizeof(DrawIndirectCommand), nullptr);
+		icbo.allocate(4 * sizeof(DrawIndirectCommand), nullptr);
 	}
 
 	void RenderRegion::draw() {
-
+		Renderer::MultiDrawElementsIndirect(vao, icbo.getTargetBuffer());
 	}
 }
