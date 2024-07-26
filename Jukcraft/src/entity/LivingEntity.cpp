@@ -10,7 +10,7 @@ namespace Jukcraft {
 		float initialYaw, float initialPitch, float width, float height)
 		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height), 
 		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
-		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED) {
+		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED), input(0.0f) {
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
 	}
@@ -101,8 +101,37 @@ namespace Jukcraft {
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
 	}
 
+	void LivingEntity::handleRotation() {
+		glm::vec3 ds = position - oldPosition;
+		float g = 0.0f;
+		float nextBodyYaw = rotation.x;
+		if (glm::length(ds) > 0) {
+			g = glm::sqrt(rotation.x) * 3.0f;
+			nextBodyYaw = glm::atan<float>(input.z, input.x) - glm::pi<float>() / 2;
+		}
+		if (animationTicks.attack > 0.0F) {
+			nextBodyYaw = getYaw();
+		}
+
+		setBodyYaw(rotation.x + (nextBodyYaw - rotation.x) * 0.3F);
+
+		float relativeAngle = wrapRadians(headRot.x - bodyRot.x);
+		
+		if (glm::abs(relativeAngle) > glm::pi<float>() / 3.0f) {
+			bodyRot.x += relativeAngle - glm::sign(relativeAngle) * glm::pi<float>() / 3.0f;
+		}
+
+		
+		if (glm::abs(relativeAngle) > glm::pi<float>() / 2) {
+			g *= -1.0F;
+		}
+
+		animationTicks.step += g;
+	}
+
 	void LivingEntity::tick() {
 		aiStep();
+		handleRotation();
 	}
 
 	void LivingEntity::aiStep() {
@@ -111,7 +140,7 @@ namespace Jukcraft {
 
 	void LivingEntity::applyPhysics() {
 		if (input.x || input.z) {
-			float headingAngle = yaw - glm::atan<float>((float)input.z, (float)input.x) + glm::pi<float>() / 2;
+			float headingAngle = rotation.x - glm::atan<float>(input.z, input.x) + glm::pi<float>() / 2;
 
 			velocity += glm::vec3(
 				glm::cos(headingAngle) * speed,
@@ -119,7 +148,7 @@ namespace Jukcraft {
 				glm::sin(headingAngle) * speed
 			) * getFriction();
 
-			setInput(glm::ivec3(0));
+			setInput(glm::vec3(0.0f));
 		}
 			
 
@@ -134,7 +163,7 @@ namespace Jukcraft {
 
 		position += velocity;
 		velocity += g;
-		velocity *= glm::max(glm::vec3(0.0), glm::vec3(1.0) - getFriction());
+		velocity *= glm::max(glm::vec3(0.0f), glm::vec3(1.0f) - getFriction());
 
 		updateCollider();
 	}

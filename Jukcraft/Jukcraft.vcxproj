@@ -158,6 +158,7 @@
     <ClInclude Include="src\entity\Entity.h" />
     <ClInclude Include="src\entity\HitRay.h" />
     <ClInclude Include="src\entity\LivingEntity.h" />
+    <ClInclude Include="src\entity\Mob.h" />
     <ClInclude Include="src\entity\player\Player.h" />
     <ClInclude Include="src\models\Collider.h" />
     <ClInclude Include="src\models\Model.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="src\entity\BipedEntity.cpp" />
     <ClCompile Include="src\entity\HitRay.cpp" />
     <ClCompile Include="src\entity\LivingEntity.cpp" />
+    <ClCompile Include="src\entity\Mob.cpp" />
     <ClCompile Include="src\entity\player\Player.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pch.cpp">

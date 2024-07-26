@@ -134,6 +134,7 @@
       <Filter>world\chunk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
+    <ClInclude Include="src\entity\Mob.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -187,5 +188,6 @@
       <Filter>world\chunk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\chunk\RenderRegion.cpp" />
+    <ClCompile Include="src\entity\Mob.cpp" />
   </ItemGroup>
 </Project>

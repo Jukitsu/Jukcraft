@@ -49,7 +49,6 @@ namespace Jukcraft {
 
 	constexpr uint8_t WORLD_SIZE = 2;
 
-
 	struct PerChunkData {
 		glm::vec3 chunkPos;
 	};
@@ -150,5 +149,11 @@ namespace Jukcraft {
 	template<typename T>
 	constexpr int sign(T x) {
 		return (x > 0) - (x <= 0);
+	}
+
+	template<typename T>
+	constexpr T wrapRadians(T x) {
+		T y = glm::mod<T>(x, 2.0f * glm::pi<T>());
+		return y > glm::pi<T>() ? y - 2.0f * glm::pi<T>() : y;
 	}
 }

@@ -21,17 +21,23 @@ namespace Jukcraft {
 		void aiStep() override;
 		void tick() override;
 		void applyPhysics() override;
+		void handleRotation() override;
 		void move(const glm::vec3& motion) override;
 		void push(const glm::vec3& motion) override;
 
-		void setInput(const glm::ivec3& inputAccel) { input = inputAccel; }
+		void setInput(const glm::vec3& inputAccel) { input = inputAccel; }
 
 		constexpr float getEyeLevel() const { return height - 0.2f; }
 		constexpr const Collider& getCollider() const { return collider; }
-		constexpr const glm::ivec3& getInput() const { return input; }
-	protected:
-		glm::ivec3 input;
+		constexpr const glm::vec3& getInput() const { return input; }
 
+		constexpr const glm::vec2& getBodyRot() { return bodyRot; }
+		constexpr const glm::vec2& getHeadRot() { return headRot; }
+
+		void setHeadYaw(float theta) { headRot.x = wrapRadians(theta); }
+		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
+		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
+	protected:
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
 				return FRICTION;
@@ -40,6 +46,11 @@ namespace Jukcraft {
 			else
 				return DRAG_FALL;
 		}
+
+	protected:
+		glm::vec3 input;
+		glm::vec2 bodyRot;
+		glm::vec2 headRot;
 
 		float width, height;
 
@@ -50,6 +61,11 @@ namespace Jukcraft {
 		glm::vec3 oldPosition;
 		glm::vec3 interpolatedPos;
 		float interpolationStep;
+
+		struct {
+			float attack = 0.0f;
+			float step = 0.0f;
+		} animationTicks;
 
 		Collider collider;
 		World& world;

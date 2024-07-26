@@ -26,8 +26,8 @@ namespace Jukcraft {
 		lastCursorPos = cursorPos;
 
 
-		player->yaw = glm::mod(player->yaw + deltaCursor.x * sensitivity, 2.0f * glm::pi<float>());
-		player->pitch = glm::clamp(player->pitch - deltaCursor.y * sensitivity, -glm::pi<float>() / 2, glm::pi<float>() / 2);
+		player->setYaw(player->getYaw() + deltaCursor.x * sensitivity);
+		player->setPitch(player->getPitch() - deltaCursor.y * sensitivity);
 		// It is negative because the origin is in the top left corner, not bottom left
 
 		if (!App::Get().isMouseCaptured())
@@ -46,7 +46,7 @@ namespace Jukcraft {
 			player->jump();
 		} 
 
-		player->setInput(glm::ivec3(input.x, 0, input.z));
+		player->setInput(glm::vec3((float)input.x, 0.0f, (float)input.z));
 
 
 		glm::mat4 proj = glm::perspective(
@@ -55,8 +55,8 @@ namespace Jukcraft {
 			0.1f,
 			500.0f
 		);
-		glm::mat4 view = glm::rotate(glm::mat4(1.0f), player->pitch, -glm::vec3(1.0f, 0.0f, 0.0f));
-		view = glm::rotate(view, player->yaw + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 view = glm::rotate(glm::mat4(1.0f), player->getPitch(), -glm::vec3(1.0f, 0.0f, 0.0f));
+		view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 		view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
 
 		mappedUbo->transform = proj * view;
