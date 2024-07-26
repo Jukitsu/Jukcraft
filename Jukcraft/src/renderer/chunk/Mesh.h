@@ -35,9 +35,6 @@ namespace Jukcraft {
 		std::array<uint8_t, 4> ambientOcclusionData;
 	};
 
-
-	using OpacityCheckDelegate = std::function<bool(const glm::ivec3&)>;
-
 	/*
 	*	Mesh-related logic helper class
 	* Contains the mesh vertex array and buffers
@@ -62,7 +59,7 @@ namespace Jukcraft {
 														        uint8_t light6, uint8_t light7, uint8_t light8);
 		std::array<glm::ivec3, 8> getNeighbourVoxels(const glm::ivec3& npos, uint8_t normalIndex);
 
-
+	private:
 		size_t size;
 		size_t quadCount;
 
@@ -71,7 +68,5 @@ namespace Jukcraft {
 
 		gfx::DynamicBuffer<VertexData> vbo;
 		gfx::DynamicBuffer<DrawIndirectCommand> icbo;
-		std::vector<uint32_t> vertices;
-		std::vector<uint32_t> indices;
 	};
 }

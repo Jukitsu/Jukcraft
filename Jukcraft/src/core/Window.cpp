@@ -44,7 +44,9 @@ namespace Jukcraft {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
-		handle = glfwCreateWindow(width, height, "Minecraft clone", nullptr, nullptr);
+		handle = glfwCreateWindow(width, height, "Jukcraft", nullptr, nullptr);
+
+		sharedContext.emplace(handle);
 
 		glfwMakeContextCurrent(handle);
 		glfwSetWindowUserPointer(handle, this);

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "core/App.h"
 
-static constexpr float sensitivity = 0.005f;
+static constexpr float sensitivity = 0.002f;
 
 namespace Jukcraft {
 	Camera::Camera(gfx::Shader& shader, Auto<Player>& player)
@@ -40,6 +40,9 @@ namespace Jukcraft {
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_D))			input.x += 1;
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_SHIFT)) input.y += -1;
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_SPACE))		input.y += 1;
+
+		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_CONTROL))
+			player->dash();
 
 
 		if (input.y > 0) {

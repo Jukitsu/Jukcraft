@@ -24,8 +24,8 @@ namespace Jukcraft {
 
 			/* Initialize the general quad index buffer */
 			std::vector<uint32_t> indices;
-			indices.resize(CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 36);
-			for (uint32_t nquad = 0; nquad < CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6; nquad++) {
+			indices.resize(MAX_QUADS * 6);
+			for (uint32_t nquad = 0; nquad < MAX_QUADS; nquad++) {
 
 				indices[(size_t)nquad * 6] = 4 * nquad + 0;
 				indices[(size_t)nquad * 6 + 1] = 4 * nquad + 1;
