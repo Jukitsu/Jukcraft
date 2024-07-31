@@ -91,11 +91,8 @@ namespace Jukcraft {
 		}
 		if (!mouseCaptured)
 			return;
-		switch (key) {
-		case GLFW_KEY_F6:
-			game->speedTime();
-		}
 
+		game->onKeyPress(key);
 	}
 
 	void App::onMousePress(int button) {

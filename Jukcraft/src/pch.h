@@ -82,5 +82,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include "core/Log.h"
 #include "core/util.h"

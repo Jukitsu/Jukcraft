@@ -194,6 +194,7 @@ project "Jukcraft"
 		"vendor/glfw/include/",
 		"vendor/glm/",
 		"vendor/stb",
+		"vendor/nlohmann",
 		"vendor/spdlog/include"
 	}
 

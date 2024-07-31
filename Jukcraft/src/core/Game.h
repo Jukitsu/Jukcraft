@@ -13,6 +13,7 @@ namespace Jukcraft {
 		void tick();
 		void renderNewFrame(const float deltaTime);
 		void onMousePress(int button);
+		void onKeyPress(int key);
 		void speedTime() {
 			if (inWorld) {
 				world->speedTime();

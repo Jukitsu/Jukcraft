@@ -8,6 +8,7 @@ namespace Jukcraft {
 
 	class World;
 
+
 	class LivingEntity : public Entity {
 	public:
 		LivingEntity(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), 
@@ -34,6 +35,8 @@ namespace Jukcraft {
 		constexpr const glm::vec2& getBodyRot() { return bodyRot; }
 		constexpr const glm::vec2& getHeadRot() { return headRot; }
 
+		constexpr const auto& getOld() { return old; }
+
 		void setHeadYaw(float theta) { headRot.x = wrapRadians(theta); }
 		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
 		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
@@ -54,13 +57,19 @@ namespace Jukcraft {
 
 		float width, height;
 
+		int stamina = 0;
+		glm::vec3 inertia = glm::vec3(0.0f);
+
 		const float speed;
 
 		bool onGround;
 
-		glm::vec3 oldPosition;
-		glm::vec3 interpolatedPos;
-		float interpolationStep;
+		struct {
+			glm::vec3 position;
+			glm::vec2 bodyRot;
+			glm::vec2 headRot;
+			glm::vec3 velocity;
+		} old;
 
 		struct {
 			float attack = 0.0f;

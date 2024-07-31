@@ -70,6 +70,7 @@ namespace Jukcraft {
 			if (action == GLFW_PRESS)
 				((Window*)glfwGetWindowUserPointer(window))->getEventCallbacks().keyPressCallback(key);
 			});
+
 		glfwSwapInterval(0);
 	}
 

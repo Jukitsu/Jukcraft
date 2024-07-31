@@ -1,8 +1,8 @@
 #pragma once
-#include "entity/BipedEntity.h"
+#include "entity/LivingEntity.h"
 
 namespace Jukcraft {
-	class Player : public BipedEntity {
+	class Player : public LivingEntity {
 	public:
 		Player(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), 
 			const glm::vec3& initialVelocity = glm::vec3(0.0f),
@@ -15,6 +15,8 @@ namespace Jukcraft {
 		constexpr bool isDashing() const { return dashing; }
 	private:
 		bool dashing = false;
+		float fov = glm::radians(70.0f);
+		float fovOld = glm::radians(70.0f);
 		int16_t dashCooldown = 0;
 		friend class Camera;
 	};

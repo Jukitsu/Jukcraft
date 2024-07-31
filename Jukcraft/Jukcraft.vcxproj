@@ -81,11 +81,12 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;JUK_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\nlohmann;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;JUK_BETA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\nlohmann;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -110,6 +111,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +127,7 @@
       <WarningLevel>Level3</WarningLevel>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GLM_FORCE_INLINE;SPDLOG_NO_EXCEPTIONS;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\vendor\glad\include;..\vendor\glfw\include;..\vendor\glm;..\vendor\stb;..\vendor\nlohmann;..\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -138,6 +140,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,7 +157,6 @@
     <ClInclude Include="src\core\Log.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
-    <ClInclude Include="src\entity\BipedEntity.h" />
     <ClInclude Include="src\entity\Entity.h" />
     <ClInclude Include="src\entity\HitRay.h" />
     <ClInclude Include="src\entity\LivingEntity.h" />
@@ -162,17 +164,21 @@
     <ClInclude Include="src\entity\player\Player.h" />
     <ClInclude Include="src\models\Collider.h" />
     <ClInclude Include="src\models\Model.h" />
+    <ClInclude Include="src\models\entity\EntityModel.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physics\constants.h" />
-    <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
-    <ClInclude Include="src\renderer\gfx\buffers\StreamingBuffer.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\chunk\Mesh.h" />
+    <ClInclude Include="src\renderer\chunk\RenderRegion.h" />
+    <ClInclude Include="src\renderer\entity\LivingEntityRenderer.h" />
+    <ClInclude Include="src\renderer\entity\MobRenderer.h" />
     <ClInclude Include="src\renderer\gfx\buffers\DynamicBuffer.h" />
     <ClInclude Include="src\renderer\gfx\buffers\StagingBuffer.h" />
+    <ClInclude Include="src\renderer\gfx\buffers\StreamingBuffer.h" />
     <ClInclude Include="src\renderer\gfx\objects\Buffer.h" />
     <ClInclude Include="src\renderer\gfx\objects\Shader.h" />
     <ClInclude Include="src\renderer\gfx\objects\VertexArray.h" />
+    <ClInclude Include="src\renderer\texture\Texture.h" />
     <ClInclude Include="src\renderer\texture\TextureManager.h" />
     <ClInclude Include="src\world\LightEngine.h" />
     <ClInclude Include="src\world\World.h" />
@@ -185,17 +191,18 @@
     <ClCompile Include="src\core\Game.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
-    <ClCompile Include="src\entity\BipedEntity.cpp" />
     <ClCompile Include="src\entity\HitRay.cpp" />
     <ClCompile Include="src\entity\LivingEntity.cpp" />
     <ClCompile Include="src\entity\Mob.cpp" />
     <ClCompile Include="src\entity\player\Player.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\models\entity\EntityModel.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\renderer\chunk\Mesh.cpp" />
     <ClCompile Include="src\renderer\chunk\RenderRegion.cpp" />
+    <ClCompile Include="src\renderer\entity\LivingEntityRenderer.cpp" />
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp" />
     <ClCompile Include="src\vendor\stb\stb_build.cpp" />
     <ClCompile Include="src\world\LightEngine.cpp" />
@@ -210,6 +217,20 @@
     <ProjectReference Include="..\vendor\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\python-minecraft-clone-1\episode-13\work\models\curry.json" />
+    <None Include="assets\models\cow.json" />
+    <None Include="assets\models\creeper.json" />
+    <None Include="assets\models\curry.json" />
+    <None Include="assets\models\pig.json" />
+    <None Include="assets\models\skeleton.json" />
+    <None Include="assets\models\spider.json" />
+    <None Include="assets\models\zombie.json" />
+    <None Include="assets\shaders\entity\frag.glsl" />
+    <None Include="assets\shaders\entity\vert.glsl" />
+    <None Include="assets\shaders\terrain\frag.glsl" />
+    <None Include="assets\shaders\terrain\vert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

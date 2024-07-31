@@ -37,6 +37,7 @@ namespace Jukcraft {
 		glm::vec3 position;
 		glm::vec3 velocity;
 		glm::vec2 rotation;
+
 		const float mass;
 	};
 }

@@ -42,6 +42,18 @@ namespace Jukcraft {
 			}
 
 	}
+
+
+	void Game::onKeyPress(int key) {
+		switch (key) {
+		case GLFW_KEY_F6:
+			speedTime();
+			break;
+		case GLFW_KEY_LEFT_CONTROL:
+			player->dash();
+			break;
+		}
+	}
 	void Game::hitCallback(int button, const BlockPos& currentBlock, const BlockPos& nextBlock) {
 		switch (button) {
 		case GLFW_MOUSE_BUTTON_LEFT:
@@ -66,7 +78,8 @@ namespace Jukcraft {
 		camera.update(partialTicks);
 
 		Renderer::Begin(world->getSkyColor());
-		world->render();
+		world->render(partialTicks);
+		world->mobRenderer.render(*player, partialTicks);
 		Renderer::End();
 	}
 }

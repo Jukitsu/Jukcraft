@@ -19,7 +19,7 @@ namespace Jukcraft {
 
 
 	void Camera::update(const float partialTicks) {
-		glm::vec3 interpolatedPos = glm::mix(player->oldPosition, player->position, partialTicks);
+		glm::vec3 interpolatedPos = glm::mix(player->old.position, player->position, partialTicks);
 
 		const glm::vec2 cursorPos = App::GetWindow().getCursorPos();
 		const glm::vec2 deltaCursor = cursorPos - lastCursorPos;
@@ -41,9 +41,6 @@ namespace Jukcraft {
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_SHIFT)) input.y += -1;
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_SPACE))		input.y += 1;
 
-		if (App::GetWindow().isKeyPressed(GLFW_KEY_LEFT_CONTROL))
-			player->dash();
-
 
 		if (input.y > 0) {
 			player->jump();
@@ -51,9 +48,9 @@ namespace Jukcraft {
 
 		player->setInput(glm::vec3((float)input.x, 0.0f, (float)input.z));
 
-
+		/*
 		glm::mat4 proj = glm::perspective(
-			glm::radians(70.0f),
+			glm::mix(player->fovOld, player->fov, partialTicks),
 			static_cast<float>(App::GetWindow().getWidth()) / App::GetWindow().getHeight(),
 			0.1f,
 			500.0f
@@ -61,6 +58,18 @@ namespace Jukcraft {
 		glm::mat4 view = glm::rotate(glm::mat4(1.0f), player->getPitch(), -glm::vec3(1.0f, 0.0f, 0.0f));
 		view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 		view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
+		*/
+
+		glm::mat4 proj = glm::perspective(
+			glm::mix(player->fovOld, player->fov, partialTicks),
+			static_cast<float>(App::GetWindow().getWidth()) / App::GetWindow().getHeight(),
+			0.1f,
+			500.0f
+		);
+
+		glm::mat4 view = glm::mat4(1.0f);
+		view = glm::rotate(view, glm::pi<float>() / 2 + glm::pi<float>() / 4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, -glm::vec3(0.0f, 70.0f, 0.0f) - glm::vec3(0, player->getEyeLevel(), 0));
 
 		mappedUbo->transform = proj * view;
 

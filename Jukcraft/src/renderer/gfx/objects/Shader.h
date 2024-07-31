@@ -50,6 +50,10 @@ namespace Jukcraft {
 			void setUniform1f(uint8_t location, float value) {
 				glProgramUniform1f(handle, location, value);
 			}
+
+			void setUniformMat4f(uint8_t location, const float* value) {
+				glProgramUniformMatrix4fv(handle, location, 1, GL_FALSE, value);
+			}
 		private:
 			static GLuint compileShaderStage(GLenum stage, const char* src) {
 				GLuint sh = glCreateShader(stage);

@@ -12,5 +12,5 @@ namespace Jukcraft {
 	constexpr glm::vec3	DRAG_JUMP = glm::vec3(1.8f, 0.0f, 1.8f) / TICK_RATE;
 	constexpr glm::vec3	DRAG_FALL = glm::vec3(1.8f, 0.4f, 1.8f) / TICK_RATE;
 
-	constexpr float DASH_SPEED = 24.0f / TICK_RATE;
+	constexpr float DASH_SPEED = 32.0f / TICK_RATE;
 }

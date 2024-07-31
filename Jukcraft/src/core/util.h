@@ -15,6 +15,8 @@
 
 namespace Jukcraft {
 
+	
+
 	struct Vertex {
 		glm::uvec3 pos;
 		uint32_t texUV;
@@ -30,6 +32,8 @@ namespace Jukcraft {
 		uint32_t vertexData;
 		uint32_t smoothLightData;
 	};
+	
+	
 
 	struct ShaderCameraData {
 		glm::mat4 transform;
@@ -51,7 +55,7 @@ namespace Jukcraft {
 
 	constexpr size_t MAX_QUADS = RENDER_REGION_SIZE * CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6;
 
-	constexpr uint8_t WORLD_SIZE = 2;
+	constexpr uint8_t WORLD_SIZE = 8;
 
 	struct PerChunkData {
 		glm::vec3 chunkPos;
@@ -89,7 +93,7 @@ namespace Jukcraft {
 	constexpr glm::vec3 SOUTH = glm::vec3(0.0f, 0.0f, 1.0f);
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	constexpr float TICK_RATE = 64.0f;
+	constexpr float TICK_RATE = 128.0f;
 
 	constexpr uint8_t EAST_INDEX  = 0;
 	constexpr uint8_t WEST_INDEX  = 1;

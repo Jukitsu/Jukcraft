@@ -4,13 +4,21 @@
 
 #include "physics/constants.h"
 
+
+
 namespace Jukcraft {
 
 	LivingEntity::LivingEntity(World& world, const glm::vec3& initialPos, const glm::vec3& initialVelocity,
 		float initialYaw, float initialPitch, float width, float height)
 		:Entity(initialPos, initialVelocity, initialYaw, initialPitch, width * width * height), 
-		oldPosition(position), interpolatedPos(position), interpolationStep(1.0f),
-		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED), input(0.0f) {
+		width(0.6f), height(1.8f), collider(), world(world), onGround(false), speed(WALK_SPEED), input(0.0f),
+		bodyRot(rotation), headRot(rotation) {
+
+		old.position = position;
+		old.bodyRot = bodyRot;
+		old.headRot = headRot;
+		old.velocity = velocity;
+		
 
 		collider.vx1 = position - glm::vec3(width / 2.0f, 0, width / 2.0f);
 		collider.vx2 = position + glm::vec3(width / 2.0f, height, width / 2.0f);
@@ -99,38 +107,65 @@ namespace Jukcraft {
 		if (!onGround)
 			return;
 
+
+		velocity.x += glm::cos(rotation.x) * glm::length(inertia);
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
+		velocity.z += glm::sin(rotation.x) * glm::length(inertia);
+
+		inertia = glm::vec3(0.0f);
 	}
 
 	void LivingEntity::handleRotation() {
-		glm::vec3 ds = position - oldPosition;
+		glm::vec3 ds = position - old.position;
 		float g = 0.0f;
-		float nextBodyYaw = rotation.x;
-		if (glm::length(ds) > 0) {
-			g = glm::sqrt(rotation.x) * 3.0f;
-			nextBodyYaw = glm::atan<float>(input.z, input.x) - glm::pi<float>() / 2;
+		float nextBodyYaw = headRot.x;
+		if (ds.x * ds.x + ds.z * ds.z > 0.0f) {
+			g = glm::sqrt(headRot.x) * 3.0f;
+			nextBodyYaw = glm::atan<float>(ds.z, ds.x);
 		}
 		if (animationTicks.attack > 0.0F) {
 			nextBodyYaw = getYaw();
 		}
 
-		setBodyYaw(rotation.x + (nextBodyYaw - rotation.x) * 0.3F);
-
+		setBodyYaw(bodyRot.x + wrapRadians(nextBodyYaw - bodyRot.x) * 0.3f);
+		
+		
 		float relativeAngle = wrapRadians(headRot.x - bodyRot.x);
 		
 		if (glm::abs(relativeAngle) > glm::pi<float>() / 3.0f) {
 			bodyRot.x += relativeAngle - glm::sign(relativeAngle) * glm::pi<float>() / 3.0f;
 		}
 
-		
 		if (glm::abs(relativeAngle) > glm::pi<float>() / 2) {
 			g *= -1.0F;
 		}
-
+		
+	
 		animationTicks.step += g;
+
+		while (bodyRot.x - old.bodyRot.x < -glm::pi<float>()) {
+			old.bodyRot.x -= 2.0f * glm::pi<float>();
+		}
+
+		while (bodyRot.x - old.bodyRot.x >= glm::pi<float>()) {
+			old.bodyRot.x += 2.0f * glm::pi<float>();
+		}
+
+		while (headRot.x - old.headRot.x < -glm::pi<float>()) {
+			old.headRot.x -= 2.0f * glm::pi<float>();
+		}
+
+		while (headRot.x - old.headRot.x >= glm::pi<float>()) {
+			old.headRot.x += 2.0f * glm::pi<float>();
+		}
 	}
 
 	void LivingEntity::tick() {
+		old.position = position;
+		old.bodyRot = bodyRot;
+		old.headRot = headRot;
+		old.velocity = velocity;
+
 		aiStep();
 		handleRotation();
 	}
@@ -152,7 +187,6 @@ namespace Jukcraft {
 			setInput(glm::vec3(0.0f));
 		}
 
-
 		updateCollider();
 
 		onGround = false;
@@ -160,11 +194,13 @@ namespace Jukcraft {
 		for (uint8_t i = 0; i < 3; i++)
 			resolveCollisions();
 
-		oldPosition = position;
-
 		position += velocity;
 		velocity += g;
 		velocity *= glm::max(glm::vec3(0.0f), glm::vec3(1.0f) - getFriction());
+
+		inertia += old.velocity - velocity;
+
+		inertia *= glm::vec3(1.0f) - DRAG_FLY;
 
 		updateCollider();
 	}

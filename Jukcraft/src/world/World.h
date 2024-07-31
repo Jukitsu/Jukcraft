@@ -3,12 +3,15 @@
 #include "world/LightEngine.h"
 #include "entity/player/Player.h"
 
+#include "entity/Mob.h"
+#include "renderer/entity/MobRenderer.h"
+
 namespace Jukcraft {
 	class World {
 	public:
 		World(const std::vector<Block>& blocks, gfx::Shader& shader);
 		void tick();
-		void render();
+		void render(float partialTicks);
 		void setBlock(const BlockPos& blockPos, BlockID block);
 		void trySetBlock(Player& player, const BlockPos& blockPos, BlockID block);
 
@@ -57,5 +60,9 @@ namespace Jukcraft {
 		int daylight;
 		int daylightIncrementer = 1;
 		uint64_t time;
+
+		Auto<Mob> mob;
+	public:
+		MobRenderer mobRenderer;
 	};
 }

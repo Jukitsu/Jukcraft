@@ -1,9 +1,13 @@
 #include "pch.h"
 #include "world/World.h"
+#include "models/entity/EntityModel.h"
 
 namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
+
+		mob = std::make_unique<Mob>(*this, glm::vec3(16.0f, 90.0f, 16.0f), glm::vec3(0.0f),
+			glm::pi<float>() / 2.0f, 0.0f);
 
 		/* Initialize lighting */
 		std::future<void> result = std::async(
@@ -22,6 +26,7 @@ namespace Jukcraft {
 		time += 1;
 		updateDaylight();
 		chunkManager.tick();
+		mob->tick();
 		lightEngine.propagateLightIncrease(); // Always check for any pending light updates
 	}
 
@@ -74,9 +79,12 @@ namespace Jukcraft {
 		return chunk->getBlock(localPos);
 	}
 
-	void World::render() {
+	void World::render(float partialTicks) {
 		shader.setUniform1f(1, (float)daylight / 1800);
+		glEnable(GL_CULL_FACE);
 		chunkManager.drawChunksCubeLayers(shader);
+		glDisable(GL_CULL_FACE);
+		mobRenderer.render(*mob, partialTicks);
 	}
 
 
