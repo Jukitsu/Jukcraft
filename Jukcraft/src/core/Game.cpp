@@ -79,7 +79,9 @@ namespace Jukcraft {
 
 		Renderer::Begin(world->getSkyColor());
 		world->render(partialTicks);
+#ifdef JUK_DEBUG
 		world->mobRenderer.render(*player, partialTicks);
+#endif
 		Renderer::End();
 	}
 }

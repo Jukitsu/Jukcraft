@@ -219,7 +219,6 @@
     <None Include="assets\shaders\terrain\vert.glsl" />
     <None Include="assets\shaders\terrain\frag.glsl" />
     <None Include="assets\models\creeper.json" />
-    <None Include="..\..\python-minecraft-clone-1\episode-13\work\models\curry.json" />
     <None Include="assets\models\curry.json" />
     <None Include="assets\models\cow.json" />
     <None Include="assets\models\pig.json" />

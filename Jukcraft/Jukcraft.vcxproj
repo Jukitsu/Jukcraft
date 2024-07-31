@@ -219,7 +219,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\python-minecraft-clone-1\episode-13\work\models\curry.json" />
     <None Include="assets\models\cow.json" />
     <None Include="assets\models\creeper.json" />
     <None Include="assets\models\curry.json" />
