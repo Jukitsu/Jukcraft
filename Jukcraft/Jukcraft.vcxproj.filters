@@ -155,6 +155,7 @@
       <Filter>world\chunk</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\texture\Texture.h" />
+    <ClInclude Include="src\entity\animations\WalkAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">

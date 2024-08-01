@@ -9,6 +9,21 @@ namespace Jukcraft {
     Bone::Bone(const nlohmann::json& boneData, const glm::vec2& textureDim) {
         if (!boneData.empty()) {
             name = boneData["name"];
+
+            if (name.find("head") != std::string::npos || name.find("Head") != std::string::npos) {
+                isHead = true;
+            }
+            else if (name.find("arm") != std::string::npos || name.find("Arm") != std::string::npos) {
+                isArm = true;
+            }
+            else if (name.find("leg") != std::string::npos || name.find("Leg") != std::string::npos) {
+                isLeg = true;
+            }
+
+            if (name.find("left") != std::string::npos ||
+                name.find_first_of("02468") != std::string::npos)
+                isOdd = true;
+
             pivot = glm::vec3(boneData["pivot"][0], boneData["pivot"][1], boneData["pivot"][2]) * PIXEL_SIZE;
             auto cubes = boneData["cubes"];
             for (const auto& cube : cubes) {

@@ -27,7 +27,6 @@ namespace Jukcraft {
 		constexpr float getYaw() const { return rotation.x; }
 		constexpr float getPitch() const { return rotation.y; }
 		constexpr const glm::vec2& getRotation() const { return rotation; }
-		constexpr float getKineticEnergy() const { return 0.5f * mass * glm::dot(velocity, velocity); }
 
 		void setPos(const glm::vec3& pos) { position = pos; }
 		void setVelocity(const glm::vec3& v) { velocity = v; }

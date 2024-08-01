@@ -162,6 +162,7 @@
     <ClInclude Include="src\entity\LivingEntity.h" />
     <ClInclude Include="src\entity\Mob.h" />
     <ClInclude Include="src\entity\player\Player.h" />
+    <ClInclude Include="src\entity\animations\WalkAnimation.h" />
     <ClInclude Include="src\models\Collider.h" />
     <ClInclude Include="src\models\Model.h" />
     <ClInclude Include="src\models\entity\EntityModel.h" />

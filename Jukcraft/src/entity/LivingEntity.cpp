@@ -104,23 +104,25 @@ namespace Jukcraft {
 	}
 
 	void LivingEntity::jump(float hmax) {
-		if (!onGround)
+		if (!onGround || stamina < -0.5f)
 			return;
 
+		if (input.z > 0.0f && stamina > 0.0f) {
+			velocity.x += glm::cos(rotation.x) * glm::length(inertia);
+			velocity.z += glm::sin(rotation.x) * glm::length(inertia);
+			consumeInertia();
+		}
 
-		velocity.x += glm::cos(rotation.x) * glm::length(inertia);
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
-		velocity.z += glm::sin(rotation.x) * glm::length(inertia);
-
-		inertia = glm::vec3(0.0f);
 	}
 
 	void LivingEntity::handleRotation() {
 		glm::vec3 ds = position - old.position;
 		float g = 0.0f;
 		float nextBodyYaw = headRot.x;
-		if (ds.x * ds.x + ds.z * ds.z > 0.0f) {
-			g = glm::sqrt(headRot.x) * 3.0f;
+		float ortho2 = ds.x * ds.x + ds.z * ds.z;
+		if (ortho2 > 0.0f) {
+			g = glm::sqrt(ortho2);
 			nextBodyYaw = glm::atan<float>(ds.z, ds.x);
 		}
 		if (animationTicks.attack > 0.0F) {
@@ -128,7 +130,6 @@ namespace Jukcraft {
 		}
 
 		setBodyYaw(bodyRot.x + wrapRadians(nextBodyYaw - bodyRot.x) * 0.3f);
-		
 		
 		float relativeAngle = wrapRadians(headRot.x - bodyRot.x);
 		
@@ -140,8 +141,7 @@ namespace Jukcraft {
 			g *= -1.0F;
 		}
 		
-	
-		animationTicks.step += g;
+		animationTicks.step = g;
 
 		while (bodyRot.x - old.bodyRot.x < -glm::pi<float>()) {
 			old.bodyRot.x -= 2.0f * glm::pi<float>();
@@ -166,12 +166,25 @@ namespace Jukcraft {
 		old.headRot = headRot;
 		old.velocity = velocity;
 
+		age++;
+
 		aiStep();
 		handleRotation();
+
+		walkAnimation.update(glm::min(4.0f * glm::length(position - old.position), 1.0f), 0.4f);
+
 	}
 
 	void LivingEntity::aiStep() {
 		applyPhysics();
+		float unabsorbedEnergy = getKineticEnergy() - getMaxKineticEnergy();
+		if (unabsorbedEnergy > 0.0f) {
+			health = glm::max(0.0f, health - unabsorbedEnergy * TICK_RATE * TICK_RATE);
+		}
+		health = glm::min(health + 0.25f / TICK_RATE, 20.0f);
+		stamina = glm::min(stamina + 1.0f / TICK_RATE, 1.0f);
+
+		
 	}
 
 	void LivingEntity::applyPhysics() {
@@ -211,5 +224,10 @@ namespace Jukcraft {
 
 	void LivingEntity::push(const glm::vec3& motion) {
 		velocity += motion;
+	}
+
+	void LivingEntity::consumeInertia() {
+		stamina = glm::max(-1.0f, stamina - 2 * getKineticEnergy() * TICK_RATE * TICK_RATE);
+		inertia = glm::vec3(0.0f);
 	}
 }

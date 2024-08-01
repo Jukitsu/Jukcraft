@@ -93,7 +93,7 @@ namespace Jukcraft {
 	constexpr glm::vec3 SOUTH = glm::vec3(0.0f, 0.0f, 1.0f);
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	constexpr float TICK_RATE = 128.0f;
+	constexpr float TICK_RATE = 64.0f;
 
 	constexpr uint8_t EAST_INDEX  = 0;
 	constexpr uint8_t WEST_INDEX  = 1;

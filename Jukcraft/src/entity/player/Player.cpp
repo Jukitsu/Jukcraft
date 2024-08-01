@@ -19,9 +19,10 @@ namespace Jukcraft {
 		headRot = rotation;
 		dashCooldown = glm::max(dashCooldown - 1, 0);
 		if (dashing && onGround) {
-			fov = glm::mix(fov, glm::radians(70.0f), 2 / TICK_RATE);
 			dashing = false;
 		}
+
+		fov = glm::radians(70.0f + glm::length(velocity) * TICK_RATE);
 			
 	}
 
@@ -32,7 +33,6 @@ namespace Jukcraft {
 				glm::sin(rotation.y),
 				glm::sin(rotation.x) * glm::cos(rotation.y)
 			) * DASH_SPEED;
-			fov = glm::mix(glm::radians(70.0f), glm::radians(80.0f), 2 / TICK_RATE);
 			dashing = true;
 			dashCooldown = (int16_t)TICK_RATE / 4.0F;
 		}

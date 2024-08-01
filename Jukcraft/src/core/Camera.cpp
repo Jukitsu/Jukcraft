@@ -61,8 +61,8 @@ namespace Jukcraft {
 		view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
 #else
 		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::rotate(view, glm::pi<float>() / 2 + glm::pi<float>() / 4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, -glm::vec3(0.0f, 70.0f, 0.0f) - glm::vec3(0, player->getEyeLevel(), 0));
+		view = glm::rotate(view, glm::pi<float>() / 2 , glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, -glm::vec3(0.0f, 65.0f, 32.0f) - glm::vec3(0, player->getEyeLevel(), 0));
 #endif
 		mappedUbo->transform = proj * view;
 

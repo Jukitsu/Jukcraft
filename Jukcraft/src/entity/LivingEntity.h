@@ -4,10 +4,11 @@
 
 #include "physics/constants.h"
 
+#include "animations/WalkAnimation.h"
+
 namespace Jukcraft {
 
 	class World;
-
 
 	class LivingEntity : public Entity {
 	public:
@@ -31,15 +32,20 @@ namespace Jukcraft {
 		constexpr float getEyeLevel() const { return height - 0.2f; }
 		constexpr const Collider& getCollider() const { return collider; }
 		constexpr const glm::vec3& getInput() const { return input; }
-
-		constexpr const glm::vec2& getBodyRot() { return bodyRot; }
-		constexpr const glm::vec2& getHeadRot() { return headRot; }
-
-		constexpr const auto& getOld() { return old; }
+		constexpr size_t getAge() const { return age;  }
+		constexpr const glm::vec2& getBodyRot() const { return bodyRot; }
+		constexpr const glm::vec2& getHeadRot() const { return headRot; }
+		constexpr float getKineticEnergy() const { return 0.5f * mass * glm::dot(inertia, inertia); }
+		constexpr float getMaxKineticEnergy() const { return mass * MAX_KINETIC_ENERGY_PER_MASS; }
+		constexpr const auto& getOld() const { return old; }
+		constexpr const auto& getAnimationTicks() const { return animationTicks; }
+		constexpr const auto& getWalkAnimation() const { return walkAnimation; }
 
 		void setHeadYaw(float theta) { headRot.x = wrapRadians(theta); }
 		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
 		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
+
+		void consumeInertia();
 	protected:
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
@@ -57,8 +63,11 @@ namespace Jukcraft {
 
 		float width, height;
 
-		int stamina = 0;
+		float health = 20.0f;
+		float stamina = 0.0f;
 		glm::vec3 inertia = glm::vec3(0.0f);
+
+		size_t age = 0;
 
 		const float speed;
 
@@ -75,6 +84,8 @@ namespace Jukcraft {
 			float attack = 0.0f;
 			float step = 0.0f;
 		} animationTicks;
+
+		WalkAnimation walkAnimation;
 
 		Collider collider;
 		World& world;

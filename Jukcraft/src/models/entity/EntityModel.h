@@ -19,6 +19,11 @@ namespace Jukcraft {
         glm::vec3 pivot;
         std::string name;
 
+        bool isLeg = false;
+        bool isArm = false;
+        bool isHead = false;
+        bool isOdd = false;
+
         Bone() {}
         Bone(const nlohmann::json& boneData, const glm::vec2& textureDim);
         ~Bone();
@@ -32,5 +37,5 @@ namespace Jukcraft {
         std::unordered_map<std::string, Bone> bones;
 	};
 
-    ;
+    
 }

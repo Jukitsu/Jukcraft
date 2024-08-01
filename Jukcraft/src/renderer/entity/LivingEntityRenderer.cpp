@@ -45,7 +45,7 @@ namespace Jukcraft {
 			glm::mat4 pose(1.0f);
 			pose = glm::translate(pose, interpolatedPos);
 			
-			if (name == "head") {
+			if (bone.isHead) {
 				pose = glm::translate(pose, bone.pivot);
 				pose = glm::rotate(pose, -interpolatedHeadRot.x - glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 				pose = glm::rotate(pose, interpolatedHeadRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -54,9 +54,43 @@ namespace Jukcraft {
 			else {
 				pose = glm::rotate(pose, -interpolatedBodyRot.x - glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 				pose = glm::rotate(pose, interpolatedBodyRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+
 			}
-			
-			
+			const float phase = glm::pi<float>() * (bone.isArm ^ bone.isOdd);
+
+			if (bone.isLeg) {
+				pose = glm::translate(pose, bone.pivot);
+
+				
+				
+				pose = glm::rotate(
+					pose,
+					glm::cos(
+						livingEntity.getWalkAnimation().lerpPos(partialTicks) 
+						* 0.6662f + phase
+					) * 1.4f * glm::min(1.0f, livingEntity.getWalkAnimation().lerpSpeed(partialTicks) * TICK_RATE / 20.0f),
+					glm::vec3(1.0f, 0.0f, 0.0f)
+				);
+				pose = glm::translate(pose, -bone.pivot);
+			}
+
+			if (bone.isArm) {
+				pose = glm::translate(pose, bone.pivot);
+				float theta = bone.isOdd ? (float)livingEntity.getAge() / (-TICK_RATE) : 2 * livingEntity.getAge() / TICK_RATE;
+				pose = glm::rotate(pose, glm::sin(theta + phase) / 8, glm::vec3(0.0f, 1.0f, 0.0f));
+				pose = glm::rotate(
+					pose,
+					glm::cos(
+						livingEntity.getWalkAnimation().lerpPos(partialTicks)
+						* 0.6662f + phase
+					) * glm::min(1.0f, livingEntity.getWalkAnimation().lerpSpeed(partialTicks) * TICK_RATE / 20.0f),
+					glm::vec3(1.0f, 0.0f, 0.0f)
+				);
+				pose = glm::rotate(pose, glm::cos(theta + phase) / 8, glm::vec3(1.0f, 0.0f, 0.0f));
+				pose = glm::translate(pose, -bone.pivot);
+			}
+
+						
 
 			std::array<Bone::Quad, 6> quads = bone.quads;
 
