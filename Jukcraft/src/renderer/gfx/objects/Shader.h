@@ -47,6 +47,10 @@ namespace Jukcraft {
 				glProgramUniform3f(handle, location, value.x, value.y, value.z);
 			}
 
+			void setUniform4f(uint8_t location, const glm::vec4& value) {
+				glProgramUniform4f(handle, location, value.x, value.y, value.z, value.w);
+			}
+
 			void setUniform1f(uint8_t location, float value) {
 				glProgramUniform1f(handle, location, value);
 			}

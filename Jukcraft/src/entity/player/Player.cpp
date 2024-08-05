@@ -21,8 +21,6 @@ namespace Jukcraft {
 		if (dashing && onGround) {
 			dashing = false;
 		}
-
-		fov = glm::radians(70.0f + glm::length(velocity) * TICK_RATE);
 			
 	}
 

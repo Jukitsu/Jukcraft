@@ -17,10 +17,12 @@ namespace Jukcraft {
 		virtual void tick() = 0;
 		virtual void applyPhysics() = 0;
 		virtual void aiStep() = 0;
-		virtual void handleRotation() {}
+		virtual void tickRotations() {}
 		virtual void move(const glm::vec3& motion) = 0;
 		virtual void push(const glm::vec3& motion) = 0;
 		virtual void render(float partialTicks) {}
+		virtual void hurt(float amount, const glm::vec3& knockback) = 0;
+		
 
 		constexpr const glm::vec3& getPos() const { return position; }
 		constexpr const glm::vec3& getVelocity() const { return velocity; }

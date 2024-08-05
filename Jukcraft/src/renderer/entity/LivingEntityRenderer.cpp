@@ -12,7 +12,8 @@ namespace Jukcraft {
 			gfx::VertexArrayLayout{ 
 				{
 					{ 3, true },
-					{ 2, true }
+					{ 2, true },
+					{ 3, true }
 				}		
 			}
 		);
@@ -20,7 +21,11 @@ namespace Jukcraft {
 		vao.bindVertexBuffer(
 			vbo, 0,
 			gfx::VertexBufferLayout{
-				{{ 0, 0 }, { 1, offsetof(Bone::Vertex, texUV)}},
+				{
+					{ 0, 0 }, 
+					{ 1, offsetof(Bone::Vertex, texUV)}, 
+					{ 2, offsetof(Bone::Vertex, normal)}
+				},
 				0,
 				sizeof(Bone::Vertex)
 			}
@@ -41,35 +46,50 @@ namespace Jukcraft {
 		glm::vec2 interpolatedHeadRot = glm::mix(livingEntity.getOld().headRot, livingEntity.getHeadRot(), partialTicks);
 
 		int i = 0; 
+		bool isHurt = livingEntity.isHurt();
+		if (isHurt)
+			shader.setUniform4f(0, glm::vec4(1.0f, 0.0f, 0.0f, 0.4f));
+		else
+			shader.setUniform4f(0, glm::vec4(1.0f));
+
 		for (auto&& [name, bone] : model.bones) {
 			glm::mat4 pose(1.0f);
-			pose = glm::translate(pose, interpolatedPos);
+			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), interpolatedPos);
+
+			pose = glm::rotate(pose, -interpolatedBodyRot.x - glm::pi<float>() / 2, UP);
+			pose = glm::rotate(pose, interpolatedBodyRot.y, EAST);
+
+			if (livingEntity.getDeathTime() > 0.0f) {
+				float i = glm::min(1.0f,
+					glm::sqrt(
+						(float)(livingEntity.getDeathTime() + partialTicks - 1.0F) / TICK_RATE * 1.6F));
+				pose = glm::rotate(pose, i * glm::pi<float>() / 2.0f, SOUTH);
+			}
 			
 			if (bone.isHead) {
+				pose = glm::rotate(pose, interpolatedBodyRot.y, WEST);
+				pose = glm::rotate(pose, -interpolatedBodyRot.x - glm::pi<float>() / 2, DOWN);
+				
 				pose = glm::translate(pose, bone.pivot);
-				pose = glm::rotate(pose, -interpolatedHeadRot.x - glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
-				pose = glm::rotate(pose, interpolatedHeadRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+				pose = glm::rotate(pose, -interpolatedHeadRot.x - glm::pi<float>() / 2, UP);
+				pose = glm::rotate(pose, interpolatedHeadRot.y, EAST);
 				pose = glm::translate(pose, -bone.pivot);
 			}
-			else {
-				pose = glm::rotate(pose, -interpolatedBodyRot.x - glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
-				pose = glm::rotate(pose, interpolatedBodyRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
 
-			}
 			const float phase = glm::pi<float>() * (bone.isArm ^ bone.isOdd);
 
 			if (bone.isLeg) {
 				pose = glm::translate(pose, bone.pivot);
-
-				
 				
 				pose = glm::rotate(
 					pose,
 					glm::cos(
-						livingEntity.getWalkAnimation().lerpPos(partialTicks) 
+						livingEntity.getWalkAnimation().lerpPos(partialTicks)
 						* 0.6662f + phase
-					) * 1.4f * glm::min(1.0f, livingEntity.getWalkAnimation().lerpSpeed(partialTicks) * TICK_RATE / 20.0f),
-					glm::vec3(1.0f, 0.0f, 0.0f)
+					) * 0.07f * TICK_RATE * glm::min(20.0f / TICK_RATE, 
+						livingEntity.getWalkAnimation().lerpSpeed(partialTicks)
+					),
+					EAST
 				);
 				pose = glm::translate(pose, -bone.pivot);
 			}
@@ -77,16 +97,18 @@ namespace Jukcraft {
 			if (bone.isArm) {
 				pose = glm::translate(pose, bone.pivot);
 				float theta = bone.isOdd ? (float)livingEntity.getAge() / (-TICK_RATE) : 2 * livingEntity.getAge() / TICK_RATE;
-				pose = glm::rotate(pose, glm::sin(theta + phase) / 8, glm::vec3(0.0f, 1.0f, 0.0f));
+				pose = glm::rotate(pose, glm::sin(theta + phase) / 8, UP);
 				pose = glm::rotate(
 					pose,
 					glm::cos(
 						livingEntity.getWalkAnimation().lerpPos(partialTicks)
 						* 0.6662f + phase
-					) * glm::min(1.0f, livingEntity.getWalkAnimation().lerpSpeed(partialTicks) * TICK_RATE / 20.0f),
-					glm::vec3(1.0f, 0.0f, 0.0f)
+					) * 0.05f * TICK_RATE * glm::min(20 / TICK_RATE, 
+						livingEntity.getWalkAnimation().lerpSpeed(partialTicks)
+					),
+					EAST
 				);
-				pose = glm::rotate(pose, glm::cos(theta + phase) / 8, glm::vec3(1.0f, 0.0f, 0.0f));
+				pose = glm::rotate(pose, glm::cos(theta + phase) / 8, EAST);
 				pose = glm::translate(pose, -bone.pivot);
 			}
 
@@ -96,7 +118,8 @@ namespace Jukcraft {
 
 			for (auto& quad : quads) {
 				for (auto& vertex : quad.vertices) {
-					vertex.pos = pose * glm::vec4(vertex.pos, 1.0f);
+					vertex.pos = modelMatrix * pose * glm::vec4(vertex.pos, 1.0f);
+					vertex.normal = pose * glm::vec4(vertex.normal, 1.0f);
 				}
 			}
 

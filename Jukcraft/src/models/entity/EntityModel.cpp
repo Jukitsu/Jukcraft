@@ -104,9 +104,14 @@ namespace Jukcraft {
                 };
 
                 for (int i = 0; i < 6; ++i) {
+                    glm::vec3 normal = glm::normalize(glm::cross(
+                        transformedVertices[i * 4] - transformedVertices[i * 4 + 1],
+                        transformedVertices[i * 4] - transformedVertices[i * 4 + 2]
+                    ));
                     for (int j = 0; j < 4; ++j) {
                         quads[i].vertices[j].pos = transformedVertices[i * 4 + j];
                         quads[i].vertices[j].texUV = texCoords[i][j];
+                        quads[i].vertices[j].normal = normal;
                     }
                 }
             }

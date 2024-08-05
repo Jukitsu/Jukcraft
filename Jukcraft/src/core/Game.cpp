@@ -52,6 +52,9 @@ namespace Jukcraft {
 		case GLFW_KEY_LEFT_CONTROL:
 			player->dash();
 			break;
+		case GLFW_KEY_F5:
+			camera.isFirstPerson = !camera.isFirstPerson;
+			break;
 		}
 	}
 	void Game::hitCallback(int button, const BlockPos& currentBlock, const BlockPos& nextBlock) {
@@ -79,9 +82,12 @@ namespace Jukcraft {
 
 		Renderer::Begin(world->getSkyColor());
 		world->render(partialTicks);
-#ifdef JUK_DEBUG
-		world->mobRenderer.render(*player, partialTicks);
-#endif
+
+		if (!camera.isFirstPerson) {
+			world->mobRenderer.render(*player, partialTicks);
+		}
+		
+
 		Renderer::End();
 	}
 }

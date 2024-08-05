@@ -55,15 +55,21 @@ namespace Jukcraft {
 			0.1f,
 			500.0f
 		);
-#ifndef JUK_DEBUG
-		glm::mat4 view = glm::rotate(glm::mat4(1.0f), player->getPitch(), -glm::vec3(1.0f, 0.0f, 0.0f));
-		view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
-#else
+
+
 		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::rotate(view, glm::pi<float>() / 2 , glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, -glm::vec3(0.0f, 65.0f, 32.0f) - glm::vec3(0, player->getEyeLevel(), 0));
-#endif
+
+		if (isFirstPerson) {
+			view = glm::rotate(view, player->getPitch(), -glm::vec3(1.0f, 0.0f, 0.0f));
+			view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+			view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
+		}
+		else {
+			view = glm::rotate(view, glm::pi<float>() / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+			view = glm::translate(view, -glm::vec3(0.0f, 65.0f, 32.0f) - glm::vec3(0, player->getEyeLevel(), 0));
+		}
+		
+
 		mappedUbo->transform = proj * view;
 
 		mappedUbo->pos = glm::vec4(player->position, 1.0f);

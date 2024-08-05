@@ -116,13 +116,11 @@ namespace Jukcraft {
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
 	}
 
-	void LivingEntity::handleRotation() {
+	void LivingEntity::tickRotations() {
 		glm::vec3 ds = position - old.position;
-		float g = 0.0f;
 		float nextBodyYaw = headRot.x;
 		float ortho2 = ds.x * ds.x + ds.z * ds.z;
 		if (ortho2 > 0.0f) {
-			g = glm::sqrt(ortho2);
 			nextBodyYaw = glm::atan<float>(ds.z, ds.x);
 		}
 		if (animationTicks.attack > 0.0F) {
@@ -136,12 +134,6 @@ namespace Jukcraft {
 		if (glm::abs(relativeAngle) > glm::pi<float>() / 3.0f) {
 			bodyRot.x += relativeAngle - glm::sign(relativeAngle) * glm::pi<float>() / 3.0f;
 		}
-
-		if (glm::abs(relativeAngle) > glm::pi<float>() / 2) {
-			g *= -1.0F;
-		}
-		
-		animationTicks.step = g;
 
 		while (bodyRot.x - old.bodyRot.x < -glm::pi<float>()) {
 			old.bodyRot.x -= 2.0f * glm::pi<float>();
@@ -167,24 +159,47 @@ namespace Jukcraft {
 		old.velocity = velocity;
 
 		age++;
-
+		iframes = glm::max(0, iframes - 1);
+	
 		aiStep();
-		handleRotation();
+		tickRotations();
 
-		walkAnimation.update(glm::min(4.0f * glm::length(position - old.position), 1.0f), 0.4f);
+		walkAnimation.update(glm::min(glm::length(position - old.position) * 4.0f,
+			1.0f), //TICK_RATE / 20.0f), 
+			0.4f);
 
+		if (health.hp <= 0.0f || deathTime > 0) {
+			die();
+		}
+	}
+
+	void LivingEntity::die() {
+		deathTime++;
+		setInput(glm::vec3(0.0f));
+	}
+
+	void LivingEntity::hurt(float amount, const glm::vec3& knockback) {
+		bool success = health.hurt(amount, iframes > 0);
+		velocity += (float)(success) * knockback / (iframes > 0 ? 2.0f : 1.0f);
+		iframes = iframes > 0 ? iframes : glm::floor(TICK_RATE / 2);
+		if (health.hp <= 0.0f) {
+			die();
+		}
 	}
 
 	void LivingEntity::aiStep() {
 		applyPhysics();
+		checkInjury();
+		health.healNatural();
+		stamina = glm::min(stamina + 1.0f / TICK_RATE, 1.0f);
+	}
+
+	void LivingEntity::checkInjury() {
 		float unabsorbedEnergy = getKineticEnergy() - getMaxKineticEnergy();
 		if (unabsorbedEnergy > 0.0f) {
-			health = glm::max(0.0f, health - unabsorbedEnergy * TICK_RATE * TICK_RATE);
+			hurt(health.hp - unabsorbedEnergy * TICK_RATE * TICK_RATE, glm::vec3(0.0f));
+			consumeInertia();
 		}
-		health = glm::min(health + 0.25f / TICK_RATE, 20.0f);
-		stamina = glm::min(stamina + 1.0f / TICK_RATE, 1.0f);
-
-		
 	}
 
 	void LivingEntity::applyPhysics() {

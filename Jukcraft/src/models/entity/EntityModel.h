@@ -9,6 +9,7 @@ namespace Jukcraft {
         struct Vertex {
             glm::vec3 pos;
             glm::vec2 texUV;
+            glm::vec3 normal;
         };
 
         struct Quad {

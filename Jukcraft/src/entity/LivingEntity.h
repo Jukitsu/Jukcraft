@@ -10,6 +10,32 @@ namespace Jukcraft {
 
 	class World;
 
+	struct Health {
+		float oldHp = 20.0f;
+		float hp = 20.0f;
+		float energy = 1.0f;
+
+		void healNatural() {
+			// hp = glm::min(hp + 0.25f / TICK_RATE, 20.0f);
+
+		}
+
+		bool hurt(float amount, bool isIframe) {
+			if (!isIframe) {
+				oldHp = hp;
+				hp -= amount;
+			}
+			else if (amount > oldHp - hp) {
+				hp = oldHp - amount;
+			}
+			else {
+				return false;
+			}
+			return true;
+
+		}
+	};
+
 	class LivingEntity : public Entity {
 	public:
 		LivingEntity(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), 
@@ -23,7 +49,9 @@ namespace Jukcraft {
 		void aiStep() override;
 		void tick() override;
 		void applyPhysics() override;
-		void handleRotation() override;
+		void tickRotations() override;
+		void hurt(float amount, const glm::vec3& knockback) override;
+
 		void move(const glm::vec3& motion) override;
 		void push(const glm::vec3& motion) override;
 
@@ -40,13 +68,17 @@ namespace Jukcraft {
 		constexpr const auto& getOld() const { return old; }
 		constexpr const auto& getAnimationTicks() const { return animationTicks; }
 		constexpr const auto& getWalkAnimation() const { return walkAnimation; }
+		constexpr bool isHurt() const { return iframes > 0 || deathTime > 0; }
+		constexpr int getDeathTime() const { return deathTime; }
 
 		void setHeadYaw(float theta) { headRot.x = wrapRadians(theta); }
 		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
 		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
 
 		void consumeInertia();
+		void die();
 	protected:
+		void checkInjury();
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
 				return FRICTION;
@@ -61,10 +93,13 @@ namespace Jukcraft {
 		glm::vec2 bodyRot;
 		glm::vec2 headRot;
 
+		int iframes = 0;
+		int deathTime = 0;
+
 		float width, height;
 
-		float health = 20.0f;
-		float stamina = 0.0f;
+		Health health;
+		float stamina = 1.0f;
 		glm::vec3 inertia = glm::vec3(0.0f);
 
 		size_t age = 0;

@@ -7,6 +7,7 @@ namespace Jukcraft {
 	public:
 		Camera(gfx::Shader& shader, Auto<Player>& player);
 		void update(const float delta_time);
+		bool isFirstPerson = true;
 	private:
 		gfx::Buffer ubo;
 		gfx::Shader& shader;
@@ -17,6 +18,7 @@ namespace Jukcraft {
 		float speed;
 
 		ShaderCameraData *mappedUbo;
+
 
 		FORBID_COPY(Camera);
 		FORBID_MOVE(Camera);
