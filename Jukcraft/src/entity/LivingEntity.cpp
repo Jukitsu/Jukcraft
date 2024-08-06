@@ -115,6 +115,8 @@ namespace Jukcraft {
 			velocity.x += glm::cos(rotation.x) * glm::length(inertia);
 			velocity.z += glm::sin(rotation.x) * glm::length(inertia);
 			hasImpulse = true;
+
+			stamina = glm::clamp(stamina + glm::dot(glm::normalize(velocity), glm::normalize(inertia)) - 1.0f, -1.0f, 1.0f);
 			consumeInertia();
 			injuryCooldown = 0;
 		}
@@ -273,7 +275,6 @@ namespace Jukcraft {
 	}
 
 	void LivingEntity::consumeInertia() {
-		stamina = glm::max(-1.0f, stamina - 2 * getKineticEnergy() * TICK_RATE * TICK_RATE / 5.0f);
 		inertia = glm::vec3(0.0f);
 		pendingInjury = 0.0f;
 	}

@@ -94,7 +94,7 @@ namespace Jukcraft {
 	constexpr glm::vec3 NORTH = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	constexpr float TICK_RATE = 64.0f;
-	constexpr int COYOTE_TIME = 0.25f * 64.0f;
+	constexpr int COYOTE_TIME = 0.25f * TICK_RATE;
 
 	constexpr uint8_t EAST_INDEX  = 0;
 	constexpr uint8_t WEST_INDEX  = 1;
