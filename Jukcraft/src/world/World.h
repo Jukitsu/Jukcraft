@@ -62,6 +62,7 @@ namespace Jukcraft {
 		uint64_t time;
 
 		Auto<Mob> mob;
+
 	public:
 		MobRenderer mobRenderer;
 	};

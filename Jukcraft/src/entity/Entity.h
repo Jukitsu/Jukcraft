@@ -15,9 +15,7 @@ namespace Jukcraft {
 		virtual ~Entity() {}
 
 		virtual void tick() = 0;
-		virtual void applyPhysics() = 0;
-		virtual void aiStep() = 0;
-		virtual void tickRotations() {}
+
 		virtual void move(const glm::vec3& motion) = 0;
 		virtual void push(const glm::vec3& motion) = 0;
 		virtual void render(float partialTicks) {}
@@ -34,6 +32,11 @@ namespace Jukcraft {
 		void setVelocity(const glm::vec3& v) { velocity = v; }
 		void setYaw(float theta) { rotation.x = wrapRadians(theta); }
 		void setPitch(float phi) { rotation.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
+	protected:
+		virtual void applyPhysics() = 0;
+		virtual void aiStep() = 0;
+		virtual void tickRotations() {}
+		virtual void animate() = 0;
 	protected:
 		glm::vec3 position;
 		glm::vec3 velocity;

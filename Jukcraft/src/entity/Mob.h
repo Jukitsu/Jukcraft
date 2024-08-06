@@ -9,11 +9,6 @@ namespace Jukcraft {
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~Mob();
 
-		void aiStep() override;
-
-	protected:
-		std::random_device dev;
-		std::mt19937 rng;
-		
+		void aiStep() override;		
 	};
 }

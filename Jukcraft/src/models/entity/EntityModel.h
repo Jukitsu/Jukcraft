@@ -16,7 +16,7 @@ namespace Jukcraft {
             std::array<Vertex, 4> vertices;
         };
 
-        std::array<Quad, 6> quads;
+        std::vector<Quad> quads;
         glm::vec3 pivot;
         std::string name;
 

@@ -19,5 +19,5 @@ const vec3 c_Sunlight = normalize(vec3(0.0, 2.0, 1.0));
 void main(void) {
 	gl_Position = u_CameraTransforms * vec4(a_Pos, 1.0f);
 	vs_Out.v_TexCoords = a_TexUV;
-	vs_Out.v_Shading = max(0.4f, (1. + dot(abs(a_Normal), c_Sunlight)) / 2.0f); 
+	vs_Out.v_Shading = max(0.4f, (1. + dot(abs(a_Normal.xz), c_Sunlight.xz) + a_Normal.y * c_Sunlight.y) / 2.0f); 
 }

@@ -86,3 +86,4 @@
 
 #include "core/Log.h"
 #include "core/util.h"
+#include "core/RNG.h"

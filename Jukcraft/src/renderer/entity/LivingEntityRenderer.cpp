@@ -4,9 +4,9 @@
 namespace Jukcraft {
 	LivingEntityRenderer::LivingEntityRenderer() 
 		:shader("assets/shaders/entity/vert.glsl", "assets/shaders/entity/frag.glsl"),
-		model("assets/models/zombie.json"), texture("assets/textures/zombie.png") {
-		vbo.allocate(sizeof(Bone::quads), nullptr, true);
-		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, sizeof(Bone::quads)));
+		model("assets/models/curry.json"), texture("assets/textures/curry.png") {
+		vbo.allocate(60 * sizeof(Bone::Quad), nullptr, true);
+		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, 60 * sizeof(Bone::Quad)));
 
 		vao.bindLayout(
 			gfx::VertexArrayLayout{ 
@@ -46,11 +46,16 @@ namespace Jukcraft {
 		glm::vec2 interpolatedHeadRot = glm::mix(livingEntity.getOld().headRot, livingEntity.getHeadRot(), partialTicks);
 
 		int i = 0; 
-		bool isHurt = livingEntity.isHurt();
+		bool isHurt = livingEntity.isHurt() && livingEntity.deathTime <= TICK_RATE;
+
+		glm::vec4 color = glm::vec4(1.0f);
+
 		if (isHurt)
-			shader.setUniform4f(0, glm::vec4(1.0f, 0.0f, 0.0f, 0.4f));
+			shader.setUniform4f(0, glm::vec4(1.0f, 0.0f, 0.0f, 0.6f));
 		else
 			shader.setUniform4f(0, glm::vec4(1.0f));
+
+		
 
 		for (auto&& [name, bone] : model.bones) {
 			glm::mat4 pose(1.0f);
@@ -67,10 +72,11 @@ namespace Jukcraft {
 			}
 			
 			if (bone.isHead) {
+				pose = glm::translate(pose, bone.pivot);
 				pose = glm::rotate(pose, interpolatedBodyRot.y, WEST);
 				pose = glm::rotate(pose, -interpolatedBodyRot.x - glm::pi<float>() / 2, DOWN);
 				
-				pose = glm::translate(pose, bone.pivot);
+				
 				pose = glm::rotate(pose, -interpolatedHeadRot.x - glm::pi<float>() / 2, UP);
 				pose = glm::rotate(pose, interpolatedHeadRot.y, EAST);
 				pose = glm::translate(pose, -bone.pivot);
@@ -114,21 +120,28 @@ namespace Jukcraft {
 
 						
 
-			std::array<Bone::Quad, 6> quads = bone.quads;
+			std::vector<Bone::Quad> quads = bone.quads;
 
 			for (auto& quad : quads) {
 				for (auto& vertex : quad.vertices) {
 					vertex.pos = modelMatrix * pose * glm::vec4(vertex.pos, 1.0f);
-					vertex.normal = pose * glm::vec4(vertex.normal, 1.0f);
+				}
+				glm::vec3 normal = glm::normalize(glm::cross(
+					quad.vertices[0].pos - quad.vertices[1].pos,
+					quad.vertices[0].pos - quad.vertices[2].pos
+				));
+				for (auto& vertex : quad.vertices) {
+					vertex.normal = normal;
 				}
 			}
 
+
 			vbo.sync();
-			memcpy(mappedPointer, quads.data(), sizeof(quads));
-			vbo.flush(0, sizeof(quads));
+			memcpy(mappedPointer, quads.data(), quads.size() * sizeof(Bone::Quad));
+			vbo.flush(0, quads.size() * sizeof(Bone::Quad));
 			shader.bind();
 			
-			Renderer::DrawElements(vao, 6 * 6);
+			Renderer::DrawElements(vao, quads.size() * 6);
 			vbo.addFence();
 			i++;
 		}

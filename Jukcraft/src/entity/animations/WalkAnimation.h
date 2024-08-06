@@ -6,6 +6,12 @@ namespace Jukcraft {
         float speedOld = 0.0f;
         float speed = 0.0f;
         float position = 0.0f;
+        bool isFrozen = false;
+        
+        void freeze() {
+            speedOld = speed;
+            isFrozen = true;
+        }
 
         void update(float newSpeed, float g) {
             speedOld = speed;
@@ -14,11 +20,11 @@ namespace Jukcraft {
         }
 
         float lerpSpeed(float partialTicks) const {
-            return glm::mix(speedOld, speed, partialTicks);
+            return glm::mix(speedOld, speed, partialTicks * !isFrozen);
         }
 
         float lerpPos(float partialTicks) const {
-            return position - speed * (1.0F - partialTicks);
+            return position - speed * (1.0F - partialTicks) * !isFrozen;
         }
 
         bool isMoving() const {

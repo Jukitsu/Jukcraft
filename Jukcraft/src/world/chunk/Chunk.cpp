@@ -24,17 +24,23 @@ namespace Jukcraft {
 			}
 		}
 
-		for (uint8_t ly = 0; ly < CHUNK_HEIGHT / 2; ly++)
-			for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
-				for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
-					if (ly == CHUNK_HEIGHT / 2 - 1)
+
+		
+		for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
+			for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
+				int height = CHUNK_HEIGHT / 2 - 1;// randomDiscrete(CHUNK_HEIGHT / 2 - 1, CHUNK_HEIGHT / 2 + 1);
+				for (uint8_t ly = 0; ly <= height; ly++) {
+
+					if (ly == height)
 						setBlock(glm::uvec3(lx, ly, lz), 2);
-					else if (ly >= CHUNK_HEIGHT / 2 - 3 && ly < CHUNK_HEIGHT / 2 - 1)
+					else if (ly >= height - 2 && ly < height)
 						setBlock(glm::uvec3(lx, ly, lz), 3);
 					else
 						setBlock(glm::uvec3(lx, ly, lz), 1);
-						
+
 				}
+			}
+				
 
 		lightMap = new uint8_t * *[CHUNK_HEIGHT];
 		for (size_t j = 0; j < CHUNK_HEIGHT; j++) {

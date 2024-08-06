@@ -4,6 +4,7 @@
 
 #include "physics/constants.h"
 
+#include "core/App.h"
 
 
 namespace Jukcraft {
@@ -86,6 +87,7 @@ namespace Jukcraft {
 		entryTime -= 0.001f;
 
 		if (normal.x) {
+			onWall = true;
 			velocity.x = 0;
 			position.x += adjustedVelocity.x * entryTime;
 		}
@@ -94,11 +96,13 @@ namespace Jukcraft {
 			position.y += adjustedVelocity.y * entryTime;
 		}
 		if (normal.z) {
+			onWall = true;
 			velocity.z = 0;
 			position.z += adjustedVelocity.z * entryTime;
 		}
 		if (normal.y == 1) {
 			onGround = true;
+			hasImpulse = false;
 		}
 
 	}
@@ -110,7 +114,9 @@ namespace Jukcraft {
 		if (input.z > 0.0f && stamina > 0.0f) {
 			velocity.x += glm::cos(rotation.x) * glm::length(inertia);
 			velocity.z += glm::sin(rotation.x) * glm::length(inertia);
+			hasImpulse = true;
 			consumeInertia();
+			injuryCooldown = 0;
 		}
 
 		velocity.y = glm::sqrt(-2 * g.y * hmax);
@@ -160,17 +166,29 @@ namespace Jukcraft {
 
 		age++;
 		iframes = glm::max(0, iframes - 1);
-	
-		aiStep();
-		tickRotations();
 
-		walkAnimation.update(glm::min(glm::length(position - old.position) * 4.0f,
-			1.0f), //TICK_RATE / 20.0f), 
-			0.4f);
+		aiStep();
+
+		if (deathTime <= TICK_RATE) {
+			tickRotations();
+			animate();
+		}
+		else {
+			walkAnimation.freeze();
+		}
 
 		if (health.hp <= 0.0f || deathTime > 0) {
-			die();
+			deathTime++;
 		}
+	}
+
+	void LivingEntity::animate() {
+		glm::vec3 vector = hasImpulse ? position - old.position
+			: glm::vec3(position.x - old.position.x, 0.0f, position.z - old.position.z);
+			
+		walkAnimation.update(glm::min(glm::length(vector) * 4.0f,
+			1.0f),  
+			0.4f);
 	}
 
 	void LivingEntity::die() {
@@ -180,7 +198,8 @@ namespace Jukcraft {
 
 	void LivingEntity::hurt(float amount, const glm::vec3& knockback) {
 		bool success = health.hurt(amount, iframes > 0);
-		velocity += (float)(success) * knockback / (iframes > 0 ? 2.0f : 1.0f);
+		if (success)
+			push(knockback / (iframes > 0 ? 2.0f : 1.0f));
 		iframes = iframes > 0 ? iframes : glm::floor(TICK_RATE / 2);
 		if (health.hp <= 0.0f) {
 			die();
@@ -195,10 +214,21 @@ namespace Jukcraft {
 	}
 
 	void LivingEntity::checkInjury() {
-		float unabsorbedEnergy = getKineticEnergy() - getMaxKineticEnergy();
-		if (unabsorbedEnergy > 0.0f) {
-			hurt(health.hp - unabsorbedEnergy * TICK_RATE * TICK_RATE, glm::vec3(0.0f));
-			consumeInertia();
+		if (injuryCooldown > 0) {
+			injuryCooldown--;
+			if (injuryCooldown <= 0) {
+				injuryCooldown = 0;
+				if (pendingInjury > 0.0f)
+					hurt(pendingInjury, glm::vec3(0.0f));
+			}
+		}
+		else {
+			float unabsorbedEnergy = getKineticEnergy() - getMaxKineticEnergy();
+			if (unabsorbedEnergy > 0.0f) {
+				pendingInjury = glm::max(pendingInjury, unabsorbedEnergy * TICK_RATE * TICK_RATE / 5.0f);
+				if (injuryCooldown <= 0)
+					injuryCooldown = COYOTE_TIME;
+			}
 		}
 	}
 
@@ -218,16 +248,16 @@ namespace Jukcraft {
 		updateCollider();
 
 		onGround = false;
+		onWall = false;
 
 		for (uint8_t i = 0; i < 3; i++)
 			resolveCollisions();
 
 		position += velocity;
 		velocity += g;
-		velocity *= glm::max(glm::vec3(0.0f), glm::vec3(1.0f) - getFriction());
+		velocity *= glm::max(glm::vec3(0.0f), glm::vec3(1.0f) - getFriction());	
 
 		inertia += old.velocity - velocity;
-
 		inertia *= glm::vec3(1.0f) - DRAG_FLY;
 
 		updateCollider();
@@ -239,10 +269,12 @@ namespace Jukcraft {
 
 	void LivingEntity::push(const glm::vec3& motion) {
 		velocity += motion;
+		hasImpulse = true;
 	}
 
 	void LivingEntity::consumeInertia() {
-		stamina = glm::max(-1.0f, stamina - 2 * getKineticEnergy() * TICK_RATE * TICK_RATE);
+		stamina = glm::max(-1.0f, stamina - 2 * getKineticEnergy() * TICK_RATE * TICK_RATE / 5.0f);
 		inertia = glm::vec3(0.0f);
+		pendingInjury = 0.0f;
 	}
 }

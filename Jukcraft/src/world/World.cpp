@@ -6,7 +6,7 @@ namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
 
-		mob = std::make_unique<Mob>(*this, glm::vec3(16.0f, 90.0f, 16.0f), glm::vec3(0.0f),
+		mob = std::make_unique<Mob>(*this, glm::vec3(16.0f, 70.0f, 16.0f), glm::vec3(0.0f),
 			glm::pi<float>() / 2.0f, 0.0f);
 
 		/* Initialize lighting */

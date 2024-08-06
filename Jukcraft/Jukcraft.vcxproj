@@ -155,6 +155,7 @@
     <ClInclude Include="src\core\Camera.h" />
     <ClInclude Include="src\core\Game.h" />
     <ClInclude Include="src\core\Log.h" />
+    <ClInclude Include="src\core\RNG.h" />
     <ClInclude Include="src\core\Window.h" />
     <ClInclude Include="src\core\util.h" />
     <ClInclude Include="src\entity\Entity.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\core\Camera.cpp" />
     <ClCompile Include="src\core\Game.cpp" />
     <ClCompile Include="src\core\Log.cpp" />
+    <ClCompile Include="src\core\RNG.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\entity\HitRay.cpp" />
     <ClCompile Include="src\entity\LivingEntity.cpp" />

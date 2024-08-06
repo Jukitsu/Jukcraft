@@ -18,6 +18,7 @@ namespace Jukcraft {
 		/* Application Initialisation */
 		if (!Instance) {
 			Instance = this;
+			initRandom();
 			Log::Init();
 		}
 		else {

@@ -6,6 +6,7 @@
 
 #include "animations/WalkAnimation.h"
 
+
 namespace Jukcraft {
 
 	class World;
@@ -24,6 +25,7 @@ namespace Jukcraft {
 			if (!isIframe) {
 				oldHp = hp;
 				hp -= amount;
+				LOG_INFO("{} {} {}", oldHp, hp, amount);;
 			}
 			else if (amount > oldHp - hp) {
 				hp = oldHp - amount;
@@ -43,13 +45,8 @@ namespace Jukcraft {
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~LivingEntity();
 
-		void updateCollider();
-		void resolveCollisions();
 		void jump(float jumpHeight = JUMP_HEIGHT);
-		void aiStep() override;
 		void tick() override;
-		void applyPhysics() override;
-		void tickRotations() override;
 		void hurt(float amount, const glm::vec3& knockback) override;
 
 		void move(const glm::vec3& motion) override;
@@ -78,6 +75,10 @@ namespace Jukcraft {
 		void consumeInertia();
 		void die();
 	protected:
+		void animate() override;
+		void aiStep() override;
+		void applyPhysics() override;
+		void tickRotations() override;
 		void checkInjury();
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
@@ -87,16 +88,24 @@ namespace Jukcraft {
 			else
 				return DRAG_FALL;
 		}
-
+	private:
+		void updateCollider();
+		void resolveCollisions();
+	public:
+		bool hasImpulse = false;
+		bool onGround = false;
+		bool onWall = false;
+		int iframes = 0;
+		int deathTime = 0;
 	protected:
 		glm::vec3 input;
 		glm::vec2 bodyRot;
 		glm::vec2 headRot;
 
-		int iframes = 0;
-		int deathTime = 0;
-
 		float width, height;
+
+		float pendingInjury = 0.0f;
+		int injuryCooldown = 0;
 
 		Health health;
 		float stamina = 1.0f;
@@ -105,8 +114,6 @@ namespace Jukcraft {
 		size_t age = 0;
 
 		const float speed;
-
-		bool onGround;
 
 		struct {
 			glm::vec3 position;
