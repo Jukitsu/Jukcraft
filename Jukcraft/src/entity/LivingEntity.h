@@ -17,7 +17,7 @@ namespace Jukcraft {
 		float energy = 1.0f;
 
 		void healNatural() {
-			// hp = glm::min(hp + 0.25f / TICK_RATE, 20.0f);
+			hp = glm::min(hp + 0.25f / TICK_RATE, 20.0f);
 
 		}
 
@@ -25,7 +25,7 @@ namespace Jukcraft {
 			if (!isIframe) {
 				oldHp = hp;
 				hp -= amount;
-				LOG_INFO("{} {} {}", oldHp, hp, amount);;
+				
 			}
 			else if (amount > oldHp - hp) {
 				hp = oldHp - amount;
@@ -33,6 +33,7 @@ namespace Jukcraft {
 			else {
 				return false;
 			}
+			// LOG_INFO("{} {} {}", oldHp, hp, amount);
 			return true;
 
 		}
@@ -45,7 +46,6 @@ namespace Jukcraft {
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~LivingEntity();
 
-		void jump(float jumpHeight = JUMP_HEIGHT);
 		void tick() override;
 		void hurt(float amount, const glm::vec3& knockback) override;
 
@@ -68,13 +68,23 @@ namespace Jukcraft {
 		constexpr bool isHurt() const { return iframes > 0 || deathTime > 0; }
 		constexpr int getDeathTime() const { return deathTime; }
 
+		constexpr glm::vec3 getEyesight() const {
+			return glm::vec3(
+				glm::cos(rotation.x) * glm::cos(rotation.y),
+				glm::sin(rotation.y),
+				glm::sin(rotation.x) * glm::cos(rotation.y)
+			);
+		}
+
 		void setHeadYaw(float theta) { headRot.x = wrapRadians(theta); }
 		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
 		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
 
 		void consumeInertia();
 		void die();
+		void setJumping(bool state);
 	protected:
+		void jump(float jumpHeight = JUMP_HEIGHT);
 		void animate() override;
 		void aiStep() override;
 		void applyPhysics() override;
@@ -89,15 +99,22 @@ namespace Jukcraft {
 				return DRAG_FALL;
 		}
 	private:
+		void updateOldState();
 		void updateCollider();
 		void resolveCollisions();
 	public:
+		bool jumping = false;
+		bool hasCollision = false;
 		bool hasImpulse = false;
 		bool onGround = false;
 		bool onWall = false;
 		int iframes = 0;
 		int deathTime = 0;
+		
+
+		World& world;
 	protected:
+		virtual void tickAi() {}
 		glm::vec3 input;
 		glm::vec2 bodyRot;
 		glm::vec2 headRot;
@@ -106,6 +123,7 @@ namespace Jukcraft {
 
 		float pendingInjury = 0.0f;
 		int injuryCooldown = 0;
+		int inertiaCooldown = 0;
 
 		Health health;
 		float stamina = 1.0f;
@@ -130,6 +148,5 @@ namespace Jukcraft {
 		WalkAnimation walkAnimation;
 
 		Collider collider;
-		World& world;
 	};
 }

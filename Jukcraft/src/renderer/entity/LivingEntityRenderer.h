@@ -17,6 +17,7 @@ namespace Jukcraft {
 	private:
 		gfx::VertexArray vao;
 		gfx::Buffer vbo;
+		gfx::Buffer instancedVbo;
 		gfx::Shader shader;
 		Texture texture;
 

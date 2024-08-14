@@ -5,14 +5,10 @@
 namespace Jukcraft {
 	HitRay::HitRay(World& world, LivingEntity& entity)
 		:world(world), position(entity.getPos() - glm::vec3(0.5f) + glm::vec3(0, entity.getEyeLevel(), 0)), block((glm::ivec3)glm::round(entity.getPos() - glm::vec3(0.5f) + glm::vec3(0, entity.getEyeLevel(), 0))), distance(0.0f) {
-		vector = glm::vec3(
-			glm::cos(entity.getYaw()) * glm::cos(entity.getPitch()),
-			glm::sin(entity.getPitch()),
-			glm::sin(entity.getYaw()) * glm::cos(entity.getPitch())
-		);
+		vector = entity.getEyesight();
 	}
 
-	bool HitRay::check(int button, HitCallback callback,
+	bool HitRay::check(int button, HitCallback& callback,
 		float distance, const BlockPos& currentBlock, const BlockPos& nextBlock) {
 
 		if (world.getBlock(nextBlock)) {

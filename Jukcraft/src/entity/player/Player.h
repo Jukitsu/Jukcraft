@@ -9,7 +9,7 @@ namespace Jukcraft {
 			float initialYaw = 0.0f, float initialPitch = 0.0f);
 		virtual ~Player();
 
-		void aiStep() override;
+		void tickAi() override;
 		void dash();
 
 		constexpr bool isDashing() const { return dashing; }

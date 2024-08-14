@@ -13,13 +13,19 @@ namespace Jukcraft {
 
 	}
 
-	void Player::aiStep() {
+	void Player::tickAi() {
 		fovOld = fov;
-		LivingEntity::aiStep();
 		headRot = rotation;
 		dashCooldown = glm::max(dashCooldown - 1, 0);
 		if (dashing && onGround) {
 			dashing = false;
+		}
+
+		if (hasImpulse) {
+			fov = glm::radians(80.0f);
+		}
+		else {
+			fov = glm::radians(70.0f);
 		}
 			
 	}

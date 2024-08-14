@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "renderer/entity/LivingEntityRenderer.h"
-
+#include "world/World.h"
 namespace Jukcraft {
 	LivingEntityRenderer::LivingEntityRenderer() 
 		:shader("assets/shaders/entity/vert.glsl", "assets/shaders/entity/frag.glsl"),
-		model("assets/models/curry.json"), texture("assets/textures/curry.png") {
+		model("assets/models/zombie.json"), texture("assets/textures/zombie.png") {
 		vbo.allocate(60 * sizeof(Bone::Quad), nullptr, true);
 		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, 60 * sizeof(Bone::Quad)));
 
@@ -49,11 +49,14 @@ namespace Jukcraft {
 		bool isHurt = livingEntity.isHurt() && livingEntity.deathTime <= TICK_RATE;
 
 		glm::vec4 color = glm::vec4(1.0f);
+		float light = livingEntity.world.getLightMultiplier(livingEntity.getPos());
+
+		shader.setUniform1f(0, light);
 
 		if (isHurt)
-			shader.setUniform4f(0, glm::vec4(1.0f, 0.0f, 0.0f, 0.6f));
+			shader.setUniform4f(1, glm::vec4(1.0f, 0.0f, 0.0f, 0.6f));
 		else
-			shader.setUniform4f(0, glm::vec4(1.0f));
+			shader.setUniform4f(1, glm::vec4(1.0f));
 
 		
 
@@ -70,6 +73,8 @@ namespace Jukcraft {
 						(float)(livingEntity.getDeathTime() + partialTicks - 1.0F) / TICK_RATE * 1.6F));
 				pose = glm::rotate(pose, i * glm::pi<float>() / 2.0f, SOUTH);
 			}
+
+			
 			
 			if (bone.isHead) {
 				pose = glm::translate(pose, bone.pivot);

@@ -8,7 +8,7 @@ layout(location = 0) in VS_OUT {
 } fs_In;
 
 
-layout(location = 0) uniform vec4 u_Overlay;
+layout(location = 1) uniform vec4 u_Overlay;
 layout(binding = 1) uniform sampler2D u_TextureSampler;
 
 layout(location = 0) out vec4 fragColor;

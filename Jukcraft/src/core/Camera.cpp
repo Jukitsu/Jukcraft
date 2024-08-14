@@ -21,17 +21,19 @@ namespace Jukcraft {
 	void Camera::update(const float partialTicks) {
 		glm::vec3 interpolatedPos = glm::mix(player->old.position, player->position, partialTicks);
 
+		if (!isFirstPerson)
+			interpolatedPos -= 4.0f * player->getEyesight();
+
 		const glm::vec2 cursorPos = App::GetWindow().getCursorPos();
 		const glm::vec2 deltaCursor = cursorPos - lastCursorPos;
 		lastCursorPos = cursorPos;
 
+		if (!App::Get().isMouseCaptured())
+			return;
 
 		player->setYaw(player->getYaw() + deltaCursor.x * sensitivity);
 		player->setPitch(player->getPitch() - deltaCursor.y * sensitivity);
-		// It is negative because the origin is in the top left corner, not bottom left
-
-		if (!App::Get().isMouseCaptured())
-			return;
+		// It is negative because the origin is in the top left corner, not bottom left		
 
 		glm::ivec3 input(0);
 		if (App::GetWindow().isKeyPressed(GLFW_KEY_W))			input.z += 1;
@@ -43,14 +45,14 @@ namespace Jukcraft {
 
 
 		if (input.y > 0) {
-			player->jump();
+			player->setJumping(true);
 		} 
 
 		player->setInput(glm::vec3((float)input.x, 0.0f, (float)input.z));
 
 		
 		glm::mat4 proj = glm::perspective(
-			glm::mix(player->fovOld, player->fov, partialTicks),
+			isFirstPerson ? glm::mix(player->fovOld, player->fov, partialTicks) : glm::radians(90.0f),
 			static_cast<float>(App::GetWindow().getWidth()) / App::GetWindow().getHeight(),
 			0.1f,
 			500.0f
@@ -59,19 +61,14 @@ namespace Jukcraft {
 
 		glm::mat4 view = glm::mat4(1.0f);
 
-		if (isFirstPerson) {
-			if (player->isHurt()) {
-				view = glm::rotate(view, (player->iframes - partialTicks) * glm::pi<float>() / 50, NORTH);
-			}
+		if (player->isHurt()) {
+			view = glm::rotate(view, (player->iframes - partialTicks) * glm::pi<float>() / 200, NORTH);
+		}
 
-			view = glm::rotate(view, player->getPitch(), WEST);
-			view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, UP);
-			view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
-		}
-		else {
-			view = glm::rotate(view, glm::pi<float>() / 2, UP);
-			view = glm::translate(view, -glm::vec3(0.0f, 65.0f, 32.0f) - glm::vec3(0, player->getEyeLevel(), 0));
-		}
+		view = glm::rotate(view, player->getPitch(), WEST);
+		view = glm::rotate(view, player->getYaw() + glm::pi<float>() / 2, UP);
+
+		view = glm::translate(view, -interpolatedPos - glm::vec3(0, player->getEyeLevel(), 0));
 		
 
 		mappedUbo->transform = proj * view;

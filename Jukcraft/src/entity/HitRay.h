@@ -8,7 +8,7 @@ namespace Jukcraft {
 
 	struct HitRay {
 		HitRay(World& world, LivingEntity& entity);
-		bool check(int button, HitCallback callback,
+		bool check(int button, HitCallback& callback,
 			float distance, const BlockPos& currentBlock, const BlockPos& nextBlock);
 		bool step(int button, HitCallback callback);
 

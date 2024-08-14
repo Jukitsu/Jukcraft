@@ -17,6 +17,8 @@ namespace Jukcraft {
 
 		BlockID getBlock(const BlockPos& worldPos) const;
 
+		float getLightMultiplier(const glm::vec3& pos);
+
 		void speedTime() {
 			if (daylight <= 480)
 				daylightIncrementer = 1;
@@ -61,7 +63,7 @@ namespace Jukcraft {
 		int daylightIncrementer = 1;
 		uint64_t time;
 
-		Auto<Mob> mob;
+		std::vector<Mob> mobs;
 
 	public:
 		MobRenderer mobRenderer;

@@ -6,8 +6,18 @@ namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
 
-		mob = std::make_unique<Mob>(*this, glm::vec3(16.0f, 70.0f, 16.0f), glm::vec3(0.0f),
-			glm::pi<float>() / 2.0f, 0.0f);
+		int count = randomDiscrete(10, 20);
+		for (int i = 0; i < count; i++) {
+			glm::vec3 pos(
+				randomContinuous(0, CHUNK_DIM * WORLD_SIZE),
+				CHUNK_HEIGHT / 2 + 2,
+				randomContinuous(0, CHUNK_DIM * WORLD_SIZE)
+			);
+			mobs.emplace_back(*this, pos, glm::vec3(0.0f),
+				glm::pi<float>() / 2.0f, 0.0f);
+		}
+		
+
 
 		/* Initialize lighting */
 		std::future<void> result = std::async(
@@ -26,7 +36,8 @@ namespace Jukcraft {
 		time += 1;
 		updateDaylight();
 		chunkManager.tick();
-		mob->tick();
+		for (auto&& mob: mobs)
+			mob.tick();
 		lightEngine.propagateLightIncrease(); // Always check for any pending light updates
 	}
 
@@ -69,6 +80,19 @@ namespace Jukcraft {
 		chunkManager.updateChunkAtPosition(chunk, localPos); // Chunk Update
 	}
 
+	float World::getLightMultiplier(const glm::vec3& pos) {
+		BlockPos blockPos(pos);
+		glm::ivec2 chunkPos = blockPos.getChunkPos();
+		Nullable<Shared<const Chunk>>&& pendingChunk = chunkManager.getChunk(chunkPos);
+		if (!pendingChunk.has_value())
+			return 0;
+		Shared<const Chunk>& chunk = *pendingChunk;
+		glm::ivec3 localPos = blockPos.getLocalPos();
+		return glm::pow(0.8f, 
+			glm::min((15 - chunk->getSkyLightSafe(localPos) * (float)daylight / 1800), 
+				15.0f - chunk->getBlockLightSafe(localPos)));
+	}
+
 	BlockID World::getBlock(const BlockPos& blockPos) const {
 		glm::ivec2 chunkPos = blockPos.getChunkPos();
 		Nullable<Shared<const Chunk>>&& pendingChunk = chunkManager.getChunk(chunkPos);
@@ -84,7 +108,8 @@ namespace Jukcraft {
 		glEnable(GL_CULL_FACE);
 		chunkManager.drawChunksCubeLayers(shader);
 		glDisable(GL_CULL_FACE);
-		mobRenderer.render(*mob, partialTicks);
+		for (auto&& mob : mobs)
+			mobRenderer.render(mob, partialTicks);
 	}
 
 
