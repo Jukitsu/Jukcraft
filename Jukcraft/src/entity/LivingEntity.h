@@ -1,6 +1,5 @@
 #pragma once
-#include "entity/Entity.h"
-#include "models/Collider.h"
+#include "entity/PhysicalEntity.h"
 
 #include "physics/constants.h"
 
@@ -8,8 +7,6 @@
 
 
 namespace Jukcraft {
-
-	class World;
 
 	struct Health {
 		float oldHp = 20.0f;
@@ -39,18 +36,17 @@ namespace Jukcraft {
 		}
 	};
 
-	class LivingEntity : public Entity {
+	class LivingEntity : public PhysicalEntity {
 	public:
 		LivingEntity(World& world, const glm::vec3& initialPos = glm::vec3(0.0f), 
 			const glm::vec3& initialVelocity = glm::vec3(0.0f),
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~LivingEntity();
 
+		void updateCollider() override;
+
 		void tick() override;
 		void hurt(float amount, const glm::vec3& knockback) override;
-
-		void move(const glm::vec3& motion) override;
-		void push(const glm::vec3& motion) override;
 
 		void setInput(const glm::vec3& inputAccel) { input = inputAccel; }
 
@@ -60,13 +56,17 @@ namespace Jukcraft {
 		constexpr size_t getAge() const { return age;  }
 		constexpr const glm::vec2& getBodyRot() const { return bodyRot; }
 		constexpr const glm::vec2& getHeadRot() const { return headRot; }
-		constexpr float getKineticEnergy() const { return 0.5f * mass * glm::dot(inertia, inertia); }
+		constexpr float getKineticEnergy() const { return 0.5f * mass * glm::dot(velocity, velocity); }
 		constexpr float getMaxKineticEnergy() const { return mass * MAX_KINETIC_ENERGY_PER_MASS; }
 		constexpr const auto& getOld() const { return old; }
 		constexpr const auto& getAnimationTicks() const { return animationTicks; }
 		constexpr const auto& getWalkAnimation() const { return walkAnimation; }
 		constexpr bool isHurt() const { return iframes > 0 || deathTime > 0; }
 		constexpr int getDeathTime() const { return deathTime; }
+		
+		constexpr bool isMoving() const {
+			return glm::dot(old.position - position, old.position - position) > 1.0E-5f;
+		}
 
 		constexpr glm::vec3 getEyesight() const {
 			return glm::vec3(
@@ -80,7 +80,6 @@ namespace Jukcraft {
 		void setHeadPitch(float phi) { headRot.y = glm::clamp(phi, -glm::pi<float>() / 2, glm::pi<float>() / 2); }
 		void setBodyYaw(float theta) { bodyRot.x = wrapRadians(theta);}
 
-		void consumeInertia();
 		void die();
 		void setJumping(bool state);
 	protected:
@@ -90,6 +89,8 @@ namespace Jukcraft {
 		void applyPhysics() override;
 		void tickRotations() override;
 		void checkInjury();
+		virtual void tickAi() {}
+
 		constexpr const glm::vec3& getFriction() const {
 			if (onGround)
 				return FRICTION;
@@ -100,38 +101,25 @@ namespace Jukcraft {
 		}
 	private:
 		void updateOldState();
-		void updateCollider();
-		void resolveCollisions();
 	public:
 		bool jumping = false;
-		bool hasCollision = false;
-		bool hasImpulse = false;
-		bool onGround = false;
-		bool onWall = false;
 		int iframes = 0;
 		int deathTime = 0;
 		
-
-		World& world;
 	protected:
-		virtual void tickAi() {}
 		glm::vec3 input;
 		glm::vec2 bodyRot;
 		glm::vec2 headRot;
 
-		float width, height;
-
 		float pendingInjury = 0.0f;
 		int injuryCooldown = 0;
-		int inertiaCooldown = 0;
 
 		Health health;
 		float stamina = 1.0f;
-		glm::vec3 inertia = glm::vec3(0.0f);
 
 		size_t age = 0;
 
-		const float speed;
+		float speed;
 
 		struct {
 			glm::vec3 position;
@@ -146,7 +134,5 @@ namespace Jukcraft {
 		} animationTicks;
 
 		WalkAnimation walkAnimation;
-
-		Collider collider;
 	};
 }

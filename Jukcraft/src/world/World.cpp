@@ -5,6 +5,9 @@
 namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
+		
+		player = std::make_unique<Player>(*this, glm::vec3(15.0f, 70.0f, 20.0f), glm::vec3(0.0f),
+			glm::pi<float>() / 2.0f, 0.0f);
 
 		int count = randomDiscrete(10, 20);
 		for (int i = 0; i < count; i++) {
@@ -16,6 +19,11 @@ namespace Jukcraft {
 			mobs.emplace_back(*this, pos, glm::vec3(0.0f),
 				glm::pi<float>() / 2.0f, 0.0f);
 		}
+
+		for (auto&& mob : mobs)
+			entities.push_back(&mob);
+
+		entities.push_back(player.get());
 		
 
 
@@ -36,8 +44,13 @@ namespace Jukcraft {
 		time += 1;
 		updateDaylight();
 		chunkManager.tick();
-		for (auto&& mob: mobs)
-			mob.tick();
+		for (auto&& entity : entities) {
+			entity->updateCollider();
+		}
+		for (auto&& entity : entities) {
+			entity->tick();
+		}
+			
 		lightEngine.propagateLightIncrease(); // Always check for any pending light updates
 	}
 
@@ -103,13 +116,21 @@ namespace Jukcraft {
 		return chunk->getBlock(localPos);
 	}
 
+	std::vector<Entity*> World::getEntitiesAt(const glm::ivec3& pos) {
+		std::vector<Entity*> entitiesAt;
+		for (auto&& entity : entities)
+			if (glm::ivec3(entity->getPos()) == pos)
+				entitiesAt.push_back(entity);
+		return entitiesAt;
+	}
+
 	void World::render(float partialTicks) {
 		shader.setUniform1f(1, (float)daylight / 1800);
 		glEnable(GL_CULL_FACE);
 		chunkManager.drawChunksCubeLayers(shader);
 		glDisable(GL_CULL_FACE);
 		for (auto&& mob : mobs)
-			mobRenderer.render(mob, partialTicks);
+			mobRenderer.render(mob, partialTicks); 
 	}
 
 

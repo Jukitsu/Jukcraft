@@ -8,7 +8,7 @@ namespace Jukcraft {
 		float initialYaw, float initialPitch, float width, float height)
 		:LivingEntity(world, initialPos, initialVelocity, initialYaw, initialPitch, width, height)
 	{
-
+		speed = WALK_SPEED / 2;
 	}
 	Mob::~Mob() {
 

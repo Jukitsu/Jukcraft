@@ -5,8 +5,8 @@ namespace Jukcraft {
 	LivingEntityRenderer::LivingEntityRenderer() 
 		:shader("assets/shaders/entity/vert.glsl", "assets/shaders/entity/frag.glsl"),
 		model("assets/models/zombie.json"), texture("assets/textures/zombie.png") {
-		vbo.allocate(60 * sizeof(Bone::Quad), nullptr, true);
-		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, 60 * sizeof(Bone::Quad)));
+		vbo.allocate(MAX_QUADS * sizeof(Bone::Quad), nullptr, true);
+		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, MAX_QUADS * sizeof(Bone::Quad)));
 
 		vao.bindLayout(
 			gfx::VertexArrayLayout{ 
@@ -59,7 +59,7 @@ namespace Jukcraft {
 			shader.setUniform4f(1, glm::vec4(1.0f));
 
 		
-
+		int stackframe = 0;
 		for (auto&& [name, bone] : model.bones) {
 			glm::mat4 pose(1.0f);
 			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), interpolatedPos);
@@ -123,8 +123,6 @@ namespace Jukcraft {
 				pose = glm::translate(pose, -bone.pivot);
 			}
 
-						
-
 			std::vector<Bone::Quad> quads = bone.quads;
 
 			for (auto& quad : quads) {
@@ -140,16 +138,19 @@ namespace Jukcraft {
 				}
 			}
 
-
 			vbo.sync();
-			memcpy(mappedPointer, quads.data(), quads.size() * sizeof(Bone::Quad));
-			vbo.flush(0, quads.size() * sizeof(Bone::Quad));
-			shader.bind();
-			
-			Renderer::DrawElements(vao, quads.size() * 6);
+			memcpy(mappedPointer + stackframe, quads.data(), quads.size() * sizeof(Bone::Quad));
 			vbo.addFence();
-			i++;
+			
+			stackframe += quads.size();
 		}
 		
+		vbo.flush(0, stackframe * sizeof(Bone::Quad));
+		
+		shader.bind();
+		
+		
+		Renderer::DrawElements(vao, stackframe * 6);
+		vbo.addFence();
 	}
 }

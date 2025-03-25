@@ -1,5 +1,5 @@
 #pragma once
-#include "models/Collider.h"
+#include "physics/Collider.h"
 
 namespace Jukcraft {
 	static const std::vector<Quad> cube = {

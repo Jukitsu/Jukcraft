@@ -54,6 +54,10 @@ namespace Jukcraft {
 		constexpr const std::vector<Block>& getBlocks() {
 			return blocks;
 		}
+
+		std::vector<Entity*> getEntitiesAt(const glm::ivec3& pos);
+
+		Player& getPlayer() { return *player; }
 	private:
 		const std::vector<Block>& blocks;
 		gfx::Shader& shader;
@@ -63,7 +67,9 @@ namespace Jukcraft {
 		int daylightIncrementer = 1;
 		uint64_t time;
 
+		Auto<Player> player;
 		std::vector<Mob> mobs;
+		std::vector<Entity*> entities;
 
 	public:
 		MobRenderer mobRenderer;

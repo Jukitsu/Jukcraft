@@ -6,7 +6,7 @@
 namespace Jukcraft {
 
 	Game::Game()
-		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), camera(shader, player), textureManager(16) {
+		:shader("assets/shaders/terrain/vert.glsl", "assets/shaders/terrain/frag.glsl"), textureManager(16) {
 		textureManager.pushSubTexture("assets/textures/stone.png");
 		textureManager.pushSubTexture("assets/textures/grass.png");
 		textureManager.pushSubTexture("assets/textures/grass_side.png");
@@ -26,13 +26,12 @@ namespace Jukcraft {
 		blocks.emplace_back("Leaves", 6, models.cube, std::vector<uint8_t>{6, 6, 6, 6, 6, 6}, true, 14);
 
 		world = std::make_unique<World>(blocks, shader);
-		player = std::make_unique<Player>(*world, glm::vec3(15.0f, 70.0f, 20.0f), glm::vec3(0.0f), 
-			glm::pi<float>() / 2.0f, 0.0f);
+		camera.emplace(shader, world->getPlayer());
 	}
 
 	void Game::onMousePress(int button) {
 
-		HitRay hitray(*world, *player);
+		HitRay hitray(*world, world->getPlayer());
 		World& w = *world;
 		while (hitray.distance < HIT_RANGE)
 			if (hitray.step(button,
@@ -50,10 +49,10 @@ namespace Jukcraft {
 			speedTime();
 			break;
 		case GLFW_KEY_LEFT_CONTROL:
-			player->dash();
+			world->getPlayer().dash();
 			break;
 		case GLFW_KEY_F5:
-			camera.isFirstPerson = !camera.isFirstPerson;
+			camera->isFirstPerson = !camera->isFirstPerson;
 			break;
 		}
 	}
@@ -63,7 +62,7 @@ namespace Jukcraft {
 			world->setBlock(nextBlock, 0);
 			break;
 		case GLFW_MOUSE_BUTTON_RIGHT:
-			world->trySetBlock(*player, currentBlock, holding);
+			world->trySetBlock(world->getPlayer(), currentBlock, holding);
 			break;
 		case GLFW_MOUSE_BUTTON_MIDDLE:
 			holding = world->getBlock(nextBlock);
@@ -74,17 +73,16 @@ namespace Jukcraft {
 
 	void Game::tick() {
 		world->tick();	
-		player->tick();
 	}
 
 	void Game::renderNewFrame(const float partialTicks) {
-		camera.update(partialTicks);
+		camera->update(partialTicks);
 
 		Renderer::Begin(world->getSkyColor());
 		world->render(partialTicks);
 
-		if (!camera.isFirstPerson) {
-			world->mobRenderer.render(*player, partialTicks);
+		if (!camera->isFirstPerson) {
+			world->mobRenderer.render(world->getPlayer(), partialTicks);
 		}
 		
 

@@ -28,7 +28,7 @@ namespace Jukcraft {
         }
 
         bool isMoving() const {
-            return speed > 1.0E-5F;
+            return speed > 1.0E-5f;
         }
 
 

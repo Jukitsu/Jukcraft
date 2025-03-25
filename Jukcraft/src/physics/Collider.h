@@ -1,12 +1,15 @@
 #pragma once
 namespace Jukcraft {
 
+	class Entity;
+
 	struct CollisionResult {
 		float entryTime;
 		glm::ivec3 normal;
+		Entity* source;
 	};
 
-	constexpr const CollisionResult NO_COLLISION = { 1.0f, glm::ivec3(0)};
+	constexpr const CollisionResult NO_COLLISION = { 1.0f, glm::ivec3(0), nullptr };
 
 	struct Collider {
 		glm::vec3 vx1;
@@ -74,6 +77,8 @@ namespace Jukcraft {
 			entry != z_entry ? 0 : -sign(velocity.z)
 		};
 
-		return { entry, normal };
+		return { entry, normal, nullptr };
 	}
+
+
 }

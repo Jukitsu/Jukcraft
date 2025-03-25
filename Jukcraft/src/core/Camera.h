@@ -5,7 +5,7 @@ namespace Jukcraft {
 
 	class Camera {
 	public:
-		Camera(gfx::Shader& shader, Auto<Player>& player);
+		Camera(gfx::Shader& shader, Player& player);
 		void update(const float delta_time);
 		bool isFirstPerson = true;
 	private:
@@ -13,7 +13,7 @@ namespace Jukcraft {
 		gfx::Shader& shader;
 
 		glm::vec2 lastCursorPos;
-		Auto<Player>& player;		
+		Player& player;		
 
 		float speed;
 

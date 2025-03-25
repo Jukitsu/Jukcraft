@@ -93,7 +93,7 @@
     <ClInclude Include="src\entity\player\Player.h">
       <Filter>entity\player</Filter>
     </ClInclude>
-    <ClInclude Include="src\models\Collider.h">
+    <ClInclude Include="src\physics\Collider.h">
       <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="src\models\Model.h">
@@ -157,6 +157,7 @@
     <ClInclude Include="src\renderer\texture\Texture.h" />
     <ClInclude Include="src\entity\animations\WalkAnimation.h" />
     <ClInclude Include="src\core\RNG.h" />
+    <ClInclude Include="src\entity\PhysicalEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -215,6 +216,7 @@
     <ClCompile Include="src\models\entity\EntityModel.cpp" />
     <ClCompile Include="src\renderer\entity\LivingEntityRenderer.cpp" />
     <ClCompile Include="src\core\RNG.cpp" />
+    <ClCompile Include="src\entity\PhysicalEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\entity\frag.glsl" />

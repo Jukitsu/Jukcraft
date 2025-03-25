@@ -7,7 +7,7 @@ namespace Jukcraft {
 			float initialYaw, float initialPitch)
 		:LivingEntity(world, initialPos, initialVelocity, initialYaw, initialPitch, 0.6f, 1.8f) {
 
-
+		fov = glm::radians(70.0f);
 	}
 	Player::~Player() {
 
@@ -20,23 +20,20 @@ namespace Jukcraft {
 		if (dashing && onGround) {
 			dashing = false;
 		}
-
-		if (hasImpulse) {
-			fov = glm::radians(80.0f);
-		}
-		else {
-			fov = glm::radians(70.0f);
-		}
+		
+		
+			
+		
 			
 	}
 
 	void Player::dash() {
 		if (!dashing && dashCooldown <= 0) {
-			velocity += glm::vec3(
+			push(glm::vec3(
 				glm::cos(rotation.x) * glm::cos(rotation.y),
 				glm::sin(rotation.y),
 				glm::sin(rotation.x) * glm::cos(rotation.y)
-			) * DASH_SPEED;
+			) * DASH_SPEED);
 			dashing = true;
 			dashCooldown = (int16_t)TICK_RATE / 4.0F;
 		}
