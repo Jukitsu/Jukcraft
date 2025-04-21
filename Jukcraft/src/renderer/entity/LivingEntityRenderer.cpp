@@ -58,8 +58,9 @@ namespace Jukcraft {
 		else
 			shader.setUniform4f(1, glm::vec4(1.0f));
 
-		
-		int stackframe = 0;
+		std::vector<Bone::Quad> vertexData;
+		vertexData.reserve(model.bones.size() * 6);
+
 		for (auto&& [name, bone] : model.bones) {
 			glm::mat4 pose(1.0f);
 			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), interpolatedPos);
@@ -125,7 +126,7 @@ namespace Jukcraft {
 
 			std::vector<Bone::Quad> quads = bone.quads;
 
-			for (auto& quad : quads) {
+			for (auto&& quad : quads) {
 				for (auto& vertex : quad.vertices) {
 					vertex.pos = modelMatrix * pose * glm::vec4(vertex.pos, 1.0f);
 				}
@@ -136,21 +137,23 @@ namespace Jukcraft {
 				for (auto& vertex : quad.vertices) {
 					vertex.normal = normal;
 				}
+				vertexData.emplace_back(std::move(quad));
 			}
 
-			vbo.sync();
-			memcpy(mappedPointer + stackframe, quads.data(), quads.size() * sizeof(Bone::Quad));
-			vbo.addFence();
 			
-			stackframe += quads.size();
+			
 		}
+
+		vbo.sync();
+		memcpy(mappedPointer, vertexData.data(), vertexData.size() * sizeof(Bone::Quad));
+		vbo.addFence();
 		
-		vbo.flush(0, stackframe * sizeof(Bone::Quad));
+		vbo.flush(0, vertexData.size() * sizeof(Bone::Quad));
 		
 		shader.bind();
 		
 		
-		Renderer::DrawElements(vao, stackframe * 6);
+		Renderer::DrawElements(vao, vertexData.size() * 6);
 		vbo.addFence();
 	}
 }

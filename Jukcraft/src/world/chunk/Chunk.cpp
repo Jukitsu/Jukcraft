@@ -28,12 +28,12 @@ namespace Jukcraft {
 		
 		for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
 			for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
-				int height = randomDiscrete(CHUNK_HEIGHT / 2, CHUNK_HEIGHT / 2 + 1);
+				int height = CHUNK_HEIGHT / 2;
 				for (uint8_t ly = 0; ly <= height; ly++) {
 
 					if (ly == height)
 						setBlock(glm::uvec3(lx, ly, lz), 2);
-					else if (ly >= height - 2 && ly < height)
+					else if (ly >= height - 1 && ly < height)
 						setBlock(glm::uvec3(lx, ly, lz), 3);
 					else
 						setBlock(glm::uvec3(lx, ly, lz), 1);

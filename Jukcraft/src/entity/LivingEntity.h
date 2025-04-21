@@ -43,12 +43,15 @@ namespace Jukcraft {
 			float initialYaw = 0.0f, float initialPitch = 0.0f, float width = 1.0f, float height = 1.0f);
 		virtual ~LivingEntity();
 
+		bool isPhysical() override { return deathTime <= 0; }
+
 		void updateCollider() override;
 
 		void tick() override;
 		void hurt(float amount, const glm::vec3& knockback) override;
 
 		void setInput(const glm::vec3& inputAccel) { input = inputAccel; }
+
 
 		constexpr float getEyeLevel() const { return height - 0.2f; }
 		constexpr const Collider& getCollider() const { return collider; }
@@ -110,9 +113,6 @@ namespace Jukcraft {
 		glm::vec3 input;
 		glm::vec2 bodyRot;
 		glm::vec2 headRot;
-
-		float pendingInjury = 0.0f;
-		int injuryCooldown = 0;
 
 		Health health;
 		float stamina = 1.0f;

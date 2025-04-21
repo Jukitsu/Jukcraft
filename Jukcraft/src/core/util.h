@@ -55,7 +55,7 @@ namespace Jukcraft {
 
 	constexpr size_t MAX_QUADS = RENDER_REGION_SIZE * CHUNK_DIM * CHUNK_DIM * CHUNK_HEIGHT * 6;
 
-	constexpr uint8_t WORLD_SIZE = 8;
+	constexpr uint8_t WORLD_SIZE = 2;
 
 	struct PerChunkData {
 		glm::vec3 chunkPos;

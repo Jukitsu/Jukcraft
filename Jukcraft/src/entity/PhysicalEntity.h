@@ -17,6 +17,7 @@ namespace Jukcraft {
 
 		void move(const glm::vec3& motion) override;
 		void push(const glm::vec3& motion) override;
+		void collide(const glm::vec3& motion) override;
 
 	protected:
 		void applyPhysics() override;
@@ -32,11 +33,13 @@ namespace Jukcraft {
 				return DRAG_FALL;
 		}
 	public:
+		
 		bool hasCollision = false;
 		bool hasImpulse = false;
 		bool onGround = false;
 		bool onWall = false;
 
+		float absorbedEnergy = 0.0f;
 		World& world;
 	protected:
 

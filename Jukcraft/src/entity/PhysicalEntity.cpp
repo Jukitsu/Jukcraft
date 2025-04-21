@@ -39,13 +39,18 @@ namespace Jukcraft {
 		hasImpulse = true;
 	}
 
+	void PhysicalEntity::collide(const glm::vec3& motion) {
+		velocity = motion;
+		hasImpulse = true;
+
+	}
 	void PhysicalEntity::resolveCollisions() {
 		updateCollider();
 
 		onGround = false;
 		onWall = false;
 
-		for (uint8_t _ = 0; _ < 6; _++) {
+		for (uint8_t _ = 0; _ < 9; _++) {
 			glm::vec3 adjustedVelocity = velocity;
 
 			// find all the blocks we could potentially be colliding with
@@ -110,21 +115,77 @@ namespace Jukcraft {
 				});
 			auto&& [entryTime, normal, source] = *it;
 
-			entryTime -= 0.01f;
+			entryTime -= 0.1f;
+			
+			
+		
 
 			if (normal.x) {
 				onWall = true;
-				velocity.x = 0;
+				if (source) {
+					float mass2 = source->getMass();
+					const glm::vec3& velocity2 = source->getVelocity();
+
+					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.x
+									  + 2 * mass2 / (mass + mass2) * velocity2.x) * EAST 
+							+ velocity2.y * UP;
+					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.x
+									   + 2 * mass2 / (mass + mass2) * velocity.x) * EAST 
+							+ velocity.y * UP;
+
+					this->collide(v1);
+					source->collide(v2);
+
+				}
+				else {
+					absorbedEnergy = 0.5 * mass * velocity.x * velocity.x;
+					velocity.x = 0;
+				}
+				
 				position.x += adjustedVelocity.x * entryTime;
 
 			}
 			if (normal.y) {
-				velocity.y = 0;
+				if (source) {
+					float mass2 = source->getMass();
+					const glm::vec3& velocity2 = source->getVelocity();
+
+					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.y
+									   + 2 * mass2 / (mass + mass2) * velocity2.y) * UP;
+					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.y
+									   + 2 * mass2 / (mass + mass2) * velocity.y) * UP;
+
+					this->collide(v1);
+					source->collide(v2);
+
+				}
+				else {
+					absorbedEnergy = 0.5 * mass * velocity.y * velocity.y;
+					velocity.y = 0;
+				}
 				position.y += adjustedVelocity.y * entryTime;
 			}
 			if (normal.z) {
 				onWall = true;
-				velocity.z = 0;
+				if (source) {
+					float mass2 = source->getMass();
+					const glm::vec3& velocity2 = source->getVelocity();
+
+					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.z
+									   + 2 * mass2 / (mass + mass2) * velocity2.z) * SOUTH 
+						+ velocity2.y * UP;
+					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.z
+									   + 2 * mass2 / (mass + mass2) * velocity.z) * SOUTH 
+						+ velocity.y * UP;
+
+					this->collide(v1);
+					source->collide(v2);
+
+				}
+				else {
+					absorbedEnergy = 0.5 * mass * velocity.z * velocity.z;
+					velocity.z = 0;
+				}
 				position.z += adjustedVelocity.z * entryTime;
 
 			}
@@ -133,16 +194,7 @@ namespace Jukcraft {
 				hasImpulse = false;
 			}
 
-			if (source) {
-				float mass2 = source->getMass();
-				glm::vec3 velocity2 = source->getVelocity();
 			
-				this->setVelocity((mass - mass2) / (mass + mass2) * velocity 
-						      + 2 * mass2 / (mass + mass2) * velocity2);
-				source->setVelocity((mass - mass2) / (mass + mass2) * velocity
-					+ 2 * mass2 / (mass + mass2) * velocity2);
-
-			}
 
 
 			hasCollision = onGround || onWall;

@@ -98,21 +98,10 @@ namespace Jukcraft {
 
 
 	void LivingEntity::checkInjury() {
-		if (injuryCooldown > 0) {
-			injuryCooldown--;
-			if (injuryCooldown <= 0) {
-				injuryCooldown = 0;
-				if (pendingInjury > 0.0f)
-					hurt(pendingInjury, glm::vec3(0.0f));
-			}
-		}
-		else if (iframes <= 0)
-		{
-			float unabsorbedEnergy = getKineticEnergy() - getMaxKineticEnergy();
+		if (iframes <= 0) {
+			float unabsorbedEnergy = absorbedEnergy - getMaxKineticEnergy();
 			if (unabsorbedEnergy > 0.0f) {
-				pendingInjury = glm::max(pendingInjury, unabsorbedEnergy * TICK_RATE * TICK_RATE / 5.0f);
-				if (injuryCooldown <= 0)
-					injuryCooldown = COYOTE_TIME;
+				hurt(unabsorbedEnergy * TICK_RATE * TICK_RATE / 5.0f, glm::vec3(0.0f));
 			}
 		}
 	}
