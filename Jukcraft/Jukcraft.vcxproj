@@ -170,6 +170,7 @@
     <ClInclude Include="src\models\entity\EntityModel.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\physics\constants.h" />
+    <ClInclude Include="src\renderer\gfx\objects\Fence.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\chunk\Mesh.h" />
     <ClInclude Include="src\renderer\chunk\RenderRegion.h" />

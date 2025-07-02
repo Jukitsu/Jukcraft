@@ -9,7 +9,7 @@ namespace Jukcraft {
 		player = std::make_unique<Player>(*this, glm::vec3(15.0f, 70.0f, 20.0f), glm::vec3(0.0f),
 			glm::pi<float>() / 2.0f, 0.0f);
 
-		int count = randomDiscrete(50, 100);
+		int count = randomDiscrete(5, 20);
 		for (int i = 0; i < count; i++) {
 			glm::vec3 pos(
 				randomContinuous(0, CHUNK_DIM * WORLD_SIZE),
@@ -129,8 +129,13 @@ namespace Jukcraft {
 		glEnable(GL_CULL_FACE);
 		chunkManager.drawChunksCubeLayers(shader);
 		glDisable(GL_CULL_FACE);
+
+		
+		mobRenderer.beginRenderPass();
 		for (auto&& mob : mobs)
-			mobRenderer.render(mob, partialTicks); 
+			mobRenderer.compile(mob, partialTicks); 
+		mobRenderer.endRenderPass();
+		
 	}
 
 

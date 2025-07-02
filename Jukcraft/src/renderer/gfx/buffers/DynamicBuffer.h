@@ -49,10 +49,8 @@ namespace Jukcraft {
 		template<typename T>
 		inline void DynamicBuffer<T>::beginEditRegion(uint32_t offset, uint32_t length) {
 			arena = Renderer::AllocateArena<T>(length);
-			// sharedContext.bind();
+
 			Renderer::GetStagingBuffer().sync();
-			if (length > STAGING_BUFFER_CAPACITY)
-				THROW_ERROR("Staging Buffer Overflow")
 			currentOffset = 0;
 			regionData = { offset, length };
 		}

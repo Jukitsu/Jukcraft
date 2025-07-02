@@ -82,7 +82,9 @@ namespace Jukcraft {
 		world->render(partialTicks);
 
 		if (!camera->isFirstPerson) {
-			world->mobRenderer.render(world->getPlayer(), partialTicks);
+			world->mobRenderer.beginRenderPass();
+			world->mobRenderer.compile(world->getPlayer(), partialTicks);
+			world->mobRenderer.endRenderPass();
 		}
 		
 

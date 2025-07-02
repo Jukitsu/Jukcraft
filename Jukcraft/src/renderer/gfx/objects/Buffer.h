@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/glad.h>
+#include "renderer/gfx/objects/Fence.h"
 
 namespace Jukcraft {
 	namespace gfx {
@@ -60,6 +61,7 @@ namespace Jukcraft {
 				glBindBuffer(getGLBufferBindingTarget(target), handle);
 			}
 			void copy(const Buffer& buffer, size_t readOffset, size_t writeOffset, size_t size) {
+				sync();
 				buffer.sync();
 				glCopyNamedBufferSubData(buffer.handle, handle, readOffset, writeOffset, size);
 				addFence();
@@ -72,18 +74,18 @@ namespace Jukcraft {
 			[[nodiscard]] constexpr GLuint getHandle() const { return handle; }
 
 			void addFence() const {
-				fences.push(glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
+				fences.emplace();
 			}
 			void sync() const {
 				while (!fences.empty()) {
-					glClientWaitSync(fences.front(), GL_SYNC_FLUSH_COMMANDS_BIT, 2147483647);
-					glDeleteSync(fences.front());
 					fences.pop();
 				}
+
+			
 			}
 		private:
 			GLuint handle;
-			mutable std::queue<GLsync> fences;
+			mutable std::queue<Fence> fences;
 			FORBID_COPY(Buffer);
 			FORBID_MOVE(Buffer);
 		};

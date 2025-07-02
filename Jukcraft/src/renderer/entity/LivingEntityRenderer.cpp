@@ -5,32 +5,39 @@ namespace Jukcraft {
 	LivingEntityRenderer::LivingEntityRenderer() 
 		:shader("assets/shaders/entity/vert.glsl", "assets/shaders/entity/frag.glsl"),
 		model("assets/models/zombie.json"), texture("assets/textures/zombie.png") {
-		vbo.allocate(MAX_QUADS * sizeof(Bone::Quad), nullptr, true);
-		mappedPointer = reinterpret_cast<Bone::Quad*>(vbo.map(0, MAX_QUADS * sizeof(Bone::Quad)));
+
+		
+		vbo.allocate(MAX_QUADS, nullptr);
 
 		vao.bindLayout(
 			gfx::VertexArrayLayout{ 
 				{
 					{ 3, true },
 					{ 2, true },
-					{ 3, true }
+					{ 3, true },
+					{ 1, true },
+					{ 4, true }
 				}		
 			}
 		);
 
 		vao.bindVertexBuffer(
-			vbo, 0,
+			vbo.getTargetBuffer(), 0,
 			gfx::VertexBufferLayout{
 				{
 					{ 0, 0 }, 
 					{ 1, offsetof(Bone::Vertex, texUV)}, 
-					{ 2, offsetof(Bone::Vertex, normal)}
+					{ 2, offsetof(Bone::Vertex, normal)},
+					{ 3, offsetof(Bone::Vertex, light)},
+					{ 4, offsetof(Bone::Vertex, overlay)}
+
 				},
 				0,
 				sizeof(Bone::Vertex)
 			}
 		);
 
+		
 		vao.bindIndexBuffer(Renderer::GetChunkIbo());
 
 		texture.setSamplerUnit(1);
@@ -40,7 +47,13 @@ namespace Jukcraft {
 
 	}
 
-	void LivingEntityRenderer::render(LivingEntity& livingEntity, float partialTicks) {
+	void LivingEntityRenderer::beginRenderPass() {
+		currentQuadCount = 0;
+	}
+
+	void LivingEntityRenderer::compile(LivingEntity& livingEntity, float partialTicks) {
+		vbo.beginEditRegion(currentQuadCount, model.quadCount);
+
 		glm::vec3 interpolatedPos = glm::mix(livingEntity.getOld().position, livingEntity.getPos(), partialTicks);
 		glm::vec2 interpolatedBodyRot = glm::mix(livingEntity.getOld().bodyRot, livingEntity.getBodyRot(), partialTicks);
 		glm::vec2 interpolatedHeadRot = glm::mix(livingEntity.getOld().headRot, livingEntity.getHeadRot(), partialTicks);
@@ -48,18 +61,11 @@ namespace Jukcraft {
 		int i = 0; 
 		bool isHurt = livingEntity.isHurt() && livingEntity.deathTime <= TICK_RATE;
 
-		glm::vec4 color = glm::vec4(1.0f);
+		glm::vec4 overlay(1.0f);
 		float light = livingEntity.world.getLightMultiplier(livingEntity.getPos());
 
-		shader.setUniform1f(0, light);
-
 		if (isHurt)
-			shader.setUniform4f(1, glm::vec4(1.0f, 0.0f, 0.0f, 0.6f));
-		else
-			shader.setUniform4f(1, glm::vec4(1.0f));
-
-		std::vector<Bone::Quad> vertexData;
-		vertexData.reserve(model.bones.size() * 6);
+			overlay = glm::vec4(1.0f, 0.0f, 0.0f, 0.6f);
 
 		for (auto&& [name, bone] : model.bones) {
 			glm::mat4 pose(1.0f);
@@ -136,24 +142,24 @@ namespace Jukcraft {
 				));
 				for (auto& vertex : quad.vertices) {
 					vertex.normal = normal;
+					vertex.light = light;
+					vertex.overlay = overlay;
 				}
-				vertexData.emplace_back(std::move(quad));
+				vbo.push(quad);
 			}
 
-			
-			
 		}
 
-		vbo.sync();
-		memcpy(mappedPointer, vertexData.data(), vertexData.size() * sizeof(Bone::Quad));
-		vbo.addFence();
-		
-		vbo.flush(0, vertexData.size() * sizeof(Bone::Quad));
-		
-		shader.bind();
-		
-		
-		Renderer::DrawElements(vao, vertexData.size() * 6);
-		vbo.addFence();
+		vbo.endEditRegion();
+		currentQuadCount += model.quadCount;
+
+
 	}
+
+	void LivingEntityRenderer::endRenderPass() {
+		shader.bind();
+
+		Renderer::DrawElements(vao, currentQuadCount * 6);
+	}
+	
 }

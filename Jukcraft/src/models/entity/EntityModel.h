@@ -10,6 +10,8 @@ namespace Jukcraft {
             glm::vec3 pos;
             glm::vec2 texUV;
             glm::vec3 normal;
+            float light;
+            glm::vec4 overlay;
         };
 
         struct Quad {
@@ -36,6 +38,7 @@ namespace Jukcraft {
         ~EntityModel();
 
         std::unordered_map<std::string, Bone> bones;
+        size_t quadCount = 0;
 	};
 
     

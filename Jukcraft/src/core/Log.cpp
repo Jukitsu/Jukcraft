@@ -8,7 +8,7 @@ namespace Jukcraft {
 	void Log::Init() {
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 		Logger = spdlog::stdout_color_mt("Minecraft");
-		Logger->set_level(spdlog::level::trace);
+		Logger->set_level(spdlog::level::info);
 		Logger->set_error_handler([&](const std::string& err) { std::cerr << err << std::endl; DEBUGBREAK(); });
 	}
 }

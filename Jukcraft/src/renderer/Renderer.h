@@ -3,6 +3,7 @@
 #include "renderer/gfx/objects/Buffer.h"
 #include "renderer/gfx/buffers/StagingBuffer.h"
 #include "renderer/gfx/objects/Shader.h"
+#include "renderer/gfx/objects/Fence.h"
 #include "renderer/texture/TextureManager.h"
 
 
@@ -45,9 +46,6 @@ namespace Jukcraft {
 		static void Begin(const glm::vec4& skyColor) {
 			/* Wait for GPU tasks if they are 3 frames in */
 			while (fences.size() > 3) {
-				GLsync fence = fences.front();
-				glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 2147483647);
-				glDeleteSync(fence);
 				fences.pop();
 			}
 
@@ -68,12 +66,10 @@ namespace Jukcraft {
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, 1, 0);
 		}
 		static void End() {
-			fences.push(glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
+			fences.emplace();
 		}
 		static void Finish() {
 			while (!fences.empty()) {
-				glClientWaitSync(fences.front(), GL_SYNC_FLUSH_COMMANDS_BIT, 2147483647);
-				glDeleteSync(fences.front());
 				fences.pop();
 			}
 		}
@@ -98,7 +94,7 @@ namespace Jukcraft {
 			return mappedStagingBuffer;
 		}
 	private:
-		inline static std::queue<GLsync> fences;
+		inline static std::queue<Fence> fences;
 		inline static std::queue<std::pair<const gfx::Buffer*, GLsync>> bufferWriteFences;
 		inline static Nullable<gfx::Buffer> chunkIbo;
 		inline static Nullable<gfx::StagingBuffer> stagingBuffer;

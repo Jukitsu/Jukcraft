@@ -158,6 +158,7 @@
     <ClInclude Include="src\entity\animations\WalkAnimation.h" />
     <ClInclude Include="src\core\RNG.h" />
     <ClInclude Include="src\entity\PhysicalEntity.h" />
+    <ClInclude Include="src\renderer\gfx\objects\Fence.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">

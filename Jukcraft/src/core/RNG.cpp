@@ -11,11 +11,11 @@ namespace Jukcraft {
 	}
 
 	int randomDiscrete(int a, int b) {
-		std::uniform_int<int> dist(a, b);
+		std::uniform_int_distribution<int> dist(a, b);
 		return dist(*rng);
 	}
 	float randomContinuous(float a, float b) {
-		std::uniform_real<float> dist(a, b);
+		std::uniform_real_distribution<float> dist(a, b);
 		return dist(*rng);
 	}
 }

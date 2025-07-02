@@ -141,7 +141,7 @@ namespace Jukcraft {
 
         for (const auto& raw_bone : raw_bones) {
             Bone bone(raw_bone, textureDim);         
-
+            quadCount += bone.quads.size();
             bones[bone.name] = bone;
         }
 	}
