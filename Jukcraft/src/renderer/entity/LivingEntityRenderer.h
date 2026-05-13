@@ -10,6 +10,7 @@
 #include "renderer/texture/Texture.h"
 
 namespace Jukcraft {
+
 	class LivingEntityRenderer {
 	public:
 		LivingEntityRenderer();

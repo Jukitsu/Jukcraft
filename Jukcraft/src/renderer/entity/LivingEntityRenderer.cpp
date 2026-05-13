@@ -4,38 +4,29 @@
 namespace Jukcraft {
 	LivingEntityRenderer::LivingEntityRenderer() 
 		:shader("assets/shaders/entity/vert.glsl", "assets/shaders/entity/frag.glsl"),
-		model("assets/models/zombie.json"), texture("assets/textures/zombie.png") {
+		model("assets/models/curry.json"), texture("assets/textures/curry.png") {
 
 		
 		vbo.allocate(MAX_QUADS, nullptr);
 
 		vao.bindLayout(
-			gfx::VertexArrayLayout{ 
-				{
-					{ 3, true },
-					{ 2, true },
-					{ 3, true },
-					{ 1, true },
-					{ 4, true }
-				}		
-			}
-		);
+			gfx::VertexArrayLayout::create()
+				.pushAttrib(3, true)
+				.pushAttrib(2, true)
+				.pushAttrib(3, true)
+				.pushAttrib(1, true)
+				.pushAttrib(4, true)
+		); 
 
 		vao.bindVertexBuffer(
-			vbo.getTargetBuffer(), 0,
-			gfx::VertexBufferLayout{
-				{
-					{ 0, 0 }, 
-					{ 1, offsetof(Bone::Vertex, texUV)}, 
-					{ 2, offsetof(Bone::Vertex, normal)},
-					{ 3, offsetof(Bone::Vertex, light)},
-					{ 4, offsetof(Bone::Vertex, overlay)}
-
-				},
-				0,
-				sizeof(Bone::Vertex)
-			}
-		);
+			vbo.getTargetBuffer(), 0, false,
+			gfx::VertexBufferLayout::create(0, sizeof(Bone::Vertex))
+				.recordElement(0, 0 ) 
+				.recordElement(1, offsetof(Bone::Vertex, texUV))
+				.recordElement(2, offsetof(Bone::Vertex, normal))
+				.recordElement(3, offsetof(Bone::Vertex, light))
+				.recordElement(4, offsetof(Bone::Vertex, overlay))
+			);
 
 		
 		vao.bindIndexBuffer(Renderer::GetChunkIbo());
@@ -52,7 +43,7 @@ namespace Jukcraft {
 	}
 
 	void LivingEntityRenderer::compile(LivingEntity& livingEntity, float partialTicks) {
-		vbo.beginEditRegion(currentQuadCount, model.quadCount);
+		vbo.beginEditRegion((uint32_t)currentQuadCount, (uint32_t)model.quadCount);
 
 		glm::vec3 interpolatedPos = glm::mix(livingEntity.getOld().position, livingEntity.getPos(), partialTicks);
 		glm::vec2 interpolatedBodyRot = glm::mix(livingEntity.getOld().bodyRot, livingEntity.getBodyRot(), partialTicks);

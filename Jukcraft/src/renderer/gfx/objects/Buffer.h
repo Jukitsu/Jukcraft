@@ -98,6 +98,19 @@ namespace Jukcraft {
 			std::vector<BufferElement> elements;
 			uint32_t offset;
 			uint32_t stride;
+
+			inline static VertexBufferLayout&& create(uint32_t offset, uint32_t stride) {
+				VertexBufferLayout layout;
+				layout.elements.reserve(10);
+				layout.offset = offset;
+				layout.stride = stride;
+				return std::move(layout);
+			}
+
+			inline VertexBufferLayout recordElement(uint32_t attribIndex, uint32_t relativeOffset) && {
+				elements.emplace_back(BufferElement{ attribIndex, relativeOffset });
+				return *this;
+			}
 		};
 
 	}

@@ -10,6 +10,17 @@ namespace Jukcraft {
 				bool is_float;
 			};
 			std::vector<VertexAttrib> attribs;
+
+			inline static VertexArrayLayout&& create() {
+				VertexArrayLayout layout;
+				layout.attribs.reserve(10);
+				return std::move(layout);
+			}
+
+			inline VertexArrayLayout pushAttrib(uint32_t size, bool is_float) && {
+				attribs.emplace_back(VertexAttrib{ size, is_float });
+				return *this;
+			}
 		};
 
 		class VertexArray {
@@ -26,9 +37,10 @@ namespace Jukcraft {
 			void bindLayout(VertexArrayLayout&& layout) {
 				vaLayout = std::move(layout);
 			}
-			void bindVertexBuffer(const Buffer& vbo, size_t offset, VertexBufferLayout layout) {
+			void bindVertexBuffer(const Buffer& vbo, bool instanced, size_t offset, const VertexBufferLayout& layout) {
 				uint32_t binding = (uint32_t)buffers.size();
 				glVertexArrayVertexBuffer(handle, binding, vbo.getHandle(), layout.offset, layout.stride);
+				glVertexArrayBindingDivisor(handle, binding, instanced ? 1 : 0);
 				buffers.push_back(&vbo);
 				for (const auto& element : layout.elements) {
 					const auto& attrib = vaLayout.attribs[element.attribIndex];
