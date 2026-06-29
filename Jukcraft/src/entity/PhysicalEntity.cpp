@@ -39,8 +39,8 @@ namespace Jukcraft {
 		hasImpulse = true;
 	}
 
-	void PhysicalEntity::collide(const glm::vec3& motion) {
-		velocity = motion;
+	void PhysicalEntity::impulse(const glm::vec3& motion) {
+		velocity += motion;
 		hasImpulse = true;
 
 	}
@@ -116,28 +116,33 @@ namespace Jukcraft {
 			auto&& [entryTime, normal, source] = *it;
 
 			entryTime -= 0.1f;
+
 			
 			
-		
+			if (source) {
+				glm::vec3 normal_vec = glm::vec3(normal);
+				glm::vec3 velocity2 = source->getVelocity();
+
+				glm::vec3 v_rel = velocity - velocity2;
+				float v_rel_n = glm::dot(v_rel, normal_vec);
+
+				// Only apply impulse if objects are approaching
+				if (v_rel_n < 0.0f) {
+					float mass2 = source->getMass();
+
+					glm::vec3 impulse1 = - 2 * mass2 / (mass + mass2) * v_rel;
+
+					glm::vec3 impulse2 = + 2 * mass / (mass + mass2) * v_rel;
+
+					this->impulse(impulse1);
+					source->impulse(impulse2);
+				}
+			}
 
 			if (normal.x) {
-				onWall = true;
-				if (source) {
-					float mass2 = source->getMass();
-					const glm::vec3& velocity2 = source->getVelocity();
-
-					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.x
-									  + 2 * mass2 / (mass + mass2) * velocity2.x) * EAST 
-							+ velocity2.y * UP;
-					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.x
-									   + 2 * mass2 / (mass + mass2) * velocity.x) * EAST 
-							+ velocity.y * UP;
-
-					this->collide(v1);
-					source->collide(v2);
-
-				}
-				else {
+				
+				if (!source) {
+					onWall = true;
 					absorbedEnergy = 0.5 * mass * velocity.x * velocity.x;
 					velocity.x = 0;
 				}
@@ -146,43 +151,16 @@ namespace Jukcraft {
 
 			}
 			if (normal.y) {
-				if (source) {
-					float mass2 = source->getMass();
-					const glm::vec3& velocity2 = source->getVelocity();
-
-					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.y
-									   + 2 * mass2 / (mass + mass2) * velocity2.y) * UP;
-					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.y
-									   + 2 * mass2 / (mass + mass2) * velocity.y) * UP;
-
-					this->collide(v1);
-					source->collide(v2);
-
-				}
-				else {
+				if (!source) {
 					absorbedEnergy = 0.5 * mass * velocity.y * velocity.y;
 					velocity.y = 0;
 				}
 				position.y += adjustedVelocity.y * entryTime;
 			}
 			if (normal.z) {
-				onWall = true;
-				if (source) {
-					float mass2 = source->getMass();
-					const glm::vec3& velocity2 = source->getVelocity();
-
-					glm::vec3 v1 = ((mass - mass2) / (mass + mass2) * velocity.z
-									   + 2 * mass2 / (mass + mass2) * velocity2.z) * SOUTH 
-						+ velocity2.y * UP;
-					glm::vec3 v2 = ((mass2 - mass) / (mass + mass2) * velocity2.z
-									   + 2 * mass2 / (mass + mass2) * velocity.z) * SOUTH 
-						+ velocity.y * UP;
-
-					this->collide(v1);
-					source->collide(v2);
-
-				}
-				else {
+				
+				if (!source) {
+					onWall = true;
 					absorbedEnergy = 0.5 * mass * velocity.z * velocity.z;
 					velocity.z = 0;
 				}

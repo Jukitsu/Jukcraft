@@ -22,7 +22,7 @@ namespace Jukcraft {
 
 		virtual void move(const glm::vec3& motion) = 0;
 		virtual void push(const glm::vec3& force) = 0;
-		virtual void collide(const glm::vec3& motion) = 0;
+		virtual void impulse(const glm::vec3& motion) = 0;
 		virtual void render(float partialTicks) {}
 		virtual void hurt(float amount, const glm::vec3& knockback) = 0;
 

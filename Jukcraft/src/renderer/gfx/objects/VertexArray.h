@@ -11,15 +11,15 @@ namespace Jukcraft {
 			};
 			std::vector<VertexAttrib> attribs;
 
-			inline static VertexArrayLayout&& create() {
+			inline static VertexArrayLayout create() {
 				VertexArrayLayout layout;
 				layout.attribs.reserve(10);
 				return std::move(layout);
 			}
 
-			inline VertexArrayLayout pushAttrib(uint32_t size, bool is_float) && {
+			inline VertexArrayLayout&& pushAttrib(uint32_t size, bool is_float) && {
 				attribs.emplace_back(VertexAttrib{ size, is_float });
-				return *this;
+				return std::move(*this);
 			}
 		};
 

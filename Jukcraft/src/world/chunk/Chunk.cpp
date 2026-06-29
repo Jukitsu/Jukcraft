@@ -29,14 +29,17 @@ namespace Jukcraft {
 		for (uint8_t lx = 0; lx < CHUNK_DIM; lx++)
 			for (uint8_t lz = 0; lz < CHUNK_DIM; lz++) {
 				int height = CHUNK_HEIGHT / 2;
-				for (uint8_t ly = 0; ly <= height; ly++) {
-
-					if (ly == height)
+				for (uint8_t ly = 0; ly <= height + 2; ly++) {
+					if ((lx == 0 || lx == CHUNK_DIM - 1 || lz == 0 || lz == CHUNK_DIM - 1))
+						setBlock(glm::uvec3(lx, ly, lz), 4);
+					else if (ly == height)
 						setBlock(glm::uvec3(lx, ly, lz), 2);
 					else if (ly >= height - 1 && ly < height)
 						setBlock(glm::uvec3(lx, ly, lz), 3);
-					else
+					else if (ly < height - 1)
 						setBlock(glm::uvec3(lx, ly, lz), 1);
+
+					
 
 				}
 			}

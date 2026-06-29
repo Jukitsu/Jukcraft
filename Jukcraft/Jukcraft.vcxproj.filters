@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="blocks">
@@ -9,6 +9,9 @@
     </Filter>
     <Filter Include="entity">
       <UniqueIdentifier>{C2FD7FFB-AE9F-AAD1-975A-BE25839B3122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="entity\animations">
+      <UniqueIdentifier>{E49B92B3-50B2-9049-9929-1C6B057F61D1}</UniqueIdentifier>
     </Filter>
     <Filter Include="entity\player">
       <UniqueIdentifier>{BE34F17E-2AF5-6CB5-F32F-B6325FAFB191}</UniqueIdentifier>
@@ -72,6 +75,9 @@
     <ClInclude Include="src\core\Log.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\RNG.h">
+      <Filter>core</Filter>
+    </ClInclude>
     <ClInclude Include="src\core\Window.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -90,11 +96,14 @@
     <ClInclude Include="src\entity\Mob.h">
       <Filter>entity</Filter>
     </ClInclude>
+    <ClInclude Include="src\entity\PhysicalEntity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\animations\WalkAnimation.h">
+      <Filter>entity\animations</Filter>
+    </ClInclude>
     <ClInclude Include="src\entity\player\Player.h">
       <Filter>entity\player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\physics\Collider.h">
-      <Filter>models</Filter>
     </ClInclude>
     <ClInclude Include="src\models\Model.h">
       <Filter>models</Filter>
@@ -103,6 +112,9 @@
       <Filter>models\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\physics\Collider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\physics\constants.h">
       <Filter>physics</Filter>
     </ClInclude>
@@ -133,11 +145,17 @@
     <ClInclude Include="src\renderer\gfx\objects\Buffer.h">
       <Filter>renderer\gfx\objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\gfx\objects\Fence.h">
+      <Filter>renderer\gfx\objects</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\gfx\objects\Shader.h">
       <Filter>renderer\gfx\objects</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\gfx\objects\VertexArray.h">
       <Filter>renderer\gfx\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\texture\Texture.h">
+      <Filter>renderer\texture</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\texture\TextureManager.h">
       <Filter>renderer\texture</Filter>
@@ -154,11 +172,6 @@
     <ClInclude Include="src\world\chunk\ChunkManager.h">
       <Filter>world\chunk</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\texture\Texture.h" />
-    <ClInclude Include="src\entity\animations\WalkAnimation.h" />
-    <ClInclude Include="src\core\RNG.h" />
-    <ClInclude Include="src\entity\PhysicalEntity.h" />
-    <ClInclude Include="src\renderer\gfx\objects\Fence.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\App.cpp">
@@ -173,6 +186,9 @@
     <ClCompile Include="src\core\Log.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\RNG.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
     <ClCompile Include="src\core\Window.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -185,16 +201,25 @@
     <ClCompile Include="src\entity\Mob.cpp">
       <Filter>entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\PhysicalEntity.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
     <ClCompile Include="src\entity\player\Player.cpp">
       <Filter>entity\player</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\models\entity\EntityModel.cpp">
+      <Filter>models\entity</Filter>
+    </ClCompile>
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\renderer\chunk\Mesh.cpp">
       <Filter>renderer\chunk</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\chunk\RenderRegion.cpp">
       <Filter>renderer\chunk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\entity\LivingEntityRenderer.cpp">
+      <Filter>renderer\entity</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\gfx\buffers\DynamicBuffer.cpp">
       <Filter>renderer\gfx\buffers</Filter>
@@ -214,22 +239,5 @@
     <ClCompile Include="src\world\chunk\ChunkManager.cpp">
       <Filter>world\chunk</Filter>
     </ClCompile>
-    <ClCompile Include="src\models\entity\EntityModel.cpp" />
-    <ClCompile Include="src\renderer\entity\LivingEntityRenderer.cpp" />
-    <ClCompile Include="src\core\RNG.cpp" />
-    <ClCompile Include="src\entity\PhysicalEntity.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\entity\frag.glsl" />
-    <None Include="assets\shaders\entity\vert.glsl" />
-    <None Include="assets\shaders\terrain\vert.glsl" />
-    <None Include="assets\shaders\terrain\frag.glsl" />
-    <None Include="assets\models\creeper.json" />
-    <None Include="assets\models\curry.json" />
-    <None Include="assets\models\cow.json" />
-    <None Include="assets\models\pig.json" />
-    <None Include="assets\models\skeleton.json" />
-    <None Include="assets\models\spider.json" />
-    <None Include="assets\models\zombie.json" />
   </ItemGroup>
 </Project>

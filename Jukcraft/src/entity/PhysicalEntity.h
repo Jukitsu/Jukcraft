@@ -16,8 +16,8 @@ namespace Jukcraft {
 		bool isPhysical() override { return true; }
 
 		void move(const glm::vec3& motion) override;
-		void push(const glm::vec3& motion) override;
-		void collide(const glm::vec3& motion) override;
+		void push(const glm::vec3& force) override;
+		void impulse(const glm::vec3& motion) override;
 
 	protected:
 		void applyPhysics() override;

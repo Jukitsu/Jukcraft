@@ -25,6 +25,7 @@ namespace Jukcraft {
 
 		entities.push_back(player.get());
 		
+		
 
 
 		/* Initialize lighting */
