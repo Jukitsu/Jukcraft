@@ -107,11 +107,8 @@ project "GLFW"
 		exceptionhandling "off"	
 		omitframepointer "on"
 		rtti "off"
-
-		flags {
-			"NoRuntimeChecks",
-			"LinkTimeOptimization"
-		}
+		linktimeoptimization "on"
+		runtimechecks "off"
 
 project "Glad"
 	kind "StaticLib"
@@ -154,12 +151,8 @@ project "Glad"
 		exceptionhandling "off"	
 		omitframepointer "on"
 		rtti "off"
-
-		flags {
-			"NoRuntimeChecks",
-			"LinkTimeOptimization"
-		}
-
+		linktimeoptimization "on"
+		runtimechecks "off"
 		
 project "glm"
 	location "vendor/glm"
@@ -248,7 +241,5 @@ project "Jukcraft"
 			"SPDLOG_NO_EXCEPTIONS"
 		}
 
-		flags {
-			"NoRuntimeChecks",
-			"LinkTimeOptimization"
-		}
+		linktimeoptimization "on"
+		runtimechecks "off"
