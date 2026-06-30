@@ -6,7 +6,7 @@ namespace Jukcraft {
 	World::World(const std::vector<Block>& blocks, gfx::Shader& shader)
 		:chunkManager(blocks), time(0), shader(shader), blocks(blocks), lightEngine(chunkManager, blocks), daylight(1800) {
 		
-		player = std::make_unique<Player>(*this, glm::vec3(15.0f, 70.0f, 20.0f), glm::vec3(0.0f),
+		player = newAuto<Player>(*this, glm::vec3(15.0f, 70.0f, 20.0f), glm::vec3(0.0f),
 			glm::pi<float>() / 2.0f, 0.0f);
 
 		int count = randomDiscrete(5, 20);

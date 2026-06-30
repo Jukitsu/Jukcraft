@@ -4,6 +4,7 @@
 #include "renderer/Renderer.h"
 #include "core/Camera.h"
 #include "renderer/gfx/buffers/DynamicBuffer.h"
+#include "renderer/gfx/buffers/StreamingBuffer.h"
 #include "renderer/gfx/objects/Shader.h"
 #include "renderer/gfx/objects/VertexArray.h"
 
@@ -20,7 +21,7 @@ namespace Jukcraft {
 		void endRenderPass();
 	private:
 		gfx::VertexArray vao;
-		gfx::DynamicBuffer<Bone::Quad> vbo;
+		gfx::StreamingBuffer<Bone::Quad> vbo;
 		gfx::Shader shader;
 
 		Texture texture;

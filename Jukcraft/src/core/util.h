@@ -132,8 +132,18 @@ namespace Jukcraft {
 	template<typename T>
 	using Auto = std::unique_ptr<T>;
 
+	template<typename T, typename... Args>
+	Auto<T> newAuto(Args&&... args) {
+		return std::make_unique<T>(std::forward<Args>(args)...);
+	}
+
 	template<typename T>
 	using Shared = std::shared_ptr<T>;
+
+	template<typename T, typename... Args>
+	Shared<T> newShared(Args&&... args) {
+		return std::make_shared<T>(std::forward<Args>(args)...);
+	}
 
 	template<typename T>
 	using WeakRef = std::weak_ptr<T>;

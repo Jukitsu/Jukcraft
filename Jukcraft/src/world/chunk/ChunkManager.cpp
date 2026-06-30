@@ -9,7 +9,7 @@ namespace Jukcraft {
 			for (uint8_t z = 0; z < WORLD_SIZE; z++) {
 				Shared<Chunk>& chunk
 					= chunks[x][z]
-					= std::make_shared<Chunk>(
+					= newShared<Chunk>(
 						glm::ivec2(x, z),
 						blocks, 
 						*this
@@ -28,7 +28,7 @@ namespace Jukcraft {
 		int z = chunkPos.x;
 		Shared<Chunk>& chunk
 			= chunks[x][z]
-			= std::make_shared<Chunk>(
+			= newShared<Chunk>(
 				glm::ivec2(x, z), 
 				blocks, 
 				*this

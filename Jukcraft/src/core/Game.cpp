@@ -25,7 +25,7 @@ namespace Jukcraft {
 		blocks.emplace_back("Planks", 5, models.cube, std::vector<uint8_t>{5, 5, 5, 5, 5, 5}, false, 0);
 		blocks.emplace_back("Leaves", 6, models.cube, std::vector<uint8_t>{6, 6, 6, 6, 6, 6}, true, 14);
 
-		world = std::make_unique<World>(blocks, shader);
+		world = newAuto<World>(blocks, shader);
 		camera.emplace(shader, world->getPlayer());
 	}
 

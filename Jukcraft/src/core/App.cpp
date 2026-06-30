@@ -37,7 +37,7 @@ namespace Jukcraft {
 
 		Renderer::Init(); // Render system
 
-		game = std::make_shared<Game>(); // Game logic
+		game = newShared<Game>(); // Game logic
 	}
 
 	App::~App() {
