@@ -172,9 +172,10 @@ project "Jukcraft"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
+
 	
-	targetdir ("bin/" .. outputdir .. "-%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "-%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
 		"Jukcraft/src/**.h",
@@ -207,6 +208,9 @@ project "Jukcraft"
 
 	filter "system:windows"
 		systemversion "latest"
+		
+	filter { "system:windows", "action:vs*" }
+    	buildoptions { "/utf-8" }
 
 	filter "configurations:Debug"
 		runtime "debug"

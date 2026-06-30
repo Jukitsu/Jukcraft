@@ -56,22 +56,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\Debug-windows-Jukcraft\</OutDir>
-    <IntDir>$(ProjectDir)..\bin-int\Debug-windows-Jukcraft\</IntDir>
+    <OutDir>$(ProjectDir)..\bin\Debug-windows\Jukcraft\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Debug-windows\Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\Beta-windows-Jukcraft\</OutDir>
-    <IntDir>$(ProjectDir)..\bin-int\Beta-windows-Jukcraft\</IntDir>
+    <OutDir>$(ProjectDir)..\bin\Beta-windows\Jukcraft\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Beta-windows\Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\Release-windows-Jukcraft\</OutDir>
-    <IntDir>$(ProjectDir)..\bin-int\Release-windows-Jukcraft\</IntDir>
+    <OutDir>$(ProjectDir)..\bin\Release-windows\Jukcraft\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Release-windows\Jukcraft\</IntDir>
     <TargetName>Jukcraft</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -85,6 +85,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -111,6 +112,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -142,6 +144,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>

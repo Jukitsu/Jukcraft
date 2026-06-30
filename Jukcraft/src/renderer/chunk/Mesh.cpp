@@ -6,7 +6,7 @@
 namespace Jukcraft {
 
 	// Helper function to interpolate the neighbouring light values at each vertex
-	static inline uint8_t smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
+	static inline uint8_t _smooth(uint8_t light, uint8_t b, uint8_t c, uint8_t d) {
 		if (!(light && b && c && d)) {
 			uint8_t min_val = light;
 			if (b && b < min_val)
@@ -27,7 +27,7 @@ namespace Jukcraft {
 	}
 
 	// Helper function to compute the ambient occlusion level
-	static inline uint8_t ao(bool s1, bool s2, bool c) {
+	static inline uint8_t _ao(bool s1, bool s2, bool c) {
 		if (s1 && s2)
 			return 0;
 
@@ -63,10 +63,10 @@ namespace Jukcraft {
 	std::array<uint8_t, 4> Mesh::getFaceAO(uint8_t s1, uint8_t s2, uint8_t s3,
 										   uint8_t s4,			   uint8_t s5,
 										   uint8_t s6, uint8_t s7, uint8_t s8) {
-		uint8_t vertex1 = ao(s2, s4, s1);
-		uint8_t vertex2 = ao(s4, s7, s6);
-		uint8_t vertex3 = ao(s5, s7, s8);
-		uint8_t vertex4 = ao(s2, s5, s3);
+		uint8_t vertex1 = _ao(s2, s4, s1);
+		uint8_t vertex2 = _ao(s4, s7, s6);
+		uint8_t vertex3 = _ao(s5, s7, s8);
+		uint8_t vertex4 = _ao(s2, s5, s3);
 		return { vertex1, vertex2, vertex3, vertex4 };
 	}
 		
@@ -74,10 +74,10 @@ namespace Jukcraft {
 	std::array<uint8_t, 4> Mesh::getSmoothLighting(uint8_t light, uint8_t light1, uint8_t light2, uint8_t light3,
 												                  uint8_t light4,			      uint8_t light5,
 												                  uint8_t light6, uint8_t light7, uint8_t light8) {
-		uint8_t vertex1 = smooth(light, light2, light4, light1);
-		uint8_t vertex2 = smooth(light, light4, light7, light6);
-		uint8_t vertex3 = smooth(light, light5, light7, light8);
-		uint8_t vertex4 = smooth(light, light2, light5, light3);
+		uint8_t vertex1 = _smooth(light, light2, light4, light1);
+		uint8_t vertex2 = _smooth(light, light4, light7, light6);
+		uint8_t vertex3 = _smooth(light, light5, light7, light8);
+		uint8_t vertex4 = _smooth(light, light2, light5, light3);
 		return { vertex1, vertex2, vertex3, vertex4 };
 	}
 		
